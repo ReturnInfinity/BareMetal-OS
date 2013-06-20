@@ -1,6 +1,6 @@
 BareMetal OS build scripts
 
 
-	git clone https://github.com/ReturnInfinity/BareMetal-build.git
-	cd BareMetal-build
+	git clone https://github.com/ReturnInfinity/BareMetal.git
+	cd BareMetal
 	./setup.sh
