@@ -1,4 +1,5 @@
 #!/bin/sh
+cd build
 echo Formatting Disk Image
 ./bmfs bmfs.image format
 echo Writing Master Boot Record

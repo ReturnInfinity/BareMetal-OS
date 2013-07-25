@@ -10,7 +10,8 @@ Initial configuration
 	git clone https://github.com/ReturnInfinity/BareMetal.git
 	cd BareMetal
 	./setup.sh
-	cd build
+
+setup.sh automatically runs build, format, and install
 
 
 Rebuilding the source code
