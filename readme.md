@@ -38,8 +38,8 @@ Build a VMDK disk image for VirtualBox
 	./vmdk.sh
 
 
-Compiling, installing, and running an example program
------------------------------------------------------
+Compiling, installing, and running a program
+--------------------------------------------
 
 	cd src/BareMetal-OS/programs/
 	nasm sysinfo.asm -o ../../../build/sysinfo.app
