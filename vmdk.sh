@@ -1,4 +1,4 @@
 #!/bin/sh
 
-cd build
+cd bin
 qemu-img convert -O vmdk bmfs.image BareMetal_OS.vmdk

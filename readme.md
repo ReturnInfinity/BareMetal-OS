@@ -42,8 +42,8 @@ Compiling, installing, and running a program
 --------------------------------------------
 
 	cd src/BareMetal-OS/programs/
-	nasm sysinfo.asm -o ../../../build/sysinfo.app
-	cd ../../../build
+	nasm sysinfo.asm -o ../../../bin/sysinfo.app
+	cd ../../../bin
 	./bmfs bmfs.image create sysinfo.app 2
 	./bmfs bmfs.image write sysinfo.app
 	cd ..

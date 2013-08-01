@@ -9,10 +9,10 @@ git clone https://github.com/ReturnInfinity/Pure64.git
 git clone https://github.com/ReturnInfinity/BareMetal-OS.git
 cd ..
 
-if [ ! -d "$build" ]; then
-  mkdir build
+if [ ! -d "$bin" ]; then
+  mkdir bin
 fi
-dd if=/dev/zero of=build/bmfs.image bs=1M count=128
+dd if=/dev/zero of=bin/bmfs.image bs=1M count=128
 
 ./build.sh
 ./format.sh
