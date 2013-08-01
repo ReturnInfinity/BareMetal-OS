@@ -48,3 +48,7 @@ Compiling, installing, and running an example program
 	./bmfs bmfs.image write sysinfo.app
 	cd ..
 	./run.sh
+
+BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt.
+
+	sysinfo.app
