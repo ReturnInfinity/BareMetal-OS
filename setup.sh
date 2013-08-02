@@ -12,7 +12,7 @@ cd ..
 if [ ! -d "$bin" ]; then
   mkdir bin
 fi
-dd if=/dev/zero of=bin/bmfs.image bs=1m count=128
+dd if=/dev/zero of=bin/bmfs.image bs=1M count=128
 
 ./build.sh
 ./format.sh
