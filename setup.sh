@@ -12,7 +12,15 @@ cd ..
 if [ ! -d "$bin" ]; then
   mkdir bin
 fi
-dd if=/dev/zero of=bin/bmfs.image bs=1M count=128
+platform=`uname`
+case "${platform}" in
+  Darwin)
+    dd if=/dev/zero of=bin/bmfs.image bs=1m count=128
+    ;;
+  *)
+    dd if=/dev/zero of=bin/bmfs.image bs=1M count=128
+    ;;
+esac
 
 ./build.sh
 ./format.sh
