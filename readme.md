@@ -4,6 +4,16 @@ BareMetal OS build scripts
 The easiest way to create a BareMetal OS build environment. These scripts will download and compile all of the components needed for using BareMetal OS.
 
 
+Prerequisites
+-------------
+
+NASM (an Assembly compiler) is required to build the loader and OS, as well as the apps writen in Assembly. QEMU is required if you plan on running the OS for quick testing. GCC (A C compiler) is required for building the BMFS disk utility, the C applications, as well as Newlib.
+
+In Ubuntu this can be completed with the following command:
+
+	sudo apt-get install nasm qemu
+
+
 Initial configuration
 ---------------------
 
