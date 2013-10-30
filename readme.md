@@ -11,7 +11,7 @@ NASM (Assembly compiler) is required to build the loader and OS, as well as the 
 
 In Ubuntu this can be completed with the following command:
 
-	sudo apt-get install nasm qemu
+	sudo apt-get install nasm qemu gcc
 
 
 Initial configuration
