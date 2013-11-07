@@ -7,11 +7,11 @@ The easiest way to create a BareMetal OS build environment. These scripts will d
 Prerequisites
 -------------
 
-NASM (Assembly compiler) is required to build the loader and OS, as well as the apps writen in Assembly. QEMU (computer emulator) is required if you plan on running the OS for quick testing. GCC (C compiler) is required for building the BMFS disk utility, the C applications, as well as Newlib.
+NASM (Assembly compiler) is required to build the loader and OS, as well as the apps writen in Assembly. QEMU (computer emulator) is required if you plan on running the OS for quick testing. GCC (C compiler) is required for building the BMFS disk utility, the C applications, as well as Newlib. Git is used for pulling the software from GitHub.
 
 In Ubuntu this can be completed with the following command:
 
-	sudo apt-get install nasm qemu gcc
+	sudo apt-get install nasm qemu gcc git
 
 
 Initial configuration
