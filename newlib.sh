@@ -4,9 +4,14 @@ if [ ! -d "$newlib" ]; then
   mkdir newlib
 fi
 cd newlib
+
+echo Downloading Newlib
+
 wget ftp://sourceware.org/pub/newlib/newlib-2.1.0.tar.gz
 tar xf newlib-2.1.0.tar.gz
 mkdir build
+
+echo Configuring Newlib
 
 cd ../src/BareMetal-OS/newlib/patches
 cp config.sub.patch ../../../../newlib/newlib-2.1.0/
@@ -35,10 +40,21 @@ cd ../../../../../build
 sed -i 's/TARGET=x86_64-pc-baremetal-/TARGET=/g' Makefile
 sed -i 's/WRAPPER) x86_64-pc-baremetal-/WRAPPER) /g' Makefile
 
+echo Building Newlib
+
 make
+
+echo Build complete!
 
 cd x86_64-pc-baremetal/newlib/
 cp libc.a ../../..
 cp libm.a ../../..
 cp crt0.o ../../..
 cd ../../..
+
+echo Compiling test application...
+
+cp ../src/BareMetal-OS/newlib/*.* .
+
+gcc -I newlib-2.1.0/newlib/libc/include/ -c test.c -o test.o
+ld -T app.ld -o test.app crt0.o test.o libc.a
