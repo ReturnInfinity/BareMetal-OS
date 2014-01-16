@@ -13,6 +13,13 @@ cp config.sub.patch ../../../../newlib/newlib-2.1.0/
 cp configure.host.patch ../../../../newlib/newlib-2.1.0/newlib/
 cp configure.in.patch ../../../../newlib/newlib-2.1.0/newlib/libc/sys/
 cd ../../../../newlib
+cd newlib-2.1.0
+patch < config.sub.patch
+cd newlib
+patch < configure.host.patch
+cd libc/sys
+patch < configure.in.patch
+cd ../../../..
 
 mkdir newlib-2.1.0/newlib/libc/sys/baremetal
 cp ../src/BareMetal-OS/newlib/baremetal/* newlib-2.1.0/newlib/libc/sys/baremetal/
@@ -35,4 +42,3 @@ cp libc.a ../../..
 cp libm.a ../../..
 cp crt0.o ../../..
 cd ../../..
-
