@@ -7,11 +7,15 @@ The easiest way to create a BareMetal OS build environment. These scripts will d
 Prerequisites
 -------------
 
-NASM (Assembly compiler) is required to build the loader and OS, as well as the apps writen in Assembly. QEMU (computer emulator) is required if you plan on running the OS for quick testing. GCC (C compiler) is required for building the BMFS disk utility, the C applications, as well as Newlib. Git is used for pulling the software from GitHub. texinfo is required for Newlib.
+NASM (Assembly compiler) is required to build the loader and OS, as well as the apps writen in Assembly. QEMU (computer emulator) is required if you plan on running the OS for quick testing. GCC (C compiler) is required for building the BMFS disk utility, the C applications, as well as Newlib. Git is used for pulling the software from GitHub.
 
 In Ubuntu this can be completed with the following command:
 
-	sudo apt-get install nasm qemu gcc git texinfo
+	sudo apt-get install nasm qemu gcc git
+
+There are additional dependancies if you are planning on compiling Newlib. They can be installed with the following command:
+
+	sudo apt-get install autoconf libtool sed gawk bison flex m4 texinfo texi2html unzip make
 
 
 Initial configuration
@@ -51,6 +55,13 @@ Build a VMDK disk image for VirtualBox
 Compiling, installing, and running a program
 --------------------------------------------
 
+Automatic:
+
+	./app.sh sysinfo
+	./run.sh
+
+Manual:
+
 	cd src/BareMetal-OS/programs/
 	nasm sysinfo.asm -o ../../../bin/sysinfo.app
 	cd ../../../bin
@@ -59,6 +70,15 @@ Compiling, installing, and running a program
 	cd ..
 	./run.sh
 
+
 BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt.
 
 	sysinfo.app
+
+
+Compiling Newlib
+----------------
+
+	./newlib.sh
+
+The Newlib script will build the Newlib library and also compile a test application (test.app) to verify the build process.
