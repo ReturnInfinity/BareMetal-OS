@@ -46,10 +46,18 @@ Test the install with QEMU
 	./run.sh
 
 
-Build a VMDK disk image for VirtualBox
---------------------------------------
+Build a VMDK disk image for VMware
+----------------------------------
 
 	./vmdk.sh
+
+
+Build a VDI disk image for VirtualBox
+-------------------------------------
+
+	./vdi.sh
+
+The VDI script rewrites the disk ID with the contents of VDI_UUID.bin to avoid the disk warning in VirtualBox.
 
 
 Compiling, installing, and running a program
