@@ -58,3 +58,8 @@ cp ../src/BareMetal-OS/newlib/*.* .
 
 gcc -I newlib-2.1.0/newlib/libc/include/ -c test.c -o test.o
 ld -T app.ld -o test.app crt0.o test.o libc.a
+
+cp ../src/BareMetal-OS/programs/libBareMetal.* .
+gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o libBareMetal.o libBareMetal.c
+
+echo Complete!
