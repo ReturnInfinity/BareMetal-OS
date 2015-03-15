@@ -54,4 +54,7 @@ cp lib0.o ../../../../src/BareMetal-OS/programs/
 cd ../../../newlib-2.2.0/newlib
 cp libc ../../../src/BareMetal-OS/programs/
 
+echo Building test program (test.app)
+cd ../../../
+appc.sh test
 echo Complete!
