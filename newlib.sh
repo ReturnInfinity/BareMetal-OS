@@ -46,20 +46,12 @@ make
 
 echo Build complete!
 
+echo Copying libraries into BareMetal programs directory...
 cd x86_64-pc-baremetal/newlib/
-cp libc.a ../../..
-cp libm.a ../../..
-cp crt0.o ../../..
-cd ../../..
-
-echo Compiling test application...
-
-cp ../src/BareMetal-OS/newlib/*.* .
-
-gcc -I newlib-2.2.0/newlib/libc/include/ -c test.c -o test.o
-ld -T app.ld -o test.app crt0.o test.o libc.a
-
-cp ../src/BareMetal-OS/programs/libBareMetal.* .
-gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o libBareMetal.o libBareMetal.c
+cp libc.a ../../../../src/BareMetal-OS/programs/
+cp libm.a ../../../../src/BareMetal-OS/programs/
+cp lib0.o ../../../../src/BareMetal-OS/programs/
+cd ../../../newlib-2.2.0/newlib
+cp libc ../../../src/BareMetal-OS/programs/
 
 echo Complete!
