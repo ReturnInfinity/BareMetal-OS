@@ -53,8 +53,11 @@ cp libm.a ../../../../src/BareMetal-OS/programs/
 cp lib0.o ../../../../src/BareMetal-OS/programs/
 cd ../../../newlib-2.2.0/newlib
 cp libc ../../../src/BareMetal-OS/programs/
-
-echo Building test program (test.app)
+cd ../../../src/BareMetal-OS/programs/
+gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o libBareMetal.o libBareMetal.c
 cd ../../../
+echo Done!
+
+echo Compiling test program \(test.app\)
 appc.sh test
 echo Complete!
