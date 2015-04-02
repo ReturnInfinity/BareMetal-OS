@@ -6,8 +6,10 @@ mv *.sys ../../bin/
 cd ..
 
 cd BMFS
+autoreconf -fi
+./configure
 make
-mv bmfs ../../bin/
+mv src/bmfs ../../bin/
 cd ..
 
 cd BareMetal-OS/os
