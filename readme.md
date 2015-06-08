@@ -13,7 +13,7 @@ In Ubuntu this can be completed with the following command:
 
 	sudo apt-get install nasm qemu gcc git automake
 
-There are additional dependancies if you are planning on compiling Newlib. They can be installed with the following command:
+There are additional dependencies if you are planning on compiling Newlib. They can be installed with the following command:
 
 	sudo apt-get install autoconf libtool sed gawk bison flex m4 texinfo texi2html unzip make
 
@@ -60,7 +60,7 @@ Build a VDI disk image for VirtualBox
 The VDI script rewrites the disk ID with the contents of VDI_UUID.bin to avoid the disk warning in VirtualBox.
 
 
-Compiling, installing, and running a program
+Compiling, installing, and running a program in Assembly
 --------------------------------------------
 
 Automatic:
@@ -70,16 +70,15 @@ Automatic:
 
 Manual:
 
-	cd src/BareMetal-OS/programs/
-	nasm sysinfo.asm -o ../../../bin/sysinfo.app
-	cd ../../../bin
+	nasm sysinfo.asm -o bin/sysinfo.app
+	cd bin
 	./bmfs bmfs.image create sysinfo.app 2
 	./bmfs bmfs.image write sysinfo.app
 	cd ..
 	./run.sh
 
 
-BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt.
+BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt. You can now run the application by typing
 
 	sysinfo.app
 
@@ -90,3 +89,31 @@ Compiling Newlib
 	./newlib.sh
 
 The Newlib script will build the Newlib library and also compile a test application (test.app) to verify the build process.
+
+
+Compiling, installing, and running a program in C with Newlib
+--------------------------------------------
+
+Once you have compilied newlib, you can now compile and run C programs.
+Automatic:
+
+	./appc.sh sysinfo
+	./run.sh
+
+Manual:
+
+
+	gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o test.o test.c
+	gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o libBareMetal.o libBareMetal.c
+	ld -T app.ld -o bin/test.app test.o libBareMetal.o
+	cd bin
+	./bmfs bmfs.image create test.app 2
+	./bmfs bmfs.image write test.app
+	cd ..
+	./run.sh
+
+
+BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt.
+
+	test.app
+
