@@ -7,13 +7,13 @@ The easiest way to create a BareMetal OS build environment. These scripts will d
 Prerequisites
 -------------
 
-NASM (Assembly compiler) is required to build the loader and OS, as well as the apps writen in Assembly. QEMU (computer emulator) is required if you plan on running the OS for quick testing. GCC (C compiler) is required for building the BMFS disk utility, the C applications, as well as Newlib. Git is used for pulling the software from GitHub.
+NASM (Assembly compiler) is required to build the loader and OS, as well as the apps written in Assembly. QEMU (computer emulator) is required if you plan on running the OS for quick testing. GCC (C compiler) is required for building the BMFS disk utility, the C applications, as well as Newlib. Git is used for pulling the software from GitHub.
 
 In Ubuntu this can be completed with the following command:
 
 	sudo apt-get install nasm qemu gcc git
 
-There are additional dependancies if you are planning on compiling Newlib. They can be installed with the following command:
+There are additional dependencies if you are planning on compiling Newlib. They can be installed with the following command:
 
 	sudo apt-get install autoconf libtool sed gawk bison flex m4 texinfo texi2html unzip make
 
@@ -60,8 +60,8 @@ Build a VDI disk image for VirtualBox
 The VDI script rewrites the disk ID with the contents of VDI_UUID.bin to avoid the disk warning in VirtualBox.
 
 
-Compiling, installing, and running a program
---------------------------------------------
+Programs in Assembly
+--------------------
 
 Automatic:
 
@@ -79,9 +79,36 @@ Manual:
 	./run.sh
 
 
-BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt.
+BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt. You can now run the application by typing
 
 	sysinfo.app
+
+
+Programs in C
+-------------
+
+C programs can be compiled to take advantage of the BareMetal system calls. Standard ANSI C calls are available via Newlib (see the Newlib section below).
+
+Automatic:
+
+	./appc.sh helloc
+	./run.sh
+
+Manual:
+
+	cd src/
+	gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o hello.o helloc.c
+	gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o libBareMetal.o libBareMetal.c
+	ld -T app.ld -o bin/helloc.app helloc.o libBareMetal.o
+	cd bin
+	./bmfs bmfs.image create helloc.app 2
+	./bmfs bmfs.image write helloc.app
+	cd ..
+	./run.sh
+
+BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt. You can now run the application by typing
+
+	helloc.app
 
 
 Compiling Newlib
@@ -90,3 +117,18 @@ Compiling Newlib
 	./newlib.sh
 
 The Newlib script will build the Newlib library and also compile a test application (test.app) to verify the build process.
+
+The test application can also be built manually:
+
+	cd newlib
+	gcc -I newlib-2.2.0/newlib/libc/include/ -c test.c -o test.o
+	ld -T app.ld -o test.app crt0.o test.o libc.a
+	cp test.app ../bin
+	./bmfs bmfs.image create test.app 2
+	./bmfs bmfs.image write test.app
+	cd ..
+	./run.sh
+
+BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt. You can now run the application by typing
+
+	test.app
