@@ -124,7 +124,7 @@ The test application can also be built manually:
 	gcc -I newlib-2.2.0/newlib/libc/include/ -c test.c -o test.o
 	ld -T app.ld -o test.app crt0.o test.o libc.a
 	cp test.app ../bin
-    cd ../bin
+	cd ../bin
 	./bmfs bmfs.image create test.app 2
 	./bmfs bmfs.image write test.app
 	cd ..
