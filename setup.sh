@@ -22,6 +22,13 @@ case "${platform}" in
     ;;
 esac
 
+cd src/BMFS
+autoreconf -fi
+./configure
+make
+mv src/bmfs ../../bin/
+cd ../..
+
 ./build.sh
 ./format.sh
 ./install.sh
