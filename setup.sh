@@ -11,6 +11,7 @@ cd ..
 
 if [ ! -d "$bin" ]; then
   mkdir bin
+  mkdir lst
 fi
 platform=`uname`
 case "${platform}" in
