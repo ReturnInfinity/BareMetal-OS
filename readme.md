@@ -121,7 +121,7 @@ The Newlib script will build the Newlib library and also compile a test applicat
 The test application can also be built manually:
 
 	cd newlib
-	gcc -I newlib-2.2.0/newlib/libc/include/ -c test.c -o test.o
+	gcc -I newlib-2.4.0/newlib/libc/include/ -c test.c -o test.o
 	ld -T app.ld -o test.app crt0.o test.o libc.a
 	cp test.app ../bin
 	cd ../bin
