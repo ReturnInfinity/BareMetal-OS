@@ -23,10 +23,8 @@ case "${platform}" in
 esac
 
 cd src/BMFS
-autoreconf -fi
-./configure
 make
-mv src/bmfs ../../bin/
+mv bmfs ../../bin/
 cd ../..
 
 ./build.sh
