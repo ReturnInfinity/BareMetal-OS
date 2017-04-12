@@ -14,7 +14,7 @@ git clone https://github.com/ReturnInfinity/BareMetal-OS.git
 cd ..
 
 cd src/BMFS
-make
+make NO_FUSE=1
 mv bmfs ../../bin/
 cd ../../bin
 ./bmfs bmfs.image initialize 128M
