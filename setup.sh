@@ -4,7 +4,7 @@ set -o errexit
 set -u
 
 mkdir -p src
-mkdir -p dst
+mkdir -p bin
 
 if [ ! -e src/Alloy ]; then
   git clone https://github.com/ReturnInfinity/Alloy.git src/Alloy
@@ -30,7 +30,7 @@ else
   git --git-dir=src/BareMetal-OS/.git pull origin master
 fi
 
-make -C src/BMFS NO_FUSE=1
+make -C src/BMFS NO_FUSE=1 NO_UTIX_UTILS=1
 
 cp --update src/BMFS/bmfs bin/bmfs
 
