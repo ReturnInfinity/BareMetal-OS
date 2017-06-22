@@ -10,5 +10,5 @@ cd src/Pure64
 mv *.sys ../../bin/
 cd ..
 
-cd BareMetal-OS/os
-nasm kernel64.asm -o ../../../bin/kernel64.sys
+cd BareMetal-kernel
+./build_x86-64.sh
