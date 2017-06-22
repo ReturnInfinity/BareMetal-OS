@@ -25,9 +25,9 @@ else
 fi
 
 if [ ! -e src/BareMetal-OS ]; then
-  git clone https://github.com/ReturnInfinity/BareMetal-OS.git src/BareMetal-OS
+  git clone https://github.com/ReturnInfinity/BareMetal-kernel.git src/BareMetal-kernel
 else
-  git --git-dir=src/BareMetal-OS/.git pull origin master
+  git --git-dir=src/BareMetal-kernel/.git pull origin master
 fi
 
 make -C src/BMFS NO_FUSE=1 NO_UTIX_UTILS=1
