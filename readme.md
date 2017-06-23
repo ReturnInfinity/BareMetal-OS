@@ -3,6 +3,8 @@ BareMetal OS build scripts
 
 The easiest way to create a BareMetal OS build environment. These scripts will download and compile all of the components needed for using BareMetal OS.
 
+[![Join the chat at https://gitter.im/ReturnInfinity/BareMetal-OS](https://badges.gitter.im/ReturnInfinity/BareMetal-OS.svg)](https://gitter.im/ReturnInfinity/BareMetal-OS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 Prerequisites
 -------------
