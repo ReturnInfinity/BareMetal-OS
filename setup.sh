@@ -6,12 +6,6 @@ set -u
 mkdir -p src
 mkdir -p bin
 
-if [ ! -e src/Alloy ]; then
-  git clone https://github.com/ReturnInfinity/Alloy.git src/Alloy
-else
-  git --git-dir=src/Alloy/.git pull origin master
-fi
-
 if [ ! -e src/BMFS ]; then
   git clone https://github.com/ReturnInfinity/BMFS.git src/BMFS
 else
