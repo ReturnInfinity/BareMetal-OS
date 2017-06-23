@@ -7,3 +7,5 @@ cd ..
 
 cd BareMetal-kernel
 ./build_x86-64.sh
+mv *.sys ../../bin
+mv *.txt ../../bin
