@@ -23,8 +23,8 @@ There are additional dependencies if you are planning on compiling Newlib. They 
 Initial configuration
 ---------------------
 
-	git clone https://github.com/ReturnInfinity/BareMetal.git
-	cd BareMetal
+	git clone https://github.com/ReturnInfinity/BareMetal-OS.git
+	cd BareMetal-OS
 	./setup.sh
 
 setup.sh automatically runs build, format, and install
