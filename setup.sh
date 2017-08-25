@@ -26,7 +26,9 @@ fi
 
 make -C src/BMFS NO_FUSE=1 NO_UTIX_UTILS=1
 
-cp --update src/BMFS/src/bmfs bin/bmfs
+if [ src/BMFS/src/bmfs -nt bin/bmfs ]; then
+  cp src/BMFS/src/bmfs bin/bmfs 
+fi
 
 bin/bmfs bin/bmfs.image initialize 128M
 
