@@ -26,7 +26,7 @@ fi
 
 make -C src/BMFS NO_FUSE=1 NO_UTIX_UTILS=1
 
-if [ src/BMFS/src/bmfs -nt bin/bmfs ]; then
+if [ src/BMFS/src/bmfs ]; then
   cp src/BMFS/src/bmfs bin/bmfs 
 fi
 
