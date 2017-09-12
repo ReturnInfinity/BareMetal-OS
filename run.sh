@@ -9,7 +9,7 @@ cmd=( qemu-system-x86_64
 # Text mode QEMU
 	-curses
 # Window title in graphics mode
-  -name "BareMetal OS"
+	-name "BareMetal OS"
 # Boot a multiboot kernel file
 	-kernel ./boot.bin
 # Enable a supported NIC
