@@ -18,7 +18,7 @@ else
   git --git-dir=src/Pure64/.git pull origin master
 fi
 
-if [ ! -e src/BareMetal-OS ]; then
+if [ ! -e src/BareMetal-kernel ]; then
   git clone https://github.com/ReturnInfinity/BareMetal-kernel.git src/BareMetal-kernel
 else
   git --git-dir=src/BareMetal-kernel/.git pull origin master
