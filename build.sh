@@ -1,6 +1,15 @@
 #!/bin/sh
 
-cd src/Pure64
+export topdir=$PWD
+
+cd src
+
+cd Alloy
+./build.sh
+mv alloy.bin ../../bin
+cd ..
+
+cd Pure64
 ./build.sh
 mv *.sys ../../bin/
 cd ..
