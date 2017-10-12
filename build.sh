@@ -11,6 +11,11 @@ export BAREMETAL_LIBC_LIBRARY=$PWD/bin/libbaremetal.a
 
 cd src
 
+cd BareMetal-libc
+./build.sh
+mv libbaremetal.a ../../bin
+cd ..
+
 cd Alloy
 ./build.sh
 mv alloy.bin ../../bin
@@ -25,9 +30,4 @@ cd BareMetal-kernel
 ./build_x86-64.sh
 mv *.sys ../../bin
 mv *.txt ../../bin
-cd ..
-
-cd BareMetal-libc
-./build.sh
-mv libbaremetal.a ../../bin
 cd ..
