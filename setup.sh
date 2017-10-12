@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -o errexit
 set -u
@@ -6,29 +6,18 @@ set -u
 mkdir -p src
 mkdir -p bin
 
-if [ ! -e src/Alloy ]; then
-  git clone https://github.com/ReturnInfinity/Alloy.git src/Alloy
-else
-  git --git-dir=src/Alloy/.git pull origin master
-fi
+function clone {
+  if [ ! -e src/$1 ]; then
+    git clone https://github.com/ReturnInfinity/$1 src/$1
+  else
+    git --git-dir=src/$1/.git pull origin master
+  fi
+}
 
-if [ ! -e src/BMFS ]; then
-  git clone https://github.com/ReturnInfinity/BMFS.git src/BMFS
-else
-  git --git-dir=src/BMFS/.git pull origin master
-fi
-
-if [ ! -e src/Pure64 ]; then
-  git clone https://github.com/ReturnInfinity/Pure64.git src/Pure64
-else
-  git --git-dir=src/Pure64/.git pull origin master
-fi
-
-if [ ! -e src/BareMetal-kernel ]; then
-  git clone https://github.com/ReturnInfinity/BareMetal-kernel.git src/BareMetal-kernel
-else
-  git --git-dir=src/BareMetal-kernel/.git pull origin master
-fi
+clone Alloy
+clone BMFS
+clone Pure64
+clone BareMetal-kernel
 
 make -C src/BMFS NO_FUSE=1 NO_UTIX_UTILS=1 PREFIX=$PWD install
 
