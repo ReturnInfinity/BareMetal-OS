@@ -18,6 +18,7 @@ clone Alloy
 clone BMFS
 clone Pure64
 clone BareMetal-kernel
+clone BareMetal-libc
 
 make -C src/BMFS NO_FUSE=1 NO_UTIX_UTILS=1 PREFIX=$PWD install
 
