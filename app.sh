@@ -1,9 +1,8 @@
 #!/bin/sh
 # expecting source on programs/
-cd programs/
-nasm $1.asm -o ../bin/$1.app
+nasm programs/$1.asm -o /bin/$1.app
 if [ $? -eq 0 ]; then
-cd ../../../bin
+cd bin/
 ./bmfs bmfs.image create $1.app 2
 ./bmfs bmfs.image write $1.app
 cd ..
