@@ -1,6 +1,7 @@
 #!/bin/sh
-cd src/BareMetal-OS/programs/
-nasm $1.asm -o ../../../bin/$1.app
+# expecting source on programs/
+cd programs/
+nasm $1.asm -o ../bin/$1.app
 if [ $? -eq 0 ]; then
 cd ../../../bin
 ./bmfs bmfs.image create $1.app 2
