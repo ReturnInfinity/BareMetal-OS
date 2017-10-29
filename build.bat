@@ -15,7 +15,7 @@ call "./build.bat"
 move "*.sys" "../../bin"
 cd "../.."
 
-cd "src/BareMetal-kernel"
+cd "src/kernel"
 call "./build_x86-64.bat"
 move "*.sys" "../../bin"
 move "*.txt" "../../bin"
