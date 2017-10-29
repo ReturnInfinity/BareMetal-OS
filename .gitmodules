@@ -13,3 +13,6 @@
 [submodule "src/Pure64"]
 	path = src/Pure64
 	url = https://github.com/ReturnInfinity/Pure64
+[submodule "src/BMFS"]
+	path = src/BMFS
+	url = https://github.com/ReturnInfinity/BMFS
