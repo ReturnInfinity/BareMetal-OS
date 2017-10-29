@@ -72,9 +72,9 @@ Automatic:
 
 Manual:
 
-	cd src/BareMetal-OS/programs/
-	nasm sysinfo.asm -o ../../../bin/sysinfo.app
-	cd ../../../bin
+	cd src/Coreutils/
+	nasm sysinfo.asm -o ../../bin/sysinfo.app
+	cd ../../bin
 	./bmfs bmfs.image create sysinfo.app 2
 	./bmfs bmfs.image write sysinfo.app
 	cd ..
@@ -93,24 +93,22 @@ C programs can be compiled to take advantage of the BareMetal system calls. Stan
 
 Automatic:
 
-	./appc.sh helloc
+	./appc.sh hello-c
 	./run.sh
 
-Manual:
+Manual (will not work with standard C library):
 
-	cd src/
-	gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o hello.o helloc.c
-	gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o libBareMetal.o libBareMetal.c
-	ld -T app.ld -o bin/helloc.app helloc.o libBareMetal.o
+	gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o bin/program.o program.c
+	ld -T src/Coreutils/coreutil.ld -o bin/program.app bin/program.o
 	cd bin
-	./bmfs bmfs.image create helloc.app 2
-	./bmfs bmfs.image write helloc.app
+	./bmfs bmfs.image create program.app 2
+	./bmfs bmfs.image write program.app
 	cd ..
 	./run.sh
 
 BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt. You can now run the application by typing
 
-	helloc.app
+	program.app
 
 
 Compiling Newlib
