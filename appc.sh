@@ -13,6 +13,7 @@ LIBS="bin/libbaremetal.a"
 
 $CC $CFLAGS src/Coreutils/$1.c -o bin/$1.app $LIBS
 cd bin
+./bmfs bmfs.image delete $1.app
 ./bmfs bmfs.image create $1.app 2
 ./bmfs bmfs.image write $1.app
 cd ..
