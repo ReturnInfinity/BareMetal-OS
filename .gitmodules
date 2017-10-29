@@ -1,0 +1,15 @@
+[submodule "src/Alloy"]
+	path = src/Alloy
+	url = https://github.com/ReturnInfinity/Alloy
+[submodule "src/libc"]
+	path = src/libc
+	url = https://github.com/ReturnInfinity/BareMetal-libc
+[submodule "src/kernel"]
+	path = src/kernel
+	url = https://github.com/ReturnInfinity/BareMetal-kernel
+[submodule "src/Coreutils"]
+	path = src/Coreutils
+	url = https://github.com/ReturnInfinity/Coreutils
+[submodule "src/Pure64"]
+	path = src/Pure64
+	url = https://github.com/ReturnInfinity/Pure64
