@@ -16,6 +16,7 @@ function clone {
 
 clone Alloy
 clone BMFS
+clone Coreutils
 clone Pure64
 clone BareMetal-kernel
 clone BareMetal-libc
