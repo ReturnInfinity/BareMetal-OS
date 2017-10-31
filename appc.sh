@@ -8,6 +8,7 @@ CC=gcc
 CFLAGS=
 CFLAGS="${CFLAGS} -Wall -Wextra -Werror -Wfatal-errors"
 CFLAGS="${CFLAGS} -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone"
+CFLAGS="${CFLAGS} -Isrc/libc/include -Isrc/BMFS/include"
 CFLAGS="${CFLAGS} -Wl,-T src/Coreutils/coreutil.ld"
 LIBS="bin/libbaremetal.a"
 
