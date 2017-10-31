@@ -1,0 +1,13 @@
+language: c
+
+addons:
+  apt:
+    packages:
+      - nasm
+
+compiler:
+  - gcc
+  - clang
+
+script:
+  setup.sh
