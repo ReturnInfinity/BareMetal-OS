@@ -10,4 +10,4 @@ compiler:
   - clang
 
 script:
-  setup.sh
+  ./setup.sh
