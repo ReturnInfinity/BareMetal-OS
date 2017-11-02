@@ -6,12 +6,12 @@ set -u
 export BMFS_INCLUDE_DIR=$PWD/src/BMFS/include
 export BMFS_LIBRARY=$PWD/src/BMFS/src/libbmfs.a
 
-export BAREMETAL_LIBC_INCLUDE_DIR=$PWD/src/libc/include
+export BAREMETAL_LIBC_INCLUDE_DIR=$PWD/src/ironlib/include
 export BAREMETAL_LIBC_LIBRARY=$PWD/bin/libbaremetal.a
 
 cd src
 
-cd libc
+cd ironlib
 ./build.sh
 mv libbaremetal.a ../../bin
 cd ..
