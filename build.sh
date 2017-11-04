@@ -3,17 +3,19 @@
 set -e
 set -u
 
-export BMFS_INCLUDE_DIR=$PWD/src/BMFS/include
-export BMFS_LIBRARY=$PWD/src/BMFS/src/libbmfs.a
+export BMFS_INCLUDE_DIR=$PWD/include
+export BMFS_LIBRARY=$PWD/lib/libbmfs.a
 
-export BAREMETAL_LIBC_INCLUDE_DIR=$PWD/src/ironlib/include
-export BAREMETAL_LIBC_LIBRARY=$PWD/bin/libbaremetal.a
+export BAREMETAL_LIBC_INCLUDE_DIR=$PWD/include
+export BAREMETAL_LIBC_LIBRARY=$PWD/lib/libc.a
+
+export PREFIX=$PWD
 
 cd src
 
 cd ironlib
 ./build.sh
-mv libbaremetal.a ../../bin
+./install.sh
 cd ..
 
 cd Alloy
