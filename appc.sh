@@ -8,9 +8,9 @@ CC=gcc
 CFLAGS=
 CFLAGS="${CFLAGS} -Wall -Wextra -Werror -Wfatal-errors -std=gnu99"
 CFLAGS="${CFLAGS} -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -fPIC"
-CFLAGS="${CFLAGS} -Isrc/libc/include -Isrc/BMFS/include"
+CFLAGS="${CFLAGS} -Isrc/ironlib/include -Isrc/BMFS/include"
 CFLAGS="${CFLAGS} -Wl,-T src/Coreutils/coreutil.ld"
-LIBS="bin/libbaremetal.a lib/libbmfs.a"
+LIBS="lib/libc.a lib/libbmfs.a"
 
 $CC $CFLAGS src/Coreutils/$1.c -o bin/$1.app $LIBS
 cd bin
