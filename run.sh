@@ -15,6 +15,7 @@ cmd=( qemu-system-x86_64
 # Enable a supported NIC
 	-device e1000,netdev=net0
 	-netdev user,id=net0
+	-object filter-dump,id=net0,netdev=net0,file=network.pcap
 # Amount of CPU cores
 	-smp 2
 # Amount of memory in Megabytes
