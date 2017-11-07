@@ -13,6 +13,11 @@ export PREFIX=$PWD
 
 cd src
 
+cd BMFS
+./build.sh
+./install.sh
+cd ..
+
 cd ironlib
 ./build.sh
 ./install.sh
