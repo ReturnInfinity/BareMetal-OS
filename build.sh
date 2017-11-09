@@ -38,6 +38,6 @@ cd ..
 
 cd kernel
 ./build_x86-64.sh
-mv *.sys "$OUTPUT_DIR/system"
-mv *.txt "$OUTPUT_DIR/system"
+mv src/x86-64/kernel.elf "$OUTPUT_DIR/system"
+mv src/x86-64/kernel.bin "$OUTPUT_DIR/system"
 cd ..
