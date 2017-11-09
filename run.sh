@@ -1,8 +1,6 @@
 #!/bin/bash
 # from http://unix.stackexchange.com/questions/9804/how-to-comment-multi-line-commands-in-shell-scripts
 
-cd bin
-
 cmd=( qemu-system-x86_64
 	-machine q35
 	-cpu core2duo
@@ -15,13 +13,12 @@ cmd=( qemu-system-x86_64
 # Enable a supported NIC
 	-device e1000,netdev=net0
 	-netdev user,id=net0
-	-object filter-dump,id=net0,netdev=net0,file=network.pcap
 # Amount of CPU cores
 	-smp 2
 # Amount of memory in Megabytes
 	-m 256
 # Disk configuration
-	-drive id=disk,file=bmfs.image,if=none,format=raw
+	-drive id=disk,file="output/baremetal-os.img",if=none,format=raw
 	-device ahci,id=ahci
 	-device ide-drive,drive=disk,bus=ahci.0
 # Ouput network to file

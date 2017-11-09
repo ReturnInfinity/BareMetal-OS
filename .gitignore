@@ -1,5 +1,3 @@
 .DS_Store
-/bin
-/include
-/lib
 /build
+/output
