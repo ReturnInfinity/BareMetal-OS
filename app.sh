@@ -3,9 +3,11 @@
 set -u
 set -e
 
-nasm -Isrc/Coreutils/ src/Coreutils/$1.asm -o bin/$1.app
-cd bin
-./bmfs bmfs.image delete $1.app
-./bmfs bmfs.image create $1.app 2
-./bmfs bmfs.image write $1.app
+export OUTPUT_DIR="$PWD/output"
+
+nasm -Isrc/Coreutils/ src/Coreutils/$1.asm -o "$OUTPUT_DIR/apps/$1.app"
+cd "$OUTPUT_DIR"
+bin/bmfs baremetal-os.img delete $1.app
+bin/bmfs baremetal-os.img create $1.app 2
+bin/bmfs baremetal-os.img write $1.app "$OUTPUT_DIR/apps/$1.app"
 cd ..

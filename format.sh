@@ -2,10 +2,11 @@
 
 set -e
 
-cd bin
+export OUTPUT_DIR="$PWD/output"
+
+cd "$OUTPUT_DIR"
 echo Formatting Disk Image
-./bmfs bmfs.image initialize 128M
-./bmfs bmfs.image format /force
-./bmfs bmfs.image mkdir programs
+bin/bmfs baremetal-os.img initialize 128M
+bin/bmfs baremetal-os.img mkdir programs
 echo Writing Master Boot Record
-dd if=bmfs_mbr.sys of=bmfs.image bs=512 conv=notrunc 2>/dev/null
+dd if="system/bmfs_mbr.sys" of="baremetal-os.img" bs=512 conv=notrunc
