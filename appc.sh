@@ -13,9 +13,9 @@ CFLAGS="${CFLAGS} -I$OUTPUT_DIR/include"
 CFLAGS="${CFLAGS} -Wl,-T src/Coreutils/coreutil.ld"
 LIBS="$OUTPUT_DIR/lib/libc.a $OUTPUT_DIR/lib/libbmfs.a"
 
-$CC $CFLAGS src/Coreutils/$1.c -o "$OUTPUT_DIR/$1.app" $LIBS
+$CC $CFLAGS src/Coreutils/$1.c -o "$OUTPUT_DIR/apps/$1.app" $LIBS
 cd "$OUTPUT_DIR"
 bin/bmfs baremetal-os.img delete $1.app
 bin/bmfs baremetal-os.img create $1.app 2
-bin/bmfs baremetal-os.img write $1.app
+bin/bmfs baremetal-os.img write $1.app "apps/$1.app"
 cd ..
