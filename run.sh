@@ -28,7 +28,7 @@ cmd=( qemu-system-x86_64
 # Enable monitor mode
 #	-monitor telnet:localhost:8086,server,nowait
 # Enable GDB debugging
-#	-s
+	-s
 # Wait for GDB before starting execution
 #	-S
 )
