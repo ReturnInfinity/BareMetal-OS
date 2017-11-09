@@ -1,4 +1,8 @@
 #!/bin/sh
 
-cd bin
-qemu-img convert -O vmdk bmfs.image BareMetal_OS.vmdk
+set -e
+set -u
+
+export OUTPUT_DIR="$PWD/output"
+
+qemu-img convert -O vmdk "$OUTPUT_DIR/baremetal-os.img" "$OUTPUT_DIR/BareMetal_OS.vmdk"
