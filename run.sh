@@ -4,8 +4,6 @@
 cmd=( qemu-system-x86_64
 	-machine q35
 	-cpu core2duo
-# Text mode QEMU
-	-curses
 # Window title in graphics mode
 	-name "BareMetal OS"
 # Boot a multiboot kernel file
