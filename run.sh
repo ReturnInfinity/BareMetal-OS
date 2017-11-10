@@ -22,7 +22,7 @@ cmd=( qemu-system-x86_64
 # Ouput network to file
 #	-net dump,file=net.pcap
 # Output serial to file
-#	-serial file:serial.log
+	-serial file:serial.log
 # Enable monitor mode
 #	-monitor telnet:localhost:8086,server,nowait
 # Enable GDB debugging
