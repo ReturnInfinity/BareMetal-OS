@@ -27,6 +27,8 @@ cd ..
 
 cd Alloy
 ./build.sh
+mv loader.elf "$OUTPUT_DIR/system"
+mv loader.bin "$OUTPUT_DIR/system"
 mv alloy.elf "$OUTPUT_DIR/system"
 mv alloy.bin "$OUTPUT_DIR/system"
 cd ..
