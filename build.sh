@@ -5,6 +5,8 @@ set -u
 
 export OUTPUT_DIR="$PWD/output"
 
+export ALLOY_WITH_BAREMETAL=1
+
 export BMFS_INCLUDE_DIR="$OUTPUT_DIR/include"
 export BMFS_LIBRARY="$OUTPUT_DIR/lib/libbmfs.a"
 
