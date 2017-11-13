@@ -4,6 +4,7 @@ addons:
   apt:
     packages:
       - nasm
+      - libfreetype6-dev
 
 deploy:
   provider: releases
