@@ -11,3 +11,7 @@ cat "$OUTPUT_DIR/system/pure64.sys" \
     "$OUTPUT_DIR/system/loader.bin" > "$OUTPUT_DIR/system/software.sys"
 dd if="$OUTPUT_DIR/system/bmfs_mbr.sys" of="$OUTPUT_DIR/baremetal-os.img" conv=notrunc
 dd if="$OUTPUT_DIR/system/software.sys" of="$OUTPUT_DIR/baremetal-os.img" bs=512 seek=16 conv=notrunc
+echo Writing Alloy.bin
+bin/bmfs baremetal-os.img delete alloy.bin
+bin/bmfs baremetal-os.img create alloy.bin 2M
+bin/bmfs baremetal-os.img write alloy.bin system/alloy.bin
