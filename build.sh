@@ -27,9 +27,9 @@ cd ..
 
 cd Alloy
 ./build.sh
-mv loader.bin "$OUTPUT_DIR/system"
-mv alloy.elf "$OUTPUT_DIR/system"
-mv alloy.bin "$OUTPUT_DIR/system"
+mv src/loader.bin "$OUTPUT_DIR/system"
+mv src/alloy.elf "$OUTPUT_DIR/system"
+mv src/alloy.bin "$OUTPUT_DIR/system"
 cd ..
 
 cd Pure64
