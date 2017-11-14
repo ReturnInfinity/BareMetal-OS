@@ -20,6 +20,7 @@ all: $(directories)
 	$(MAKE) -C src/kernel install PREFIX="$(OUTPUT_DIR)"
 	$(MAKE) -C src/BMFS install PREFIX="$(OUTPUT_DIR)"
 	$(MAKE) -C src/ironlib install PREFIX="$(OUTPUT_DIR)"
+	$(MAKE) -C src/Alloy install PREFIX="$(OUTPUT_DIR)"
 
 $(OUTPUT_DIR)/%:
 	mkdir -p $@
@@ -30,6 +31,7 @@ clean:
 	$(MAKE) -C src/kernel clean
 	$(MAKE) -C src/BMFS clean
 	$(MAKE) -C src/ironlib clean
+	$(MAKE) -C src/Alloy clean
 	$(MAKE) -C src/Coreutils clean
 
 %.app: $(OUTPUT_DIR)/apps
