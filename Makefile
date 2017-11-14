@@ -7,13 +7,27 @@ export BAREMETAL_OS=1
 # headers, and system files are going to be generated.
 OUTPUT_DIR ?= $(PWD)/output
 
+directories += $(OUTPUT_DIR)/apps
+directories += $(OUTPUT_DIR)/bin
+directories += $(OUTPUT_DIR)/include
+directories += $(OUTPUT_DIR)/lib
+directories += $(OUTPUT_DIR)/system
+directories += $(OUTPUT_DIR)/system/bootsectors
+
 .PHONY: all
-all:
+all: $(directories)
+	$(MAKE) -C src/Pure64 install PREFIX="$(OUTPUT_DIR)"
+	$(MAKE) -C src/kernel install PREFIX="$(OUTPUT_DIR)"
 	$(MAKE) -C src/BMFS install PREFIX="$(OUTPUT_DIR)"
 	$(MAKE) -C src/ironlib install PREFIX="$(OUTPUT_DIR)"
 
+$(OUTPUT_DIR)/%:
+	mkdir -p $@
+
 .PHONY: clean
 clean:
+	$(MAKE) -C src/Pure64 clean
+	$(MAKE) -C src/kernel clean
 	$(MAKE) -C src/BMFS clean
 	$(MAKE) -C src/ironlib clean
 	$(MAKE) -C src/Coreutils clean
