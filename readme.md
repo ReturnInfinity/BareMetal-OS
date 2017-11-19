@@ -9,11 +9,11 @@ The easiest way to create a BareMetal OS build environment. These scripts will d
 Prerequisites
 -------------
 
-NASM (Assembly compiler) is required to build the loader and OS, as well as the apps writen in Assembly. QEMU (computer emulator) is required if you plan on running the OS for quick testing. GCC (C compiler) is required for building the BMFS disk utility, the C applications, as well as Newlib. Git is used for pulling the software from GitHub.
+NASM (Assembly compiler) is required to build the loader and OS, as well as the apps writen in Assembly. QEMU (computer emulator) is required if you plan on running the OS for quick testing. GCC (C compiler) is required for building the BMFS disk utility, the C applications, as well as Newlib. Git is used for pulling the software from GitHub. FreeType is used for rendering the font glyphs in Alloy.
 
 In Ubuntu this can be completed with the following command:
 
-	sudo apt-get install nasm qemu gcc git
+	sudo apt-get install nasm qemu gcc git libfreetype6-dev
 
 There are additional dependencies if you are planning on compiling Newlib. They can be installed with the following command:
 
@@ -62,6 +62,12 @@ Build a VDI disk image for VirtualBox
 The VDI script rewrites the disk ID with the contents of VDI_UUID.bin to avoid the disk warning in VirtualBox.
 
 
+Build the project using GNU Make
+--------------------------------
+
+	git submodule update --init --recursive
+	make
+
 Programs in Assembly
 --------------------
 
@@ -69,6 +75,10 @@ Automatic:
 
 	./app.sh sysinfo
 	./run.sh
+
+With GNU Make:
+
+	make sysinfo.app
 
 Manual:
 
@@ -79,7 +89,6 @@ Manual:
 	./bmfs bmfs.image write sysinfo.app
 	cd ..
 	./run.sh
-
 
 BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt. You can now run the application by typing
 
@@ -95,6 +104,10 @@ Automatic:
 
 	./appc.sh hello-c
 	./run.sh
+
+With GNU Make:
+
+	make hello-c.app
 
 Manual (will not work with standard C library):
 
