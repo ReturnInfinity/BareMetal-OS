@@ -5,24 +5,43 @@ export BAREMETAL_OS=1
 
 # This variable controls where the libraries,
 # headers, and system files are going to be generated.
-OUTPUT_DIR ?= $(PWD)/output
+ifndef PREFIX
+PREFIX := $(PWD)/output
+endif
+export PREFIX
 
-directories += $(OUTPUT_DIR)/apps
-directories += $(OUTPUT_DIR)/bin
-directories += $(OUTPUT_DIR)/include
-directories += $(OUTPUT_DIR)/lib
-directories += $(OUTPUT_DIR)/system
-directories += $(OUTPUT_DIR)/system/bootsectors
+directories += $(PREFIX)/apps
+directories += $(PREFIX)/bin
+directories += $(PREFIX)/include
+directories += $(PREFIX)/lib
+directories += $(PREFIX)/system
+directories += $(PREFIX)/system/bootsectors
+
+systemfiles += $(PREFIX)/system/bootsectors/bmfs_mbr.sys
+systemfiles += $(PREFIX)/system/pure64.sys
+systemfiles += $(PREFIX)/system/kernel.sys
+systemfiles += $(PREFIX)/system/loader.bin
+systemfiles += $(PREFIX)/system/alloy.bin
 
 .PHONY: all
-all: $(directories)
-	$(MAKE) -C src/Pure64 install PREFIX="$(OUTPUT_DIR)"
-	$(MAKE) -C src/kernel install PREFIX="$(OUTPUT_DIR)"
-	$(MAKE) -C src/BMFS install PREFIX="$(OUTPUT_DIR)"
-	$(MAKE) -C src/ironlib install PREFIX="$(OUTPUT_DIR)"
-	$(MAKE) -C src/Alloy install PREFIX="$(OUTPUT_DIR)"
+all: $(directories) $(PREFIX)/baremetal-os.img
 
-$(OUTPUT_DIR)/%:
+$(PREFIX)/baremetal-os.img: $(PREFIX)/bin/bmfs $(systemfiles)
+	$(PREFIX)/bin/bmfs $@ initialize 128M $(PREFIX)/system/bootsectors/bmfs_mbr.sys $(PREFIX)/system/pure64.sys $(PREFIX)/system/kernel.sys $(PREFIX)/system/loader.bin
+	$(PREFIX)/bin/bmfs $@ mkdir programs
+	$(PREFIX)/bin/bmfs $@ create alloy.bin 2M
+	$(PREFIX)/bin/bmfs $@ write alloy.bin $(PREFIX)/system/alloy.bin
+
+$(PREFIX)/bin/bmfs $(PREFIX)/lib/libbmfs.a:
+	$(MAKE) -C src/BMFS install
+
+$(systemfiles):
+	$(MAKE) -C src/Pure64 install
+	$(MAKE) -C src/kernel install
+	$(MAKE) -C src/ironlib install
+	$(MAKE) -C src/Alloy install
+
+$(directories):
 	mkdir -p $@
 
 .PHONY: clean
@@ -34,11 +53,8 @@ clean:
 	$(MAKE) -C src/Alloy clean
 	$(MAKE) -C src/Coreutils clean
 
-%.app: $(OUTPUT_DIR)/apps
+%.app: $(PREFIX)/apps
 	$(MAKE) -C src/Coreutils $@
-	cp --update src/Coreutils/$@ $(OUTPUT_DIR)/apps/$@
-
-$(OUTPUT_DIR)/apps:
-	mkdir -p $@
+	cp --update src/Coreutils/$@ $(PREFIX)/apps/$@
 
 $(V).SILENT:
