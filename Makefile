@@ -56,5 +56,8 @@ clean:
 %.app: $(PREFIX)/apps
 	$(MAKE) -C src/Coreutils $@
 	cp --update src/Coreutils/$@ $(PREFIX)/apps/$@
+	$(PREFIX)/bin/bmfs $(PREFIX)/baremetal-os.img delete $@
+	$(PREFIX)/bin/bmfs $(PREFIX)/baremetal-os.img create $@ 2M
+	$(PREFIX)/bin/bmfs $(PREFIX)/baremetal-os.img write $@ src/Coreutils/$@
 
 $(V).SILENT:
