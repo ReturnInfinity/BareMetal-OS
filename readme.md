@@ -48,6 +48,14 @@ Test the install with QEMU
 	./run.sh
 
 
+Test the install with Bochs
+---------------------------
+
+Bochs does not support SATA drives so this is only useful for debugging the kernel. Make sure bochs and bochs-x are installed.
+
+	bochs -f bochs.cfg
+
+
 Build a VMDK disk image for VMware
 ----------------------------------
 
