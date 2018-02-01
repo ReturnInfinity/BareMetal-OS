@@ -81,7 +81,7 @@ Programs in Assembly
 
 Automatic:
 
-	./app.sh sysinfo
+	./app.sh sysinfo.asm
 	./run.sh
 
 With GNU Make:
@@ -110,7 +110,7 @@ C programs can be compiled to take advantage of the BareMetal system calls. Stan
 
 Automatic:
 
-	./appc.sh hello-c
+	./app.sh hello-c.c
 	./run.sh
 
 With GNU Make:
