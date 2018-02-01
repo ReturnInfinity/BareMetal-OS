@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # set options and output directory
 set -u
