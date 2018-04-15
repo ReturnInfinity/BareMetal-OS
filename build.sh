@@ -4,6 +4,8 @@ set -e
 set -u
 
 export OUTPUT_DIR="$PWD/output"
+export C_INCLUDE_PATH="$PWD/output/include"
+export LIBRARY_PATH="$PWD/output/lib"
 
 export ALLOY_WITH_BAREMETAL=1
 
@@ -27,9 +29,13 @@ cd ironlib
 #./install.sh
 cd ..
 
+cd AlloyLoader
+./build.sh
+cp --update alloy-loader.bin "$OUTPUT_DIR/system/loader.bin"
+cd ..
+
 cd Alloy
 ./build.sh
-mv src/loader.bin "$OUTPUT_DIR/system"
 mv src/alloy "$OUTPUT_DIR/system"
 mv src/alloy.bin "$OUTPUT_DIR/system"
 cd ..
