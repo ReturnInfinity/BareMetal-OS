@@ -23,8 +23,8 @@ cd BMFS
 cd ..
 
 cd ironlib
-./build.sh
-./install.sh
+#./build.sh
+#./install.sh
 cd ..
 
 cd Alloy
