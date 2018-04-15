@@ -30,7 +30,7 @@ cd ..
 cd Alloy
 ./build.sh
 mv src/loader.bin "$OUTPUT_DIR/system"
-mv src/alloy.elf "$OUTPUT_DIR/system"
+mv src/alloy "$OUTPUT_DIR/system"
 mv src/alloy.bin "$OUTPUT_DIR/system"
 cd ..
 
