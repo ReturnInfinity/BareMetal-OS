@@ -13,6 +13,6 @@ dd if="$OUTPUT_DIR/system/bmfs_mbr.sys" of="$OUTPUT_DIR/baremetal-os.img" conv=n
 dd if="$OUTPUT_DIR/system/software.sys" of="$OUTPUT_DIR/baremetal-os.img" bs=512 seek=16 conv=notrunc
 echo Writing Alloy.bin
 echo Deleting old file
-bin/bmfs --offset 32KiB --disk baremetal-os.img rm -f alloy.bin
+bin/bmfs --offset 32KiB --disk baremetal-os.img rm -f /sbin/init
 echo Creating new one
-bin/bmfs --offset 32KiB --disk baremetal-os.img cp system/alloy.bin alloy.bin
+bin/bmfs --offset 32KiB --disk baremetal-os.img cp system/alloy.bin /sbin/init
