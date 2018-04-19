@@ -53,13 +53,15 @@ void _start(void)
 	for (bmfs_uint64 i = 0; i < 4096; i += 256)
 	{
 		struct BMFSEntry *ent = (struct BMFSEntry *) &sector[i];
-		if ((ent->Name[0] == 's')
-		 && (ent->Name[1] == 'b')
-		 && (ent->Name[2] == 'i')
-		 && (ent->Name[3] == 'n')
-		 && (ent->Name[4] == 0))
+		if ((ent->Name[0] == 'S')
+		 && (ent->Name[1] == 'y')
+		 && (ent->Name[2] == 's')
+		 && (ent->Name[3] == 't')
+		 && (ent->Name[4] == 'e')
+		 && (ent->Name[5] == 'm')
+		 && (ent->Name[6] == 0))
 		{
-			b_output("Found '/sbin'.\n");
+			b_output("Found '/System'.\n");
 			sbin_ent = ent;
 			break;
 		}
@@ -67,7 +69,7 @@ void _start(void)
 
 	if (sbin_ent == BMFS_NULL)
 	{
-		b_output("Failed to find '/sbin'.\n");
+		b_output("Failed to find '/System'.\n");
 		return;
 	}
 
@@ -76,7 +78,7 @@ void _start(void)
 	read_count = b_disk_read(sector, fs_offset + (sbin_offset / 4096), 1, 0);
 	if (read_count != 1)
 	{
-		b_output("Failed to read '/sbin'.\n");
+		b_output("Failed to read '/System'.\n");
 		return;
 	}
 
@@ -85,13 +87,18 @@ void _start(void)
 	for (bmfs_uint64 i = 0; i < 4096; i += 256)
 	{
 		struct BMFSEntry *ent = (struct BMFSEntry *) &sector[i];
-		if ((ent->Name[0] == 'i')
-		 && (ent->Name[1] == 'n')
-		 && (ent->Name[2] == 'i')
-		 && (ent->Name[3] == 't')
-		 && (ent->Name[4] == 0))
+		if ((ent->Name[0] == 'a')
+		 && (ent->Name[1] == 'l')
+		 && (ent->Name[2] == 'l')
+		 && (ent->Name[3] == 'o')
+		 && (ent->Name[4] == 'y')
+		 && (ent->Name[5] == '.')
+		 && (ent->Name[6] == 'b')
+		 && (ent->Name[7] == 'i')
+		 && (ent->Name[8] == 'n')
+		 && (ent->Name[9] == 0))
 		{
-			b_output("Found '/sbin/init'.\n");
+			b_output("Found '/System/alloy.bin'.\n");
 			alloy_ent = ent;
 			break;
 		}
@@ -99,7 +106,7 @@ void _start(void)
 
 	if (alloy_ent == BMFS_NULL)
 	{
-		b_output("Failed to find '/sbin/init'.\n");
+		b_output("Failed to find '/System/alloy.bin'.\n");
 		return;
 	}
 
@@ -110,7 +117,7 @@ void _start(void)
 	read_count = b_disk_read(alloy_entry, fs_offset + (alloy_sector / 4096), round_to_block(alloy_size), 0);
 	if (read_count != round_to_block(alloy_size))
 	{
-		b_output("Failed to read '/sbin/init'.\n");
+		b_output("Failed to read '/System/alloy.bin'.\n");
 		return;
 	}
 

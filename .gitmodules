@@ -8,8 +8,8 @@
 	path = src/kernel
 	url = https://github.com/ReturnInfinity/BareMetal-kernel
 [submodule "src/Coreutils"]
-	path = src/Coreutils
-	url = https://github.com/ReturnInfinity/Coreutils
+	path = src/Examples
+	url = https://github.com/ReturnInfinity/BareMetal-examples
 [submodule "src/Pure64"]
 	path = src/Pure64
 	url = https://github.com/ReturnInfinity/Pure64
@@ -17,5 +17,5 @@
 	path = src/BMFS
 	url = https://github.com/ReturnInfinity/BMFS
 [submodule "src/BareMetal-newlib"]
-	path = src/BareMetal-newlib
+	path = src/newlib
 	url = https://github.com/ReturnInfinity/BareMetal-newlib

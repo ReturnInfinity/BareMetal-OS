@@ -5,7 +5,6 @@ set -u
 
 export OUTPUT_DIR="$PWD/output"
 export C_INCLUDE_PATH="$PWD/output/include"
-export LIBRARY_PATH="$PWD/output/lib"
 
 export ALLOY_WITH_BAREMETAL=1
 

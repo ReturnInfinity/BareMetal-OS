@@ -51,13 +51,13 @@ clean:
 	$(MAKE) -C src/BMFS clean
 	$(MAKE) -C src/ironlib clean
 	$(MAKE) -C src/Alloy clean
-	$(MAKE) -C src/Coreutils clean
+	$(MAKE) -C src/Examples clean
 
 %.app: $(PREFIX)/apps
-	$(MAKE) -C src/Coreutils $@
-	cp --update src/Coreutils/$@ $(PREFIX)/apps/$@
+	$(MAKE) -C src/Examples $@
+	cp --update src/Examples/$@ $(PREFIX)/apps/$@
 	$(PREFIX)/bin/bmfs $(PREFIX)/baremetal-os.img delete $@
 	$(PREFIX)/bin/bmfs $(PREFIX)/baremetal-os.img create $@ 2M
-	$(PREFIX)/bin/bmfs $(PREFIX)/baremetal-os.img write $@ src/Coreutils/$@
+	$(PREFIX)/bin/bmfs $(PREFIX)/baremetal-os.img write $@ src/Examples/$@
 
 $(V).SILENT:
