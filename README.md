@@ -90,17 +90,16 @@ With GNU Make:
 
 Manual:
 
-	cd src/Coreutils/
-	nasm sysinfo.asm -o ../../bin/sysinfo.app
-	cd ../../bin
-	./bmfs bmfs.image create sysinfo.app 2
-	./bmfs bmfs.image write sysinfo.app
+	cd src/Examples/
+	nasm sysinfo.asm -o ../../output/apps/sysinfo.app
+	cd ../../output
+	./bmfs --disk baremetal-os.img --offset 32KiB cp apps/sysinfo.app /Applications/sysinfo.app
 	cd ..
 	./run.sh
 
 BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt. You can now run the application by typing
 
-	sysinfo.app
+	Applications/sysinfo.app
 
 
 Programs in C
@@ -119,17 +118,18 @@ With GNU Make:
 
 Manual (will not work with standard C library):
 
-	gcc -c -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -o bin/program.o program.c
-	ld -T src/Coreutils/coreutil.ld -o bin/program.app bin/program.o
-	cd bin
-	./bmfs bmfs.image create program.app 2
-	./bmfs bmfs.image write program.app
-	cd ..
+	cd src/Examples
+	gcc -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -mcmodel=large -c program.c -o program.o
+	gcc -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -mcmodel=large -c libBareMetal.c -o libBareMetal.o
+	ld -T example.ld libBareMetal.o program.o -o program
+	objcopy -O binary program program.app
+	cd ../..
+	./bmfs --disk output/baremetal-os.img --offset 32KiB cp program.app /Applications/program.app
 	./run.sh
 
 BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt. You can now run the application by typing
 
-	program.app
+	Applications/program.app
 
 
 Compiling Newlib
@@ -153,4 +153,4 @@ The test application can also be built manually:
 
 BareMetal OS should be running in the QEMU virtual machine and you should see a '>' prompt. You can now run the application by typing
 
-	test.app
+	Applications/test.app
