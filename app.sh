@@ -9,11 +9,13 @@ export OUTPUT_DIR="$PWD/output"
 CC=gcc
 CFLAGS=""
 CFLAGS+=" -Wall -Wextra -Werror -Wfatal-errors -std=gnu99"
-CFLAGS+=" -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -fpie"
+CFLAGS+=" -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -mcmodel=large"
 CFLAGS+=" -I$OUTPUT_DIR/include"
-CFLAGS+=" -Wl,-T src/Examples/coreutil.ld"
-LIBS="$OUTPUT_DIR/lib/libc.a $OUTPUT_DIR/lib/libbmfs.a"
 
+LD=ld
+LDFLAGS="-T src/Examples/example.ld"
+
+OBJCOPY=objcopy
 
 # if no filename is passed, list files
 if [[ $# -eq 0 ]]; then
@@ -38,7 +40,10 @@ mkdir -p "$OUTPUT_DIR/apps"
 if [[ "$ext" == "asm" ]]; then
     nasm -Isrc/Examples/ src/Examples/$fname.asm -o "$OUTPUT_DIR/apps/$fname.app"
 elif [[ "$ext" == "c" ]]; then
-    $CC $CFLAGS src/Examples/$fname.c -o "$OUTPUT_DIR/apps/$fname.app" $LIBS
+    $CC $CFLAGS -c src/Examples/libBareMetal.c -o src/Examples/libBareMetal.o
+    $CC $CFLAGS -c src/Examples/$fname.c -o src/Examples/$fname.o
+    $LD $LDFLAGS src/Examples/libBareMetal.o src/Examples/$fname.o -o "$OUTPUT_DIR/apps/$fname"
+	$OBJCOPY -O binary "$OUTPUT_DIR/apps/$fname" "$OUTPUT_DIR/apps/$fname.app"
 elif [[ "$ext" == "" ]]; then
 	echo "No file extension found."
 	exit 1
