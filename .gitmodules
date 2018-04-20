@@ -16,6 +16,6 @@
 [submodule "src/BMFS"]
 	path = src/BMFS
 	url = https://github.com/ReturnInfinity/BMFS
-[submodule "src/BareMetal-newlib"]
+[submodule "src/newlib"]
 	path = src/newlib
 	url = https://github.com/ReturnInfinity/BareMetal-newlib

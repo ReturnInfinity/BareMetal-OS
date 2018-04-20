@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # set options and output directory
-set -u
 set -e
 export OUTPUT_DIR="$PWD/output"
 
 # c compiler options/flags
 CC=gcc
-CFLAGS=""
-CFLAGS+=" -Wall -Wextra -Werror -Wfatal-errors -std=gnu99"
-CFLAGS+=" -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -mcmodel=large"
-CFLAGS+=" -I$OUTPUT_DIR/include"
+CFLAGS="${CFLAGS}  -Wall -Wextra -Werror -Wfatal-errors -std=gnu99"
+CFLAGS="${CFLAGS} -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-pointer -mno-red-zone -mcmodel=large"
+CFLAGS="${CFLAGS} -I$OUTPUT_DIR/include"
+CFLAGS="${CFLAGS} -g"
 
 LD=ld
-LDFLAGS="-T src/Examples/example.ld"
+LDFLAGS="${LDFLAGS} -T src/Examples/example.ld"
+LDFLAGS="${LDFLAGS} -z max-page-size=0x1000"
 
 OBJCOPY=objcopy
 
@@ -42,8 +42,7 @@ if [[ "$ext" == "asm" ]]; then
 elif [[ "$ext" == "c" ]]; then
     $CC $CFLAGS -c src/Examples/libBareMetal.c -o src/Examples/libBareMetal.o
     $CC $CFLAGS -c src/Examples/$fname.c -o src/Examples/$fname.o
-    $LD $LDFLAGS src/Examples/libBareMetal.o src/Examples/$fname.o -o "$OUTPUT_DIR/apps/$fname"
-	$OBJCOPY -O binary "$OUTPUT_DIR/apps/$fname" "$OUTPUT_DIR/apps/$fname.app"
+    $LD $LDFLAGS src/Examples/libBareMetal.o src/Examples/$fname.o -o "$OUTPUT_DIR/apps/$fname.app"
 elif [[ "$ext" == "" ]]; then
 	echo "No file extension found."
 	exit 1
