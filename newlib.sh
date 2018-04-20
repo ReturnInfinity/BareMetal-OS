@@ -1,7 +1,7 @@
 #!/bin/sh
 
-git submodule init src/BareMetal-newlib
-git submodule update src/BareMetal-newlib
+git submodule init src/newlib
+git submodule update src/newlib
 
-cd src/BareMetal-newlib
+cd src/newlib
 ./build-newlib.sh
