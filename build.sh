@@ -23,11 +23,6 @@ cd BMFS
 ./install.sh
 cd ..
 
-cd ironlib
-#./build.sh
-#./install.sh
-cd ..
-
 cd AlloyLoader
 ./build.sh
 cp --update alloy-loader.bin "$OUTPUT_DIR/system/loader.bin"
