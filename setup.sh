@@ -13,6 +13,7 @@ mkdir -p "$OUTPUT_DIR/lib"
 mkdir -p "$OUTPUT_DIR/system"
 
 function init_submodule {
+	echo "Updating $1"
 	git submodule update --init --recursive $1
 }
 

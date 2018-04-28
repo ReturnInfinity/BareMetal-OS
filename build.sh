@@ -16,31 +16,33 @@ export BAREMETAL_LIBC_LIBRARY="$OUTPUT_DIR/lib/libc.a"
 
 export PREFIX="$OUTPUT_DIR"
 
-cd src
+function build_dir {
+	echo "Entering $PWD/$1"
+	cd "$1"
+	if [ -e "build.sh" ]; then
+		./build.sh
+	fi
+	if [ -e "install.sh" ]; then
+		./install.sh
+	fi
+	cd "../.."
+}
 
-cd BMFS
-./build.sh
-./install.sh
-cd ..
+function update_file {
+	echo "Updating $2"
+	cp --update "$1" "$2"
+}
 
-cd AlloyLoader
-./build.sh
-cp --update alloy-loader.bin "$OUTPUT_DIR/system/loader.bin"
-cd ..
+build_dir "src/BMFS"
+build_dir "src/AlloyLoader"
+build_dir "src/Alloy"
+build_dir "src/Pure64"
+build_dir "src/kernel"
 
-cd Alloy
-./build.sh
-mv src/alloy "$OUTPUT_DIR/system"
-mv src/alloy.bin "$OUTPUT_DIR/system"
-cd ..
-
-cd Pure64
-./build.sh
-mv *.sys "$OUTPUT_DIR/system"
-cd ..
-
-cd kernel
-./build_x86-64.sh
-mv src/x86-64/kernel.elf "$OUTPUT_DIR/system"
-mv src/x86-64/kernel.bin "$OUTPUT_DIR/system"
-cd ..
+update_file "src/AlloyLoader/alloy-loader.bin" "${OUTPUT_DIR}/system/loader.bin"
+update_file "src/Alloy/src/alloy" "${OUTPUT_DIR}/system/alloy"
+update_file "src/Alloy/src/alloy.bin" "${OUTPUT_DIR}/system/alloy.bin"
+update_file "src/Pure64/bmfs_mbr.sys" "${OUTPUT_DIR}/system/bmfs_mbr.sys"
+update_file "src/Pure64/pure64.sys" "${OUTPUT_DIR}/system/pure64.sys"
+update_file "src/kernel/src/x86-64/kernel.elf" "${OUTPUT_DIR}/system/kernel.elf"
+update_file "src/kernel/src/x86-64/kernel.bin" "${OUTPUT_DIR}/system/kernel.bin"
