@@ -19,6 +19,9 @@ export PREFIX="$OUTPUT_DIR"
 function build_dir {
 	echo "Entering $PWD/$1"
 	cd "$1"
+	if [ -e "build_x86-64.sh" ]; then
+		./build_x86-64.sh
+	fi
 	if [ -e "build.sh" ]; then
 		./build.sh
 	fi
