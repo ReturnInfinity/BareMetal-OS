@@ -13,7 +13,7 @@ NASM (Assembly compiler) is required to build the loader and OS, as well as the 
 
 In Ubuntu this can be completed with the following command:
 
-	sudo apt-get install nasm qemu gcc git libfreetype6-dev
+	sudo apt-get install nasm qemu gcc git libfreetype6-dev pkg-config
 
 There are additional dependencies if you are planning on compiling Newlib. They can be installed with the following command:
 
