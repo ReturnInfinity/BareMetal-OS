@@ -16,3 +16,6 @@
 [submodule "src/newlib"]
 	path = src/newlib
 	url = https://github.com/ReturnInfinity/BareMetal-newlib
+[submodule "src/BareMetal-lwIP"]
+	path = src/lwip
+	url = https://github.com/ReturnInfinity/BareMetal-lwIP
