@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -o errexit
 set -u
@@ -12,16 +12,11 @@ mkdir -p "$OUTPUT_DIR/include"
 mkdir -p "$OUTPUT_DIR/lib"
 mkdir -p "$OUTPUT_DIR/system"
 
-function init_submodule {
-	echo "Updating $1"
-	git submodule update --init --recursive $1
-}
-
-init_submodule "src/Pure64"
-init_submodule "src/kernel"
-init_submodule "src/BMFS"
-init_submodule "src/Alloy"
-init_submodule "src/Examples"
+./scripts/update-submodule.sh "src/Pure64"
+./scripts/update-submodule.sh "src/kernel"
+./scripts/update-submodule.sh "src/BMFS"
+./scripts/update-submodule.sh "src/Alloy"
+./scripts/update-submodule.sh "src/Examples"
 
 ./build.sh
 ./format.sh
