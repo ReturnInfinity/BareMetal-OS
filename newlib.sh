@@ -1,7 +1,12 @@
 #!/bin/sh
 
-git submodule init src/newlib
-git submodule update src/newlib
+set -u
+set -e
+
+output_dir="${PWD}/output"
+
+./scripts/update-submodule.sh "src/newlib"
 
 cd src/newlib
-./setup.sh
+./setup.sh --prefix "${output_dir}"
+./install.sh
