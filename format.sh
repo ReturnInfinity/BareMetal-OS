@@ -6,5 +6,5 @@ export OUTPUT_DIR="$PWD/output"
 
 cd "$OUTPUT_DIR"
 bin/bmfs --offset 32KiB --disk baremetal-os.img format --force --size 128M --block-size 2M
-bin/bmfs --offset 32KiB --disk baremetal-os.img mkdir /System /Applications /Home
-bin/bmfs --offset 32KiB --disk baremetal-os.img cp ../misc/readme.txt /Home/readme.txt
+bin/bmfs --offset 32KiB --disk baremetal-os.img mkdir "/System" "/Applications" "/Home"
+bin/bmfs --offset 32KiB --disk baremetal-os.img cp "../misc/readme.txt" "/Home/readme.txt"
