@@ -1,6 +1,7 @@
 /serial.log
 .DS_Store
 /build
+/src/external
 /output
 /src/AlloyLoader/alloy-loader
 *.o
