@@ -112,10 +112,10 @@ void _start(void)
 
 	bmfs_uint64 alloy_sector = alloy_ent->Offset;
 
-	bmfs_uint64 alloy_size = alloy_ent->Size;
+	bmfs_uint64 alloy_size = round_to_block(alloy_ent->Size);
 
-	read_count = b_disk_read(alloy_entry, fs_offset + (alloy_sector / 4096), round_to_block(alloy_size), 0);
-	if (read_count != round_to_block(alloy_size))
+	read_count = b_disk_read(alloy_entry, fs_offset + (alloy_sector / 4096), alloy_size, 0);
+	if (read_count != alloy_size)
 	{
 		b_output("Failed to read '/System/alloy.bin'.\n");
 		return;
@@ -126,7 +126,7 @@ void _start(void)
 
 static bmfs_uint64 round_to_block(bmfs_uint64 size)
 {
-	return ((size + (4095)) / 4096) * 4096;
+	return ((size + (4095)) / 4096);
 }
 
 unsigned char sector[4096];
