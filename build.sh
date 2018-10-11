@@ -33,7 +33,7 @@ function build_dir {
 
 function update_file {
 	echo "Updating $2"
-	cp --update "$1" "$2"
+	cp "$1" "$2"
 }
 
 build_dir "src/BMFS"
