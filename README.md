@@ -62,6 +62,11 @@ Build a VMDK disk image for VMware
 	./vmdk.sh
 
 
+Build a VHD disk image for VirtualMachines
+------------------------------------------
+
+        ./vhd.sh
+
 Build a VDI disk image for VirtualBox
 -------------------------------------
 
