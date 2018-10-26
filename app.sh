@@ -11,6 +11,11 @@ CFLAGS="${CFLAGS} -m64 -nostdlib -nostartfiles -nodefaultlibs -fomit-frame-point
 CFLAGS="${CFLAGS} -I$OUTPUT_DIR/include"
 CFLAGS="${CFLAGS} -g"
 
+DC=ldc2
+DFLAGS="${DFLAGS} -betterC -m64 -nodefaultlib --disable-red-zone -output-o -code-model=large"
+DFLAGS="${DFLAGS} -I$OUTPUT_DIR/include"
+DFLAGS="${DFLAGS} -g"
+
 LD=ld
 LDFLAGS="${LDFLAGS} -T src/Examples/example.ld"
 LDFLAGS="${LDFLAGS} -z max-page-size=0x1000"
@@ -42,6 +47,10 @@ if [[ "$ext" == "asm" ]]; then
 elif [[ "$ext" == "c" ]]; then
     $CC $CFLAGS -c src/Examples/libBareMetal.c -o src/Examples/libBareMetal.o
     $CC $CFLAGS -c src/Examples/$fname.c -o src/Examples/$fname.o
+    $LD $LDFLAGS src/Examples/libBareMetal.o src/Examples/$fname.o -o "$OUTPUT_DIR/apps/$fname.app"
+elif [[ "$ext" == "d" ]]; then
+    $CC $CFLAGS -c src/Examples/libBareMetal.c -o src/Examples/libBareMetal.o
+    $DC $DFLAGS -c src/Examples/$fname.d -of=src/Examples/$fname.o
     $LD $LDFLAGS src/Examples/libBareMetal.o src/Examples/$fname.o -o "$OUTPUT_DIR/apps/$fname.app"
 elif [[ "$ext" == "" ]]; then
 	echo "No file extension found."
