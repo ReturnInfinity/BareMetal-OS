@@ -20,6 +20,8 @@ There are additional dependencies if you are planning on compiling Newlib. They 
 
 	sudo apt-get install autoconf automake libtool sed gawk bison flex m4 texinfo texi2html unzip make
 
+If you want to build programs written in D you also need the ldc2 compiler.
+
 
 Initial configuration
 ---------------------
