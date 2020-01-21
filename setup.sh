@@ -6,8 +6,8 @@ mkdir src
 mkdir sys
 cd src
 
-git clone https://gitlab.com/ReturnInfinity/Pure64.git
-git clone https://gitlab.com/ReturnInfinity/BareMetal.git
+git clone https://github.com/ReturnInfinity/Pure64.git
+git clone https://github.com/ReturnInfinity/BareMetal.git
 
 cd ..
 cd sys
@@ -17,4 +17,3 @@ cd ..
 
 ./build.sh
 ./install.sh
-

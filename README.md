@@ -7,7 +7,10 @@ Build scripts for BareMetal OS and its related utilities - The easiest way to cr
 
 These scripts depend on a Debian-based Linux system like [Ubuntu](https://https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io/).
 
-NASM (Assembly compiler) is required to build the loader and kernel, as well as the apps writen in Assembly. QEMU (computer emulator) is required if you plan on running the OS for quick testing. GCC (C compiler) is required for building C/C++ applications. Git is used for pulling the software from GitLab.
+- NASM (Assembly compiler) is required to build the loader and kernel, as well as the apps written in Assembly.
+- QEMU (computer emulator) is required if you plan on running the OS for quick testing.
+- GCC (C compiler) is required for building C/C++ applications.
+- Git is used for pulling the software from GitLab.
 
 In Linux this can be completed with the following command:
 
@@ -16,7 +19,7 @@ In Linux this can be completed with the following command:
 
 ## Initial configuration
 
-	git clone https://gitlab.com/ReturnInfinity/BareMetal-OS.git
+	git clone https://github.com/ReturnInfinity/BareMetal-OS.git
 	cd BareMetal-OS
 	./setup.sh
 
