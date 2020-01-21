@@ -3,6 +3,6 @@
 set -e
 set -u
 
-export OUTPUT_DIR="$PWD/output"
+export OUTPUT_DIR="$PWD/sys"
 
-qemu-img convert -O vmdk "$OUTPUT_DIR/baremetal-os.img" "$OUTPUT_DIR/BareMetal_OS.vmdk"
+qemu-img convert -O vmdk "$OUTPUT_DIR/disk.img" "$OUTPUT_DIR/BareMetal_OS.vmdk"

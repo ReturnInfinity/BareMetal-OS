@@ -1,23 +1,20 @@
 #!/bin/sh
 
-set -o errexit
-set -u
+./clean.sh
 
-export OUTPUT_DIR="$PWD/output"
+mkdir src
+mkdir sys
+cd src
 
-mkdir -p "$OUTPUT_DIR"
-mkdir -p "$OUTPUT_DIR/apps"
-mkdir -p "$OUTPUT_DIR/bin"
-mkdir -p "$OUTPUT_DIR/include"
-mkdir -p "$OUTPUT_DIR/lib"
-mkdir -p "$OUTPUT_DIR/system"
+git clone https://gitlab.com/ReturnInfinity/Pure64.git
+git clone https://gitlab.com/ReturnInfinity/BareMetal.git
 
-./scripts/update-submodule.sh "src/Pure64"
-./scripts/update-submodule.sh "src/kernel"
-./scripts/update-submodule.sh "src/BMFS"
-./scripts/update-submodule.sh "src/Alloy"
-./scripts/update-submodule.sh "src/Examples"
+cd ..
+cd sys
+dd if=/dev/zero of=disk.img count=128 bs=1048576
+dd if=/dev/zero of=null.bin count=8 bs=1
+cd ..
 
 ./build.sh
-./format.sh
 ./install.sh
+

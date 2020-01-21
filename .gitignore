@@ -1,9 +1,3 @@
-/serial.log
 .DS_Store
-/build
-/src/external
-/output
-/src/AlloyLoader/alloy-loader
-*.o
-*.bin
-*.elf
+src/*
+sys/*

@@ -2,15 +2,17 @@
 
 set -e
 
-export OUTPUT_DIR="$PWD/output"
+export OUTPUT_DIR="$PWD/sys"
 
 cd "$OUTPUT_DIR"
-echo Writing Pure64+Software
-cat "$OUTPUT_DIR/system/pure64.sys" \
-    "$OUTPUT_DIR/system/kernel.bin" \
-    "$OUTPUT_DIR/system/loader.bin" > "$OUTPUT_DIR/system/software.sys"
-dd if="$OUTPUT_DIR/system/bmfs_mbr.sys" of="$OUTPUT_DIR/baremetal-os.img" conv=notrunc
-dd if="$OUTPUT_DIR/system/software.sys" of="$OUTPUT_DIR/baremetal-os.img" bs=512 seek=16 conv=notrunc
-echo Writing Alloy.bin
-bin/bmfs --offset 32KiB --disk "baremetal-os.img" rm -f "/System/alloy.bin"
-bin/bmfs --offset 32KiB --disk "baremetal-os.img" cp "system/alloy.bin" "/System/alloy.bin"
+echo Building OS image.
+
+if [ "$1" != "" ]; then
+	cat pure64.sys kernel.sys $1 > software.sys
+else
+	cat pure64.sys kernel.sys null.bin > software.sys
+fi
+
+dd if=mbr.sys of=disk.img conv=notrunc
+dd if=software.sys of=disk.img bs=512 seek=16 conv=notrunc
+cd ..
