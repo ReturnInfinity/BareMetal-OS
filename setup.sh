@@ -17,4 +17,4 @@ dd if=/dev/zero of=null.bin count=8 bs=1
 cd ..
 
 ./build.sh
-./install.sh
+./install.sh monitor.bin
