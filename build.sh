@@ -14,6 +14,9 @@ function build_dir {
 	if [ -e "install.sh" ]; then
 		./install.sh
 	fi
+	if [ -e "Makefile" ]; then
+		make
+	fi
 	cd "../.."
 }
 
@@ -29,6 +32,7 @@ cd ../..
 build_dir "src/Pure64"
 build_dir "src/BareMetal"
 build_dir "src/BareMetal-Monitor"
+build_dir "src/BMFS"
 
 update_file "src/Pure64/bin/mbr.sys" "${OUTPUT_DIR}/mbr.sys"
 update_file "src/Pure64/bin/multiboot.sys" "${OUTPUT_DIR}/multiboot.sys"
@@ -39,3 +43,4 @@ update_file "src/BareMetal/bin/kernel.sys" "${OUTPUT_DIR}/kernel.sys"
 update_file "src/BareMetal/bin/kernel-debug.txt" "${OUTPUT_DIR}/kernel-debug.txt"
 update_file "src/BareMetal-Monitor/bin/monitor.bin" "${OUTPUT_DIR}/monitor.bin"
 update_file "src/BareMetal-Monitor/bin/monitor-debug.txt" "${OUTPUT_DIR}/monitor-debug.txt"
+update_file "src/BMFS/bmfs" "${OUTPUT_DIR}/bmfs"
