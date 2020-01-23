@@ -25,10 +25,6 @@ function update_file {
 	mv "$1" "$2"
 }
 
-cd src/BareMetal-Monitor
-./setup.sh
-cd ../..
-
 build_dir "src/Pure64"
 build_dir "src/BareMetal"
 build_dir "src/BareMetal-Monitor"
