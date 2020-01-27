@@ -7,7 +7,7 @@ export EXEC_DIR="$PWD"
 export OUTPUT_DIR="$EXEC_DIR/sys"
 
 function build_dir {
-	echo "Entering $EXEC_DIR/$1"
+	echo "Building $1..."
 	cd "$1"
 	if [ -e "build.sh" ]; then
 		./build.sh
@@ -22,7 +22,6 @@ function build_dir {
 }
 
 function update_file {
-	echo "Updating $2"
 	mv "$1" "$2"
 }
 
