@@ -10,7 +10,7 @@ These scripts depend on a Debian-based Linux system like [Ubuntu](https://https:
 - NASM (Assembly compiler) is required to build the loader and kernel, as well as the apps written in Assembly.
 - QEMU (computer emulator) is required if you plan on running the OS for quick testing.
 - GCC (C compiler) is required for building C/C++ applications.
-- Git is used for pulling the software from GitLab.
+- Git is used for pulling the software from GitHub.
 
 In Linux this can be completed with the following command:
 

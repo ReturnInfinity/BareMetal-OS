@@ -3,10 +3,11 @@
 set -e
 set -u
 
-export OUTPUT_DIR="$PWD/sys"
+export EXEC_DIR="$PWD"
+export OUTPUT_DIR="$EXEC_DIR/sys"
 
 function build_dir {
-	echo "Entering $PWD/$1"
+	echo "Entering $EXEC_DIR/$1"
 	cd "$1"
 	if [ -e "build.sh" ]; then
 		./build.sh
@@ -17,7 +18,7 @@ function build_dir {
 	if [ -e "Makefile" ]; then
 		make
 	fi
-	cd "../.."
+	cd "$EXEC_DIR"
 }
 
 function update_file {
