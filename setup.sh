@@ -29,3 +29,5 @@ cd sys
 ./bmfs disk.img format
 cd ..
 ./install.sh monitor.bin
+
+echo Done!
