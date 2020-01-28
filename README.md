@@ -7,7 +7,7 @@ Build scripts for BareMetal OS and its related utilities - The easiest way to cr
 
 ## Prerequisites
 
-The scripts in this repo depend on a Debian-based Linux system like [Ubuntu](https://https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io). macOS is also supported if you are using Homebrew.
+The scripts in this repo depend on a Debian-based Linux system like [Ubuntu](https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io). macOS is also supported if you are using Homebrew.
 
 - [NASM](https://nasm.us) - Assembly compiler to build the loader and kernel, as well as the apps written in Assembly.
 - [QEMU](https://www.qemu.org) - Computer emulator if you plan on running the OS for quick testing.
@@ -18,6 +18,15 @@ In Linux this can be completed with the following command:
 
 	sudo apt install nasm qemu gcc git
 
+## Summary
+
+BareMetal OS consists of serveral different projects:
+
+- [Pure64](https://github.com/ReturnInfinity/Pure64) - The boot sector and software loader. Pure64 is responsible for getting the computer into a clean 64-bit state on boot up.
+- [BareMetal](https://github.com/ReturnInfinity/BareMetal) - The kernel.
+- [Monitor](https://github.com/ReturnInfinity/BareMetal-Monitor) - A basic command line interface.
+- [BMFS](https://github.com/ReturnInfinity/BMFS) - The BareMetal File System utility.
+
 
 ## Initial configuration
 
@@ -25,7 +34,7 @@ In Linux this can be completed with the following command:
 	cd BareMetal-OS
 	./setup.sh
 
-setup.sh automatically runs the build and install scripts
+setup.sh automatically runs the build and install scripts. Once the setup is complete you can execute the run.sh script to verify that everything installed correctly.
 
 
 ## Rebuilding the source code
@@ -35,7 +44,9 @@ setup.sh automatically runs the build and install scripts
 
 ## Installing to the disk image
 
-	./install.sh
+	./install.sh monitor.bin
+
+This command installs the bootsector, loader (Pure64), kernel, and command line interface (Monitor) to the disk image.
 
 
 ## Test the install with QEMU
