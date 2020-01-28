@@ -2,15 +2,17 @@
 
 Build scripts for BareMetal OS and its related utilities - The easiest way to create a BareMetal OS environment. These scripts will download and compile all of the components needed for using BareMetal OS.
 
+[Discord](https://discord.gg/dT8MgXn) - [Website](https://returninfinity.com)
+
 
 ## Prerequisites
 
-These scripts depend on a Debian-based Linux system like [Ubuntu](https://https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io/).
+The scripts in this repo depend on a Debian-based Linux system like [Ubuntu](https://https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io). macOS is also supported if you are using Homebrew.
 
-- NASM (Assembly compiler) is required to build the loader and kernel, as well as the apps written in Assembly.
-- QEMU (computer emulator) is required if you plan on running the OS for quick testing.
-- GCC (C compiler) is required for building C/C++ applications.
-- Git is used for pulling the software from GitHub.
+- [NASM](https://nasm.us) - Assembly compiler to build the loader and kernel, as well as the apps written in Assembly.
+- [QEMU](https://www.qemu.org) - Computer emulator if you plan on running the OS for quick testing.
+- [GCC](https://gcc.gnu.org) - C compiler for building C/C++ applications.
+- [Git](https://git-scm.com) - Version control software pulling the source code from GitHub.
 
 In Linux this can be completed with the following command:
 
