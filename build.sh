@@ -16,7 +16,7 @@ function build_dir {
 		./install.sh
 	fi
 	if [ -e "Makefile" ]; then
-		make
+		make --quiet
 	fi
 	cd "$EXEC_DIR"
 }
