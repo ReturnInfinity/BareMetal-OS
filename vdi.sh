@@ -11,7 +11,7 @@ qemu-img convert -O vdi "$OUTPUT_DIR/disk.img" "$OUTPUT_DIR/BareMetal_OS.vdi"
 echo $VDI > VDI_UUID.hex
 xxd -r -p VDI_UUID.hex VDI_UUID.bin
 
-dd if=VDI_UUID.bin of="$OUTPUT_DIR/BareMetal_OS.vdi" count=1 bs=512 conv=notrunc
+dd if=VDI_UUID.bin of="$OUTPUT_DIR/BareMetal_OS.vdi" count=1 bs=512 conv=notrunc > /dev/null 2>&1
 
 rm VDI_UUID.hex
 rm VDI_UUID.bin
