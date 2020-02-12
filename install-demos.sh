@@ -7,3 +7,9 @@ cd ../../../sys/
 ./bmfs disk.img write hello.app
 ./bmfs disk.img create sysinfo.app 2
 ./bmfs disk.img write sysinfo.app
+./bmfs disk.img create counter.app 2
+./bmfs disk.img write counter.app
+./bmfs disk.img create helloc.app 2
+./bmfs disk.img write helloc.app
+./bmfs disk.img create graphics.app 2
+./bmfs disk.img write graphics.app
