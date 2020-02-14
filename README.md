@@ -7,25 +7,27 @@ Build scripts for BareMetal OS and its related utilities - The easiest way to cr
 
 ## Prerequisites
 
-The scripts in this repo depend on a Debian-based Linux system like [Ubuntu](https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io). macOS is also supported if you are using Homebrew.
+The scripts in this repo depend on a Debian-based Linux system like [Ubuntu](https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io). macOS is also supported to build and test the OS and Assembly applications if you are using [Homebrew](https://brew.sh).
 
 - [NASM](https://nasm.us) - Assembly compiler to build the loader and kernel, as well as the apps written in Assembly.
 - [QEMU](https://www.qemu.org) - Computer emulator if you plan on running the OS for quick testing.
 - [GCC](https://gcc.gnu.org) - C compiler for building C/C++ applications.
-- [Git](https://git-scm.com) - Version control software pulling the source code from GitHub.
+- [Git](https://git-scm.com) - Version control software for pulling the source code from GitHub.
 
 In Linux this can be completed with the following command:
 
 	sudo apt install nasm qemu gcc git
 
+
 ## Summary
 
-BareMetal OS consists of serveral different projects:
+BareMetal OS consists of several different projects:
 
 - [Pure64](https://github.com/ReturnInfinity/Pure64) - The boot sector and software loader. Pure64 is responsible for getting the computer into a clean 64-bit state on boot up.
 - [BareMetal](https://github.com/ReturnInfinity/BareMetal) - The kernel.
-- [Monitor](https://github.com/ReturnInfinity/BareMetal-Monitor) - A basic command line interface.
+- [Monitor](https://github.com/ReturnInfinity/BareMetal-Monitor) - A simple command line interface.
 - [BMFS](https://github.com/ReturnInfinity/BMFS) - The BareMetal File System utility.
+- [BareMetal-Demo](https://github.com/ReturnInfinity/BareMetal-Demo) - Various test/example programs.
 
 
 ## Initial configuration
@@ -34,7 +36,7 @@ BareMetal OS consists of serveral different projects:
 	cd BareMetal-OS
 	./setup.sh
 
-setup.sh automatically runs the build and install scripts. Once the setup is complete you can execute the run.sh script to verify that everything installed correctly.
+`setup.sh` automatically runs the build and install scripts. Once the setup is complete you can execute the run.sh script to verify that everything installed correctly.
 
 
 ## Rebuilding the source code
@@ -42,11 +44,18 @@ setup.sh automatically runs the build and install scripts. Once the setup is com
 	./build.sh
 
 
-## Installing to the disk image
+## Installing the system to the disk image
 
 	./install.sh monitor.bin
 
-This command installs the bootsector, loader (Pure64), kernel, and command line interface (Monitor) to the disk image.
+This command installs the boot sector, loader (Pure64), kernel, and simple command line interface (Monitor) to the disk image.
+
+
+## Installing the demos to the disk image
+
+	./install-demos.sh
+
+This command installs the various test/example programs to the disk image.
 
 
 ## Test the install with QEMU
