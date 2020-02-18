@@ -11,5 +11,5 @@ cd ../../../sys/
 ./bmfs disk.img write counter.app
 ./bmfs disk.img create helloc.app 2
 ./bmfs disk.img write helloc.app
-./bmfs disk.img create graphics.app 2
-./bmfs disk.img write graphics.app
+./bmfs disk.img create gavare.app 2
+./bmfs disk.img write gavare.app
