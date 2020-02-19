@@ -4,6 +4,7 @@ Build scripts for BareMetal OS and its related utilities - The easiest way to cr
 
 [Discord](https://discord.gg/dT8MgXn) - [Website](https://returninfinity.com)
 
+<img src="https://raw.githubusercontent.com/ReturnInfinity/BareMetal-OS/master/doc/ScreenShot.png"></img>
 
 ## Prerequisites
 
