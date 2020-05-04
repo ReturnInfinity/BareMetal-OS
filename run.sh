@@ -18,7 +18,7 @@ cmd=( qemu-system-x86_64
 # Disk configuration
 	-drive id=disk0,file="sys/disk.img",if=none,format=raw
 	-device ahci,id=ahci
-	-device ide-drive,drive=disk0,bus=ahci.0
+	-device ide-hd,drive=disk0,bus=ahci.0
 # Ouput network to file
 #	-net dump,file=net.pcap
 # Output serial to file
