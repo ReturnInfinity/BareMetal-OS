@@ -17,7 +17,7 @@ The scripts in this repo depend on a Debian-based Linux system like [Ubuntu](htt
 
 In Linux this can be completed with the following command:
 
-	sudo apt install nasm qemu gcc git
+	sudo apt install nasm qemu-system-x86 gcc git
 
 
 ## Summary
