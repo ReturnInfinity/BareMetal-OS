@@ -2,8 +2,6 @@
 
 Build scripts for BareMetal OS and its related utilities - The easiest way to create a BareMetal OS environment. These scripts will download and compile all of the components needed for using BareMetal OS.
 
-[Discord](https://discord.gg/dT8MgXn) - [Website](https://returninfinity.com)
-
 <img src="https://raw.githubusercontent.com/ReturnInfinity/BareMetal-OS/master/doc/ScreenShot.png"></img>
 
 ## Prerequisites
