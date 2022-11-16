@@ -62,13 +62,6 @@ This command installs the various test/example programs to the disk image.
 	./run.sh
 
 
-## Test the install with Bochs
-
-Bochs does not support SATA drives so this is only useful for debugging the kernel. You will need `bochs` and `bochs-x` installed.
-
-	bochs -f bochs.cfg
-
-
 ## Build a VMDK disk image for VMware
 
 	./vmdk.sh
