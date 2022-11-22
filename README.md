@@ -45,9 +45,9 @@ BareMetal OS consists of several different projects:
 
 ## Installing the system to the disk image
 
-	./install.sh monitor.bin
+	./install.sh
 
-This command installs the boot sector, loader (Pure64), kernel, and simple command line interface (Monitor) to the disk image.
+This command installs the boot sector, loader (Pure64), kernel, and simple command line interface (Monitor) to the disk image. If you want to attach your own binary to the end of the kernel you can use `./install.sh mybinary.bin`
 
 
 ## Installing the demos to the disk image
