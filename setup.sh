@@ -32,6 +32,6 @@ cd ../..
 cd sys
 ./bmfs disk.img format
 cd ..
-./install.sh monitor.bin
+./install.sh
 
 echo Done!
