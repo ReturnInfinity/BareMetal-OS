@@ -3,31 +3,29 @@
 
 cmd=( qemu-system-x86_64
 	-machine q35
-# Window title in graphics mode
 	-name "BareMetal OS"
-# Boot a multiboot kernel file
-#	-kernel ./boot.bin
-# Enable a supported NIC
-	-net nic,model=e1000,macaddr=10:11:12:13:14:15
-	-net user
-# Amount of CPU cores
-	-smp 2
-# Amount of memory in Megabytes
 	-m 256
+	-smp sockets=1,cpus=4
+        -device e1000,netdev=testnet,mac=10:11:12:13:14:15
+        -netdev socket,id=testnet,listen=:1234
+# On a second machine uncomment the line below, comment the line above, and change the mac
+#       -netdev socket,id=testnet,connect=127.0.0.1:1234
 # Disk configuration
+# AHCI
 	-drive id=disk0,file="sys/disk.img",if=none,format=raw
 	-device ahci,id=ahci
 	-device ide-hd,drive=disk0,bus=ahci.0
+# NVMe
 #	-drive id=disk1,file="sys/disk1.img",if=none,format=raw
-#	-device nvme,serial=OMG-NVME,drive=disk1
+#	-device nvme,drive=disk1
 # Ouput network to file
 #	-net dump,file=net.pcap
 # Output serial to file
 	-serial file:"sys/serial.log"
 # Enable monitor mode
-	-monitor telnet:localhost:8086,server,nowait
+#	-monitor telnet:localhost:8086,server,nowait
 # Enable GDB debugging
-	-s
+#	-s
 # Wait for GDB before starting execution
 #	-S
 )
