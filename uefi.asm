@@ -1,28 +1,30 @@
 ; Adapted from https://stackoverflow.com/questions/72947069/how-to-write-hello-world-efi-application-in-nasm
+; PE https://wiki.osdev.org/PE
+; GOP https://wiki.osdev.org/GOP
+; Automatic boot: Assemble and save as /EFI/BOOT/BOOTX64.EFI
 
 bits 64
 DEFAULT REL
 
 START:
 PE:
-HEADER_START:
-STANDARD_HEADER:
+HEADER:
 DOS_HEADER:							; 128 bytes
-DOS_SIGNATURE:		db 'MZ', 0x00, 0x00			; The DOS signature
-DOS_HEADERS:		times 60-($-STANDARD_HEADER) db 0	; The DOS Headers
-SIGNATURE_POINTER:	dd PE_SIGNATURE - START			; Pointer to the PE Signature
-DOS_STUB:		times 64 db 0				; The DOS stub. Fill with zeros
+DOS_SIGNATURE:			db 'MZ', 0x00, 0x00		; The DOS signature
+DOS_HEADERS:			times 60-($-HEADER) db 0	; The DOS Headers
+SIGNATURE_POINTER:		dd PE_SIGNATURE - START		; Pointer to the PE Signature
+DOS_STUB:			times 64 db 0			; The DOS stub. Fill with zeros
 PE_HEADER:							; 24 bytes
-PE_SIGNATURE:		db 'PE', 0x00, 0x00			; This is the PE signature. The characters 'PE' followed by 2 null bytes
-MACHINE_TYPE:		dw 0x8664				; Targeting the x86-64 machine
-NUMBER_OF_SECTIONS:	dw 3					; Number of sections. Indicates size of section table that immediately follows the headers
-CREATED_DATE_TIME:	dd 1670698099				; Number of seconds since 1970 since when the file was created
-SYMBOL_TABLE_POINTER:	dd 0x00
-NUMBER_OF_SYMBOLS:	dd 0x00
-OHEADER_SIZE:		dw OHEADER_END - OHEADER		; Size of the optional header
-CHARACTERISTICS:	dw 0x222E				; These are the attributes of the file
+PE_SIGNATURE:			db 'PE', 0x00, 0x00		; This is the PE signature. The characters 'PE' followed by 2 null bytes
+MACHINE_TYPE:			dw 0x8664			; Targeting the x86-64 machine
+NUMBER_OF_SECTIONS:		dw 3				; Number of sections. Indicates size of section table that immediately follows the headers
+CREATED_DATE_TIME:		dd 1670698099			; Number of seconds since 1970 since when the file was created
+SYMBOL_TABLE_POINTER:		dd 0x00
+NUMBER_OF_SYMBOLS:		dd 0x00
+OHEADER_SIZE:			dw O_HEADER_END - O_HEADER	; Size of the optional header
+CHARACTERISTICS:		dw 0x222E			; These are the attributes of the file
 
-OHEADER:
+O_HEADER:
 MAGIC_NUMBER:			dw 0x020B			; PE32+ (i.e. PE64) magic number
 MAJOR_LINKER_VERSION:		db 0
 MINOR_LINKER_VERSION:		db 0
@@ -42,7 +44,7 @@ MAJOR_SUBSYS_VERSION:		dw 0x00
 MINOR_SUBSYS_VERSION:		dw 0x00
 WIN32_VERSION_VALUE:		dd 0x00				; Reserved, must be 0
 IMAGE_SIZE:			dd END - START			; The size in bytes of the image when loaded in memory including all headers
-HEADERS_SIZE:			dd HEADER_END - HEADER_START	; Size of all the headers
+HEADERS_SIZE:			dd HEADER_END - HEADER		; Size of all the headers
 CHECKSUM:			dd 0x00
 SUBSYSTEM:			dw 10				; The subsystem. In this case we're making a UEFI application.
 DLL_CHARACTERISTICS:		dw 0b000011110010000
@@ -103,7 +105,7 @@ RESERVED:
 	.address	dd 0		; Reserved, must be 0
 	.size		dd 0		; Reserved, must be 0
 
-OHEADER_END:
+O_HEADER_END:
 
 SECTION_HEADERS:
 	SECTION_CODE:
@@ -147,25 +149,74 @@ HEADER_END:
 
 CODE:	; The code begins here with the entry point
 EntryPoint:
+; Save the values passed by UEFI
+mov [IMAGE_HANDLE], rcx
+mov [SYSTEM_TABLE], rdx
 
-; First order of business is to store the values that were passed to us by EFI
-mov [EFI_IMAGE_HANDLE], rcx
-mov [EFI_SYSTEM_TABLE], rdx
+;mov rax, [SYSTEM_TABLE]
+;mov rax, [rax + EFI_SYSTEM_TABLE_BOOTSERVICES]
+;mov [BS], rax
 
-; Locate OutputString of the TEXT_OUTPUT_PROTOCOL
-add rdx, EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL
-mov rcx, [rdx]						; This is the first parameter to the call
-mov rdx, [rdx]						; Now rdx points to simple text output protocol
-add rdx, EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OutputString	; Now rdx points to output string
-mov rax, [rdx]						; We'll later do `call rax`
+;mov rax, [SYSTEM_TABLE]
+;mov rax, [rax + EFI_SYSTEM_TABLE_RUNTIMESERVICES]
+;mov [RTS], rax
 
-lea rdx, [hello_message]				; The string to be printed
-sub rsp, 32						; Shadow space on the stack before the call
-call rax
-add rsp, 32
+; Clear screen
+mov rcx, [SYSTEM_TABLE]
+mov rcx, [rcx + EFI_SYSTEM_TABLE_OUTPUT_PROTOCOL]
+call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_CLEAR_SCREEN]
 
-mov rax, EFI_SUCCESS					; Return value for UEFI
-ret
+; Display starting message
+lea rdx, [msg_start]
+mov rcx, [SYSTEM_TABLE]
+mov rcx, [rcx + EFI_SYSTEM_TABLE_OUTPUT_PROTOCOL]
+call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OUTPUTSTRING]
+
+; Get Memory Map
+
+
+; Set Video Mode
+; Find the interface to GRAPHICS_OUTPUT_PROTOCOL
+;mov rbx, [SYSTEM_TABLE]
+;mov rbx, [rbx + EFI_SYSTEM_TABLE_BOOTSERVICES]
+;mov rcx, EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID
+;mov rdx, EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID+8
+;lea r8, [Interface]
+;call [rbx + EFI_BOOT_SERVICES_LOCATEPROTOCOL]
+;cmp rax, EFI_SUCCESS
+;jne failure
+;mov rcx, [Interface]
+;mov rcx, [rcx + 0x18 ] ;EFI_GRAPHICS_OUTPUT_PROTOCOL_MODE
+;mov rbx, [rcx + 0x18 ] ;EFI_GRAPHICS_OUTPUT_PROTOCOL_MODE_FRAMEBUFFERBASE
+;mov [FB], rbx
+;mov rdi, rbx
+;mov rcx, [rcx + 0x20 ] ;EFI_GRAPHICS_OUTPUT_PROTOCOL_MODE_FRAMEBUFFERSIZE
+;mov [FBS], rcx
+;mov eax, 0xffffffff
+;mov rcx, 1000000
+;rep stosd
+
+; Exit Boot services
+;mov rcx, [IMAGE_HANDLE]
+; RDX memmapkey
+;mov rbx, [SYSTEM_TABLE]
+;mov rbx, [rbx + EFI_SYSTEM_TABLE_BOOTSERVICES]
+;call [rbx + EFI_BOOT_SERVICES_EXITBOOTSERVICES]
+;cmp rax, EFI_SUCCESS
+;jne failure
+
+; If this was a UEFI app we could "return" to it by uncommenting the lines below
+;mov rax, EFI_SUCCESS					; Return value for UEFI
+;ret
+jmp $
+
+
+failure:
+lea rdx, [msg_failure]
+mov rcx, [SYSTEM_TABLE]
+mov rcx, [rcx + EFI_SYSTEM_TABLE_OUTPUT_PROTOCOL]
+call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OUTPUTSTRING]
+jmp $
 
 align 4096
 
@@ -173,9 +224,33 @@ CODE_END:
 
 ; Data begins here
 DATA:
-EFI_IMAGE_HANDLE:	dq 0x00						; EFI will give use this in rcx
-EFI_SYSTEM_TABLE:	dq 0x00						; And this in rdx
-hello_message:		db __utf16__ `Hello world!\n\0`			; EFI strings are UTF16 and null-terminated
+msg_start:		db __utf16__ `Starting...\n\0`
+msg_failure:		db __utf16__ `System failure\n\0`
+IMAGE_HANDLE:	dq 0	; EFI gives this in RCX
+SYSTEM_TABLE:	dq 0	; And this in RDX
+Interface:	dq 0
+BS:		dq 0	; Boot services
+RTS:		dq 0	; Runtime services
+STK:		dq 0
+FB:		dq 0	; Frame buffer base address
+FBS:		dq 0	; Frame buffer size
+HR:		dq 0
+VR:		dq 0
+PPS:		dq 0
+memmapsize:	dq 4096
+memmapkey:	dq 0
+memmapdescsize:	dq 48
+memmapdescver:	dq 0
+
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_GUID:
+dd 0x387477c2
+dw 0x69c7,0x11d2
+db 0x8e,0x39,0x00,0xa0,0xc9,0x69,0x72,0x3b
+
+EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID:
+dd 0x9042a9de
+dw 0x23dc, 0x4a38
+db 0x96,0xfb,0x7a,0xde,0xd0,0x80,0x51,0x6a
 
 align 4096
 DATA_END:
@@ -184,14 +259,30 @@ END:
 ; Define the needed EFI constants and offsets here.
 EFI_SUCCESS					equ 0
 EFI_SYSTEM_TABLE_SIGNATURE			equ 0x5453595320494249
-EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL			equ 64
-EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_Reset		equ 0
-EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OutputString	equ 8
+
+EFI_SYSTEM_TABLE_OUTPUT_PROTOCOL		equ 64
+EFI_SYSTEM_TABLE_RUNTIMESERVICES		equ 88
+EFI_SYSTEM_TABLE_BOOTSERVICES			equ 96
+
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_RESET		equ 0
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OUTPUTSTRING	equ 8
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_TEST_STRING	equ 16
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_QUERY_MODE	equ 24
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_SET_MODE	equ 32
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_SET_ATTRIBUTE	equ 40
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_CLEAR_SCREEN	equ 48
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_SET_CURSOR_POSITION	equ 56
+EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_ENABLE_CURSOR	equ 64
+
 EFI_BOOT_SERVICES_GETMEMORYMAP			equ 56
 EFI_BOOT_SERVICES_LOCATEHANDLE			equ 176
 EFI_BOOT_SERVICES_LOADIMAGE			equ 200
 EFI_BOOT_SERVICES_EXIT				equ 216
 EFI_BOOT_SERVICES_EXITBOOTSERVICES		equ 232
+EFI_BOOT_SERVICES_LOCATEPROTOCOL		equ 320
+
+EFI_RUNTIME_SERVICES_RESETSYSTEM		equ 104
+
 
 
 ; EOF
