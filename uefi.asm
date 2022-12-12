@@ -218,25 +218,19 @@ get_memmap:
 
 
 
-
-
+mov rcx, 1000000
+mov rax, [BS]
+call [rax + EFI_BOOT_SERVICES_STALL]
 
 	; Disable watchdog timer
-;	xor ecx, ecx
-;	xor edx, edx
-;	xor r8, r8
-;	xor r9, r9
-;	mov rax, [BS]
-;	call [rax + EFI_BOOT_SERVICES_SETWATCHDOGTIMER]
-
-	; Exit Boot services
-;	mov rcx, [EFI_IMAGE_HANDLE]
-;	mov rdx, memmapkey
-;	mov rbx, [BS]
-;	call [rbx + EFI_BOOT_SERVICES_EXITBOOTSERVICES]
-;	call debug_dump_rax
-;	cmp rax, EFI_SUCCESS
-;	jne failure
+	xor ecx, ecx			; Timeout
+	xor edx, edx			; WatchdogCode
+	xor r8, r8			; DataSize
+	xor r9, r9			; *WatchdogData OPTIONAL
+	mov rax, [BS]
+	call [rax + EFI_BOOT_SERVICES_SETWATCHDOGTIMER]
+	cmp rax, EFI_SUCCESS
+	jne failure
 
 	; Copy Pure64 to the correct memory address
 	cli				; Stop interrupts
@@ -248,6 +242,14 @@ get_memmap:
 	cmp ax, 0x3436			; Match against the Pure64 binary
 	jne sig_fail
 
+	; Exit Boot services
+	mov rcx, [EFI_IMAGE_HANDLE]
+	mov rdx, [memmapkey]
+	mov rbx, [BS]
+	call [rbx + EFI_BOOT_SERVICES_EXITBOOTSERVICES]
+	cmp rax, EFI_SUCCESS
+	jne failure
+
 	; Switch to 32-bit mode
 
 	; Call Pure64
@@ -255,6 +257,11 @@ get_memmap:
 
 
 failure:
+	mov rdi, [FB]
+	mov eax, 0x00FF0000
+	mov rcx, [FBS]
+	shr rcx, 2			; Quick divide by 4 (32-bit colour)
+	rep stosd
 	lea rdx, [msg_failure]
 	mov rcx, [OUTPUT]
 	call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OUTPUTSTRING]
@@ -399,8 +406,9 @@ EFI_BOOT_SERVICES_LOCATEHANDLE				equ 176
 EFI_BOOT_SERVICES_LOADIMAGE				equ 200
 EFI_BOOT_SERVICES_EXIT					equ 216
 EFI_BOOT_SERVICES_EXITBOOTSERVICES			equ 232
+EFI_BOOT_SERVICES_STALL					equ 248
+EFI_BOOT_SERVICES_SETWATCHDOGTIMER			equ 256
 EFI_BOOT_SERVICES_LOCATEPROTOCOL			equ 320
-EFI_BOOT_SERVICES_SETWATCHDOGTIMER			equ 0
 
 EFI_GRAPHICS_OUTPUT_PROTOCOL_QUERY_MODE			equ 0
 EFI_GRAPHICS_OUTPUT_PROTOCOL_SET_MODE			equ 8
