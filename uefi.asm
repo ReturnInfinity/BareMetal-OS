@@ -3,6 +3,7 @@
 ; Copyright (C) 2008-2022 Return Infinity -- see LICENSE.TXT
 ;
 ; Adapted from https://stackoverflow.com/questions/72947069/how-to-write-hello-world-efi-application-in-nasm
+; and https://github.com/charlesap/nasm-uefi/blob/master/shoe-x64.asm
 ; PE https://wiki.osdev.org/PE
 ; GOP https://wiki.osdev.org/GOP
 ; Automatic boot: Assemble and save as /EFI/BOOT/BOOTX64.EFI
@@ -141,8 +142,31 @@ EntryPoint:
 	call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OUTPUTSTRING]
 
 	; Get Memory Map
-
-
+	; IN OUT UINTN			*MemoryMapSize,
+	;    OUT EFI_MEMORY_DESCRIPTOR	*MemoryMap,
+	;    OUT UINTN			*MapKey,
+	;    OUT UINTN			*DescriptorSize,
+	;    OUT UINT32			*DescriptorVersion
+get_memmap:
+	lea rcx, [memmapsize]					; *MemoryMapSize
+	lea rdx, 0x6000						; *MemoryMap
+	lea r8, [memmapkey]					; *MapKey
+	lea r9, [memmapdescsize]				; *DescriptorSize
+	lea r10, [memmapdescver]				; *DescriptorVersion
+	push r10
+	mov rax, [BS]
+	call [rax + EFI_BOOT_SERVICES_GETMEMORYMAP]
+	cmp al, 5						; EFI_BUFFER_TOO_SMALL
+	je get_memmap						; Attempt again as the memmapsize was updated by EFI
+	cmp rax, EFI_SUCCESS
+	jne failure
+	; Output at 0x6000 is as follows:
+	; 0  UINT32 - Type
+	; 8  EFI_PHYSICAL_ADDRESS - PhysicalStart
+	; 16 EFI_VIRTUAL_ADDRESS - VirtualStart
+	; 24 UINT64 - NumberOfPages
+	; 32 UINT64 - Attribute
+	; 40 UINT64 - Blank
 
 	; Find the interface to GRAPHICS_OUTPUT_PROTOCOL via its GUID
 	mov rcx, EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID		; *Protocol
@@ -157,12 +181,12 @@ EntryPoint:
 	; Parse the graphics information
 	;
 	; Mode Structure
-	; 0  UINT32 MaxMode
-	; 4  UINT32 Mode
-	; 8  EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *Info;
-	; 16 UINTN SizeOfInfo
-	; 24 EFI_PHYSICAL_ADDRESS FrameBufferBase
-	; 32 UINTN FrameBufferSize
+	; 0  UINT32 - MaxMode
+	; 4  UINT32 - Mode
+	; 8  EFI_GRAPHICS_OUTPUT_MODE_INFORMATION - *Info;
+	; 16 UINTN - SizeOfInfo
+	; 24 EFI_PHYSICAL_ADDRESS - FrameBufferBase
+	; 32 UINTN - FrameBufferSize
 	;
 	; EFI_GRAPHICS_OUTPUT_MODE_INFORMATION Structure
 	; 0  UINT32 - Version
@@ -210,6 +234,7 @@ EntryPoint:
 ;	mov rdx, memmapkey
 ;	mov rbx, [BS]
 ;	call [rbx + EFI_BOOT_SERVICES_EXITBOOTSERVICES]
+;	call debug_dump_rax
 ;	cmp rax, EFI_SUCCESS
 ;	jne failure
 
@@ -309,9 +334,9 @@ FB:			dq 0	; Frame buffer base address
 FBS:			dq 0	; Frame buffer size
 HR:			dq 0	; Horizontal Resolution
 VR:			dq 0	; Vertical Resolution
-memmapsize:		dq 4096
+memmapsize:		dq 0
 memmapkey:		dq 0
-memmapdescsize:		dq 48
+memmapdescsize:		dq 0
 memmapdescver:		dq 0
 Columns:		dq 0
 Rows:			dq 0
@@ -328,8 +353,10 @@ db 0x96,0xfb,0x7a,0xde,0xd0,0x80,0x51,0x6a
 
 hextable: 		db '0123456789ABCDEF'
 msg_start:		db __utf16__ 'UEFI ', 0x00, 0x00
-msg_failure:		db __utf16__ 'System failure', 0x0D, 0x00, 0x0A, 0x00, 0x00, 0x00
+msg_failure:		db __utf16__ 'System failure - ', 0x00, 0x00
 msg_SigFail:		db __utf16__ '- Bad Sig!', 0x00, 0x00
+msg_space:		db 0x20, 0x00, 0x00, 0x00
+msg_newline:		db 0x0D, 0x00, 0x0A, 0x00, 0x00, 0x00
 tchar:			db 0, 0, 0, 0, 0, 0, 0, 0
 
 align 4096
@@ -338,6 +365,19 @@ END:
 
 ; Define the needed EFI constants and offsets here.
 EFI_SUCCESS						equ 0
+EFI_LOAD_ERROR						equ 1
+EFI_INVALID_PARAMETER					equ 2
+EFI_UNSUPPORTED						equ 3
+EFI_BAD_BUFFER_SIZE					equ 4
+EFI_BUFFER_TOO_SMALL					equ 5
+EFI_NOT_READY						equ 6
+EFI_DEVICE_ERROR					equ 7
+EFI_WRITE_PROTECTED					equ 8
+EFI_OUT_OF_RESOURCES					equ 9
+EFI_VOLUME_CORRUPTED					equ 10
+EFI_VOLUME_FULL						equ 11
+EFI_NO_MEDIA						equ 12
+EFI_MEDIA_CHANGED					equ 13
 EFI_NOT_FOUND						equ 14
 
 EFI_SYSTEM_TABLE_RUNTIMESERVICES			equ 88
