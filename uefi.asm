@@ -11,6 +11,7 @@
 
 BITS 64
 ORG 0x00400000
+%define u(x) __utf16__(x)
 
 START:
 PE:
@@ -120,39 +121,36 @@ EntryPoint:
 	cmp rax, EFI_SUCCESS
 	jne failure
 
+	; Get the current ModeNumber
+
 	; Get current screen settings
-	mov rcx, [OUTPUT]
-	mov rdx, 0
-	mov r8, Columns
-	mov r9, Rows
+	mov rcx, [OUTPUT]					; IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL *This
+	mov rdx, 0						; IN UINTN ModeNumber
+	mov r8, Columns						; OUT UINTN *Columns
+	mov r9, Rows						; OUT UINTN *Rows
 	call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_QUERY_MODE]
 
 	; Set screen colour attributes
-	mov rcx, [OUTPUT]
-	mov rdx, 0x7F						; Light grey background, white foreground
+	mov rcx, [OUTPUT]					; IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL *This
+	mov rdx, 0x7F						; IN UINTN Attribute Light grey background, white foreground
 	call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_SET_ATTRIBUTE]
 
 	; Clear screen
-	mov rcx, [OUTPUT]
+	mov rcx, [OUTPUT]					; IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL *This
 	call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_CLEAR_SCREEN]
 
 	; Display starting message
-	mov rcx, [OUTPUT]
-	lea rdx, [msg_start]
+	mov rcx, [OUTPUT]					; IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL *This
+	lea rdx, [msg_start]					; IN CHAR16 *String
 	call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OUTPUTSTRING]
 
 	; Get Memory Map
-	; IN OUT UINTN			*MemoryMapSize,
-	;    OUT EFI_MEMORY_DESCRIPTOR	*MemoryMap,
-	;    OUT UINTN			*MapKey,
-	;    OUT UINTN			*DescriptorSize,
-	;    OUT UINT32			*DescriptorVersion
 get_memmap:
-	lea rcx, [memmapsize]					; *MemoryMapSize
-	lea rdx, 0x6000						; *MemoryMap
-	lea r8, [memmapkey]					; *MapKey
-	lea r9, [memmapdescsize]				; *DescriptorSize
-	lea r10, [memmapdescver]				; *DescriptorVersion
+	lea rcx, [memmapsize]					; IN OUT UINTN *MemoryMapSize
+	lea rdx, 0x6000						; OUT EFI_MEMORY_DESCRIPTOR *MemoryMap
+	lea r8, [memmapkey]					; OUT UINTN *MapKey
+	lea r9, [memmapdescsize]				; OUT UINTN *DescriptorSize
+	lea r10, [memmapdescver]				; OUT UINT32 *DescriptorVersion
 	push r10
 	mov rax, [BS]
 	call [rax + EFI_BOOT_SERVICES_GETMEMORYMAP]
@@ -197,48 +195,48 @@ get_memmap:
 	; 32 UINT32 - PixelsPerScanLine (Should be the same as HorizontalResolution)
 	mov rbx, [VIDEO]
 	add rbx, EFI_GRAPHICS_OUTPUT_PROTOCOL_MODE
-	mov rbx, [rbx]			; RAX holds the address of the Mode structure
-	mov rax, [rbx+24]		; RAX holds the FB base
-	mov [FB], rax			; Save the FB base
-	mov rax, [rbx+32]		; RAX holds the FB size
-	mov [FBS], rax			; Save the FB size
-	mov rbx, [rbx+8]		; RBX holds the address of the EFI_GRAPHICS_OUTPUT_MODE_INFORMATION Structure
-	mov eax, [rbx+4]		; RAX holds the Horizontal Resolution
-	mov [HR], rax			; Save the Horizontal Resolution
-	mov eax, [rbx+8]		; RAX holds the Vertical Resolution
-	mov [VR], rax			; Save the Vertical Resolution
+	mov rbx, [rbx]						; RAX holds the address of the Mode structure
+	mov rax, [rbx+24]					; RAX holds the FB base
+	mov [FB], rax						; Save the FB base
+	mov rax, [rbx+32]					; RAX holds the FB size
+	mov [FBS], rax						; Save the FB size
+	mov rbx, [rbx+8]					; RBX holds the address of the EFI_GRAPHICS_OUTPUT_MODE_INFORMATION Structure
+	mov eax, [rbx+4]					; RAX holds the Horizontal Resolution
+	mov [HR], rax						; Save the Horizontal Resolution
+	mov eax, [rbx+8]					; RAX holds the Vertical Resolution
+	mov [VR], rax						; Save the Vertical Resolution
 	; TODO - Check EFI_GRAPHICS_PIXEL_FORMAT (RBX+12) to make sure bit 0 is set (32-bit colour mode), otherwise parse EFI_PIXEL_BITMASK  
 
 	; Clear the screen via the frame buffer
 ;	mov rdi, [FB]
 ;	mov eax, 0x00404040
 ;	mov rcx, [FBS]
-;	shr rcx, 2			; Quick divide by 4 (32-bit colour)
+;	shr rcx, 2						; Quick divide by 4 (32-bit colour)
 ;	rep stosd
 
 	; Disable watchdog timer
-	xor ecx, ecx			; Timeout
-	xor edx, edx			; WatchdogCode
-	xor r8, r8			; DataSize
-	xor r9, r9			; *WatchdogData OPTIONAL
+	xor ecx, ecx						; IN UINTN Timeout
+	xor edx, edx						; IN UINT64 WatchdogCode
+	xor r8, r8						; IN UINTN DataSize
+	xor r9, r9						; IN CHAR16 *WatchdogData OPTIONAL
 	mov rax, [BS]
 	call [rax + EFI_BOOT_SERVICES_SETWATCHDOGTIMER]
 	cmp rax, EFI_SUCCESS
 	jne failure
 
 	; Copy Pure64 to the correct memory address
-	cli				; Stop interrupts
+	cli							; Stop interrupts
 	mov rsi, END
 	mov rdi, 0x8000
-	mov rcx, 16384			; Copy 16KB
+	mov rcx, 16384						; Copy 16KB
 	rep movsb
 	mov ax, [0x8006]
-	cmp ax, 0x3436			; Match against the Pure64 binary
+	cmp ax, 0x3436						; Match against the Pure64 binary
 	jne sig_fail
 
 	; Exit Boot services
-	mov rcx, [EFI_IMAGE_HANDLE]
-	mov rdx, [memmapkey]
+	mov rcx, [EFI_IMAGE_HANDLE]				; IN EFI_HANDLE ImageHandle
+	mov rdx, [memmapkey]					; IN UINTN MapKey
 	mov rbx, [BS]
 	call [rbx + EFI_BOOT_SERVICES_EXITBOOTSERVICES]
 	cmp rax, EFI_SUCCESS
@@ -248,26 +246,26 @@ get_memmap:
 
 	; Call Pure64
 	mov rdi, [FB]
-	mov eax, 0x0000FF00		; Green
+	mov eax, 0x0000FF00					; Green
 	mov rcx, [FBS]
-	shr rcx, 2			; Quick divide by 4 (32-bit colour)
+	shr rcx, 2						; Quick divide by 4 (32-bit colour)
 	rep stosd
 	jmp $
 
 
 failure:
 	mov rdi, [FB]
-	mov eax, 0x00FF0000		; Red
+	mov eax, 0x00FF0000					; Red
 	mov rcx, [FBS]
-	shr rcx, 2			; Quick divide by 4 (32-bit colour)
+	shr rcx, 2						; Quick divide by 4 (32-bit colour)
 	rep stosd
-	lea rdx, [msg_failure]
-	mov rcx, [OUTPUT]
+	mov rcx, [OUTPUT]					; IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL *This
+	lea rdx, [msg_failure]					; IN CHAR16 *String
 	call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OUTPUTSTRING]
 	jmp halt
 sig_fail:
-	lea rdx, [msg_SigFail]
-	mov rcx, [OUTPUT]
+	mov rcx, [OUTPUT]					; IN EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL *This
+	lea rdx, [msg_SigFail]					; IN CHAR16 *String
 	call [rcx + EFI_SIMPLE_TEXT_OUTPUT_PROTOCOL_OUTPUTSTRING]
 halt:
 	hlt
@@ -301,12 +299,12 @@ debug_dump_al:
 	push rbx
 	push rax
 	mov rbx, hextable
-	push rax			; Save RAX since we work in 2 parts
-	shr al, 4			; Shift high 4 bits into low 4 bits
+	push rax						; Save RAX since we work in 2 parts
+	shr al, 4						; Shift high 4 bits into low 4 bits
 	xlatb
 	mov [tchar+0], al
 	pop rax
-	and al, 0x0f			; Clear the high 4 bits
+	and al, 0x0f						; Clear the high 4 bits
 	xlatb
 	mov [tchar+2], al
 	push rdx
@@ -358,10 +356,10 @@ dw 0x23dc, 0x4a38
 db 0x96,0xfb,0x7a,0xde,0xd0,0x80,0x51,0x6a
 
 hextable: 		db '0123456789ABCDEF'
-msg_start:		db __utf16__ 'UEFI ', 0x00, 0x00
-msg_failure:		db __utf16__ 'System failure - ', 0x00, 0x00
-msg_SigFail:		db __utf16__ '- Bad Sig!', 0x00, 0x00
-msg_space:		db 0x20, 0x00, 0x00, 0x00
+msg_start:		dw u('UEFI '), 0
+msg_failure:		dw u('System failure - '), 0
+msg_SigFail:		dw u('- Bad Sig!'), 0
+msg_space:		dw u(' '), 0
 msg_newline:		db 0x0D, 0x00, 0x0A, 0x00, 0x00, 0x00
 tchar:			db 0, 0, 0, 0, 0, 0, 0, 0
 
