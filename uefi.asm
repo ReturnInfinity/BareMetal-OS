@@ -216,12 +216,6 @@ get_memmap:
 ;	shr rcx, 2			; Quick divide by 4 (32-bit colour)
 ;	rep stosd
 
-
-
-mov rcx, 1000000
-mov rax, [BS]
-call [rax + EFI_BOOT_SERVICES_STALL]
-
 	; Disable watchdog timer
 	xor ecx, ecx			; Timeout
 	xor edx, edx			; WatchdogCode
@@ -253,12 +247,17 @@ call [rax + EFI_BOOT_SERVICES_STALL]
 	; Switch to 32-bit mode
 
 	; Call Pure64
+	mov rdi, [FB]
+	mov eax, 0x0000FF00		; Green
+	mov rcx, [FBS]
+	shr rcx, 2			; Quick divide by 4 (32-bit colour)
+	rep stosd
 	jmp $
 
 
 failure:
 	mov rdi, [FB]
-	mov eax, 0x00FF0000
+	mov eax, 0x00FF0000		; Red
 	mov rcx, [FBS]
 	shr rcx, 2			; Quick divide by 4 (32-bit colour)
 	rep stosd
