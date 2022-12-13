@@ -3,7 +3,7 @@
 ./clean.sh
 
 mkdir src
-mkdir sys
+mkdir -p sys/drive/EFI/BOOT
 
 echo Pulling code from GitHub...
 cd src
@@ -12,6 +12,11 @@ git clone https://github.com/ReturnInfinity/BareMetal.git -q
 git clone https://github.com/ReturnInfinity/BareMetal-Monitor.git -q
 git clone https://github.com/ReturnInfinity/BMFS.git -q
 git clone https://github.com/ReturnInfinity/BareMetal-Demo.git -q
+cd ..
+
+echo Downloading UEFI firmware...
+cd sys
+wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
 cd ..
 
 echo Creating disk image...
