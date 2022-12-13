@@ -1,5 +1,5 @@
 ; =============================================================================
-; UEFI loader for BareMetal
+; UEFI loader for Pure64
 ; Copyright (C) 2008-2022 Return Infinity -- see LICENSE.TXT
 ;
 ; Adapted from https://stackoverflow.com/questions/72947069/how-to-write-hello-world-efi-application-in-nasm
@@ -7,6 +7,8 @@
 ; PE https://wiki.osdev.org/PE
 ; GOP https://wiki.osdev.org/GOP
 ; Automatic boot: Assemble and save as /EFI/BOOT/BOOTX64.EFI
+; Add payload up to 60KB
+; dd if=PAYLOAD of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
 ; =============================================================================
 
 BITS 64
@@ -64,32 +66,33 @@ NUMBER_OF_RVA_AND_SIZES:	dd 0x00				; Number of entries in the data directory
 O_HEADER_END:
 
 SECTION_HEADERS:
-	SECTION_CODE:
-		.name				db ".text", 0x00, 0x00, 0x00
-		.virtual_size			dd CODE_END - CODE
-		.virtual_address		dd CODE - START
-		.size_of_raw_data		dd CODE_END - CODE
-		.pointer_to_raw_data		dd CODE - START
-		.pointer_to_relocations		dd 0
-		.pointer_to_line_numbers	dd 0
-		.number_of_relocations		dw 0
-		.number_of_line_numbers		dw 0
-		.characteristics		dd 0x70000020
+SECTION_CODE:
+.name				db ".text", 0x00, 0x00, 0x00
+.virtual_size			dd CODE_END - CODE
+.virtual_address		dd CODE - START
+.size_of_raw_data		dd CODE_END - CODE
+.pointer_to_raw_data		dd CODE - START
+.pointer_to_relocations		dd 0
+.pointer_to_line_numbers	dd 0
+.number_of_relocations		dw 0
+.number_of_line_numbers		dw 0
+.characteristics		dd 0x70000020
 
-	SECTION_DATA:
-		.name				db ".data", 0x00, 0x00, 0x00
-		.virtual_size			dd DATA_END - DATA
-		.virtual_address		dd DATA - START
-		.size_of_raw_data		dd DATA_END - DATA
-		.pointer_to_raw_data		dd DATA - START
-		.pointer_to_relocations		dd 0
-		.pointer_to_line_numbers	dd 0
-		.number_of_relocations		dw 0
-		.number_of_line_numbers		dw 0
-		.characteristics		dd 0xD0000040
+SECTION_DATA:
+.name				db ".data", 0x00, 0x00, 0x00
+.virtual_size			dd DATA_END - DATA
+.virtual_address		dd DATA - START
+.size_of_raw_data		dd DATA_END - DATA
+.pointer_to_raw_data		dd DATA - START
+.pointer_to_relocations		dd 0
+.pointer_to_line_numbers	dd 0
+.number_of_relocations		dw 0
+.number_of_line_numbers		dw 0
+.characteristics		dd 0xD0000040
+
+HEADER_END:
 
 times 1024-($-PE) db 0
-HEADER_END:
 
 CODE:	; The code begins here with the entry point
 EntryPoint:
