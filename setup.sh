@@ -3,7 +3,7 @@
 ./clean.sh
 
 mkdir src
-mkdir sys
+mkdir -p sys/drive/EFI/BOOT
 
 echo Pulling code from GitHub...
 cd src
