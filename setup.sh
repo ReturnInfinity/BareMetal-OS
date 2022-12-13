@@ -14,6 +14,11 @@ git clone https://github.com/ReturnInfinity/BMFS.git -q
 git clone https://github.com/ReturnInfinity/BareMetal-Demo.git -q
 cd ..
 
+echo Downloading UEFI firmware...
+cd sys
+wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
+cd ..
+
 echo Creating disk image...
 cd sys
 dd if=/dev/zero of=disk.img count=128 bs=1048576 > /dev/null 2>&1
