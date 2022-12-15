@@ -1,6 +1,11 @@
 #!/bin/bash
 # from http://unix.stackexchange.com/questions/9804/how-to-comment-multi-line-commands-in-shell-scripts
 
+mformat -t 128 -h 2 -n 1024 -C -F -i sys/fat.img
+mmd -i sys/fat.img ::/EFI
+mmd -i sys/fat.img ::/EFI/BOOT
+mcopy -oi fat.img sys/BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
+
 cmd=( qemu-system-x86_64
 	-machine q35
 	-name "BareMetal OS"
