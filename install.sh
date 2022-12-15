@@ -17,5 +17,5 @@ dd if=mbr.sys of=disk.img conv=notrunc > /dev/null 2>&1
 dd if=software.sys of=disk.img bs=4096 seek=2 conv=notrunc > /dev/null 2>&1
 cp uefi.sys BOOTX64.EFI
 dd if=software.sys of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
-mv BOOTX64.EFI drive/EFI/BOOT/BOOTX64.EFI
+cp BOOTX64.EFI drive/EFI/BOOT/BOOTX64.EFI
 cd ..
