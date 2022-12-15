@@ -13,11 +13,11 @@ cmd=( qemu-system-x86_64
 #       -netdev socket,id=testnet,connect=127.0.0.1:1234
 # Disk configuration
 # File system folder
-#	-drive format=raw,file=fat:rw:sys/drive
+	-drive format=raw,file=fat:rw:sys/drive
 # AHCI
-	-drive id=disk0,file="sys/diskfat.img",if=none,format=raw
-	-device ahci,id=ahci
-	-device ide-hd,drive=disk0,bus=ahci.0
+#	-drive id=disk0,file="sys/fat.img",if=none,format=raw
+#	-device ahci,id=ahci
+#	-device ide-hd,drive=disk0,bus=ahci.0
 # NVMe
 #	-drive id=disk1,file="sys/disk1.img",if=none,format=raw
 #	-device nvme,drive=disk1
