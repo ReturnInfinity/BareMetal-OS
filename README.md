@@ -13,6 +13,9 @@ The scripts in this repo depend on a Debian-based Linux system like [Ubuntu](htt
 - [GCC](https://gcc.gnu.org) - C compiler for building C/C++ applications.
 - [Git](https://git-scm.com) - Version control software for pulling the source code from GitHub.
 
+Optional:
+- [mtools](https://www.gnu.org/software/mtools/) - Utilities to access DOS disks in Unix. This is only required if you plan on used UEFI.
+
 In Linux this can be completed with the following command:
 
 	sudo apt install nasm qemu-system-x86 gcc git
