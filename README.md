@@ -55,7 +55,7 @@ This command installs the boot sector, loader (Pure64), kernel, and simple comma
 
 ## Installing the demos to the disk image
 
-	./install-demos.sh
+	./add-demos.sh
 
 This command installs the various test/example programs to the disk image.
 
@@ -63,6 +63,13 @@ This command installs the various test/example programs to the disk image.
 ## Test the install with QEMU
 
 	./run.sh
+
+
+## Test the install with QEMU via UEFI (Experimental)
+	
+	./uefi-run.sh
+
+This command relies on `mtools` to create a disk image formatted with FAT.
 
 
 ## Build a VMDK disk image for VMware
