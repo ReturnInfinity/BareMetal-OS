@@ -6,6 +6,8 @@ mformat -t 128 -h 2 -n 1024 -C -F -i fat.img
 mmd -i fat.img ::/EFI
 mmd -i fat.img ::/EFI/BOOT
 mcopy -oi fat.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
+echo "EFI\BOOT\BOOTX64.EFI" > startup.nsh
+mcopy -i fat.img startup.nsh ::/
 cd ..
 
 cmd=( qemu-system-x86_64
