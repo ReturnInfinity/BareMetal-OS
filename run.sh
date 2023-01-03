@@ -10,14 +10,14 @@ cmd=( qemu-system-x86_64
         -netdev socket,id=testnet,listen=:1234
 # On a second machine uncomment the line below, comment the line above, and change the mac
 #       -netdev socket,id=testnet,connect=127.0.0.1:1234
-# Disk configuration
+# Disk configuration. Use one.
 # AHCI
 	-drive id=disk0,file="sys/disk.img",if=none,format=raw
 	-device ahci,id=ahci
 	-device ide-hd,drive=disk0,bus=ahci.0
 # NVMe
-#	-drive id=disk1,file="sys/disk1.img",if=none,format=raw
-#	-device nvme,drive=disk1
+#	-drive id=disk0,file="sys/disk.img",if=none,format=raw
+#	-device nvme,serial=12345678,drive=disk0
 # Ouput network to file
 #	-net dump,file=net.pcap
 # Output serial to file
