@@ -4,24 +4,31 @@
 cmd=( qemu-system-x86_64
 	-machine q35
 	-name "BareMetal OS"
-	-m 256
+	-m 256 # RAM in Megabytes
 	-smp sockets=1,cpus=4
-        -device e1000,netdev=testnet,mac=10:11:12:13:14:15
-        -netdev socket,id=testnet,listen=:1234
+
+# Network
+	-netdev socket,id=testnet,listen=:1234
 # On a second machine uncomment the line below, comment the line above, and change the mac
 #       -netdev socket,id=testnet,connect=127.0.0.1:1234
-# Disk configuration. Use one.
-# AHCI
+# Use one device type.
+	-device e1000,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82540EM
+#	-device e1000e,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82574L
+# Output network traffic to file
+#	-net dump,file=net.pcap
+
+# Disk configuration. Use one controller.
 	-drive id=disk0,file="sys/disk.img",if=none,format=raw
+# AHCI
 	-device ahci,id=ahci
 	-device ide-hd,drive=disk0,bus=ahci.0
 # NVMe
-#	-drive id=disk0,file="sys/disk.img",if=none,format=raw
 #	-device nvme,serial=12345678,drive=disk0
-# Ouput network to file
-#	-net dump,file=net.pcap
+
 # Output serial to file
 	-serial file:"sys/serial.log"
+
+# Debugging
 # Enable monitor mode
 #	-monitor telnet:localhost:8086,server,nowait
 # Enable GDB debugging
