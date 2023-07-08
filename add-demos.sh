@@ -11,7 +11,9 @@ cd ../../../sys/
 ./bmfs disk.img write sysinfo.app
 ./bmfs disk.img create euler1.app 2
 ./bmfs disk.img write euler1.app
-./bmfs disk.img create helloc.app 2
-./bmfs disk.img write helloc.app
-./bmfs disk.img create gavare.app 2
-./bmfs disk.img write gavare.app
+if [ "$(uname)" != "Darwin" ]; then
+	./bmfs disk.img create helloc.app 2
+	./bmfs disk.img write helloc.app
+	./bmfs disk.img create gavare.app 2
+	./bmfs disk.img write gavare.app
+fi
