@@ -20,6 +20,10 @@ In Linux this can be completed with the following command:
 
 	sudo apt install nasm qemu-system-x86 gcc git
 
+In macOS via Homebrew this can be completed with the following command:
+
+	brew install nasm qemu gcc git wget
+ 
 
 ## Summary
 
