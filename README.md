@@ -22,7 +22,7 @@ In Linux this can be completed with the following command:
 
 In macOS via Homebrew this can be completed with the following command:
 
-	brew install nasm qemu gcc git wget
+	brew install nasm qemu gcc git
  
 
 ## Summary
