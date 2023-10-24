@@ -16,7 +16,11 @@ cd ..
 
 echo Downloading UEFI firmware...
 cd sys
-curl -s -o OVMF.fd https://cdn.download.clearlinux.org/image/OVMF.fd
+if which curl &> /dev/null; then
+	curl -s -o OVMF.fd https://cdn.download.clearlinux.org/image/OVMF.fd
+else
+	wget https://cdn.download.clearlinux.org/image/OVMF.fd
+fi
 cd ..
 
 echo Creating disk image...
