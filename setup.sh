@@ -19,7 +19,7 @@ cd sys
 if [ command -v curl >/dev/null 2>&1 ]; then
 	curl -s -o OVMF.fd https://cdn.download.clearlinux.org/image/OVMF.fd
 else
-	wget https://cdn.download.clearlinux.org/image/OVMF.fd
+	wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
 fi
 cd ..
 
