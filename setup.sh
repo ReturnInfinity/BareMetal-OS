@@ -16,7 +16,7 @@ cd ..
 
 echo Downloading UEFI firmware...
 cd sys
-if [ command -v curl >/dev/null 2>&1 ]; then
+if [ -x "$(command -v curl)" ]; then
 	curl -s -o OVMF.fd https://cdn.download.clearlinux.org/image/OVMF.fd
 else
 	wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
