@@ -19,6 +19,8 @@ cmd=( qemu-system-x86_64
 
 # Disk configuration. Use one controller.
 	-drive id=disk0,file="sys/disk.img",if=none,format=raw
+# IDE
+#	-device ide-hd,drive=disk0,bus=ide.0
 # AHCI
 	-device ahci,id=ahci
 	-device ide-hd,drive=disk0,bus=ahci.0
