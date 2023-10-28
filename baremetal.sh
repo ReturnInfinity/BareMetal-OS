@@ -270,28 +270,34 @@ function baremetal_help {
 	echo "bnr      - Build 'n Run"
 }
 
-if [ "$#" -ne 2 ] || [ "$1" == "install" ]; then
-	baremetal_install $2
-elif [ "$#" -ne 1 ] || [ "$1" == "help" ]; then
+if [ $# -eq 0 ]; then
 	baremetal_help
-elif [ "$1" == "setup" ]; then
-	baremetal_setup
-elif [ "$1" == "clean" ]; then
-	baremetal_clean
-elif [ "$1" == "build" ]; then
-	baremetal_build
-elif [ "$1" == "install" ]; then
-	baremetal_install
-elif [ "$1" == "run" ]; then
-	baremetal_run
-elif [ "$1" == "run-uefi" ]; then
-	baremetal_run-uefi
-elif [ "$1" == "demos" ]; then
-	baremetal_demos
-elif [ "$1" == "vdi" ]; then
-	baremetal_vdi
-elif [ "$1" == "bnr" ]; then
-	baremetal_bnr
-else
-	echo "Invalid argument '$1'"
+elif [ $# -eq 1 ]; then
+	if [ "$1" == "setup" ]; then
+		baremetal_setup
+	elif [ "$1" == "clean" ]; then
+		baremetal_clean
+	elif [ "$1" == "build" ]; then
+		baremetal_build
+	elif [ "$1" == "install" ]; then
+		baremetal_install
+	elif [ "$1" == "help" ]; then
+		baremetal_help
+	elif [ "$1" == "run" ]; then
+		baremetal_run
+	elif [ "$1" == "run-uefi" ]; then
+		baremetal_run-uefi
+	elif [ "$1" == "demos" ]; then
+		baremetal_demos
+	elif [ "$1" == "vdi" ]; then
+		baremetal_vdi
+	elif [ "$1" == "bnr" ]; then
+		baremetal_bnr
+	else
+		echo "Invalid argument '$1'"
+	fi
+elif [ $# -eq 2 ]; then
+	if [ "$1" == "install" ]; then
+		baremetal_install $2
+	fi
 fi
