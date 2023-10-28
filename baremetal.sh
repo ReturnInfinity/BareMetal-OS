@@ -96,10 +96,10 @@ function baremetal_install {
 	cd "$OUTPUT_DIR"
 	echo "Building OS image..."
 
-	if [ "$#" -ne 1 ]; then
+	if [ "$#" -ne 2 ]; then
 		cat pure64.sys kernel.sys monitor.bin > software.sys
 	else
-		cat pure64.sys kernel.sys $1 > software.sys
+		cat pure64.sys kernel.sys $2 > software.sys
 	fi
 
 	dd if=mbr.sys of=disk.img conv=notrunc > /dev/null 2>&1
@@ -131,6 +131,7 @@ function baremetal_demos {
 }
 
 function baremetal_run {
+	echo "Starting QEMU..."
 	cmd=( qemu-system-x86_64
 		-machine q35
 		-name "BareMetal OS"
@@ -174,6 +175,7 @@ function baremetal_run {
 }
 
 function baremetal_run-uefi {
+	echo "Prepping UEFI boot"
 	cd sys
 	mformat -t 128 -h 2 -n 1024 -C -F -i fat.img
 	mmd -i fat.img ::/EFI
@@ -183,6 +185,7 @@ function baremetal_run-uefi {
 	mcopy -i fat.img startup.nsh ::/
 	cd ..
 
+	echo "Starting QEMU..."
 	cmd=( qemu-system-x86_64
 		-machine q35
 		-name "BareMetal OS (UEFI)"
@@ -227,6 +230,7 @@ function baremetal_run-uefi {
 }
 
 function baremetal_vdi {
+	echo "Creating VDI image..."
 	VDI="3c3c3c2051454d5520564d205669727475616c204469736b20496d616765203e3e3e0a00000000000000000000000000000000000000000000000000000000007f10dabe0100010080010000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000004000000000000000000000000000000020000000000000000000800000000000010000000000080000000020000000403020106050807090a0b0c0d0e0f10ab1caf6562222e4d9fd24b5083cb4c5d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 
 	qemu-img convert -O vdi "$OUTPUT_DIR/disk.img" "$OUTPUT_DIR/BareMetal_OS.vdi"
@@ -241,20 +245,29 @@ function baremetal_vdi {
 }
 
 function baremetal_vmdk {
+	echo "Creating VMDK image..."
 	qemu-img convert -O vmdk "$OUTPUT_DIR/disk.img" "$OUTPUT_DIR/BareMetal_OS.vmdk"
+}
+
+function baremetal_bnr {
+	baremetal_build
+	baremetal_install
+	baremetal_run
 }
 
 function baremetal_help {
 	echo "BareMetal-OS Script"
 	echo "Available commands:"
-	echo "clean   - Clean the src and bin folders"
-	echo "setup   - Clean and setup"
-	echo "build   - Build source code"
-	echo "install - Install binary to disk image"
-	echo "demos   - Install demos to disk image"
-	echo "run     - Run the OS via QEMU"
-	echo "vdi     - Generate VDI disk image for VirtualBox"
-	echo "vmdk    - Generate VMDK disk image for VMware"	
+	echo "clean    - Clean the src and bin folders"
+	echo "setup    - Clean and setup"
+	echo "build    - Build source code"
+	echo "install  - Install binary to disk image"
+	echo "demos    - Install demos to disk image"
+	echo "run      - Run the OS via QEMU"
+	echo "run-uefi - Run the OS via QEMU in UEFI mode"
+	echo "vdi      - Generate VDI disk image for VirtualBox"
+	echo "vmdk     - Generate VMDK disk image for VMware"
+	echo "bnr      - Build 'n Run"
 }
 
 if [ "$#" -ne 1 ] || [ "$1" == "help" ]; then
@@ -269,10 +282,14 @@ elif [ "$1" == "install" ]; then
 	baremetal_install
 elif [ "$1" == "run" ]; then
 	baremetal_run
+elif [ "$1" == "run-uefi" ]; then
+	baremetal_run-uefi
 elif [ "$1" == "demos" ]; then
 	baremetal_demos
 elif [ "$1" == "vdi" ]; then
 	baremetal_vdi
+elif [ "$1" == "bnr" ]; then
+	baremetal_bnr
 else
 	echo "Invalid argument '$1'"
 fi

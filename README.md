@@ -47,43 +47,43 @@ BareMetal OS consists of several different projects:
 
 ## Rebuilding the source code
 
-	./build.sh
+	./baremetal.sh build
 
 
 ## Installing the system to the disk image
 
-	./install.sh
+	./baremetal.sh install
 
-This command installs the boot sector, loader (Pure64), kernel, and simple command line interface (Monitor) to the disk image. If you want to attach your own binary to the end of the kernel you can use `./install.sh mybinary.bin`
+This command installs the boot sector, loader (Pure64), kernel, and simple command line interface (Monitor) to the disk image. If you want to attach your own binary to the end of the kernel you can use `./baremetal.sh install mybinary.bin`
 
 
 ## Installing the demos to the disk image
 
-	./add-demos.sh
+	./baremetal.sh demos
 
 This command installs the various test/example programs to the disk image.
 
 
 ## Test the install with QEMU
 
-	./run.sh
+	./baremetal.sh run
 
 
 ## Test the install with QEMU via UEFI (Experimental)
 	
-	./uefi-run.sh
+	./baremetal.sh run-uefi
 
 This command relies on `mtools` to create a disk image formatted with FAT.
 
 
 ## Build a VMDK disk image for VMware
 
-	./vmdk.sh
+	./baremetal.sh vmdk
 
 
 ## Build a VDI disk image for VirtualBox
 
-	./vdi.sh
+	./baremetal.sh vdi
 
 The VDI script rewrites the disk ID of the VDI file to avoid the disk warning in VirtualBox.
 
