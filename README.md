@@ -6,7 +6,7 @@ Build scripts for BareMetal OS and its related utilities - The easiest way to cr
 
 ## Prerequisites
 
-The scripts in this repo depend on a Debian-based Linux system like [Ubuntu](https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io). macOS is also supported to build and test the OS and Assembly applications if you are using [Homebrew](https://brew.sh).
+The script in this repo depends on a Debian-based Linux system like [Ubuntu](https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io). macOS is also supported to build and test the OS and Assembly applications if you are using [Homebrew](https://brew.sh).
 
 - [NASM](https://nasm.us) - Assembly compiler to build the loader and kernel, as well as the apps written in Assembly.
 - [QEMU](https://www.qemu.org) - Computer emulator if you plan on running the OS for quick testing.
@@ -33,16 +33,16 @@ BareMetal OS consists of several different projects:
 - [BareMetal](https://github.com/ReturnInfinity/BareMetal) - The kernel.
 - [Monitor](https://github.com/ReturnInfinity/BareMetal-Monitor) - A simple command line interface.
 - [BMFS](https://github.com/ReturnInfinity/BMFS) - The BareMetal File System utility.
-- [BareMetal-Demo](https://github.com/ReturnInfinity/BareMetal-Demo) - Various test/example programs.
+- [BareMetal-Demo](https://github.com/ReturnInfinity/BareMetal-Demo) - Various demo programs.
 
 
 ## Initial configuration
 
 	git clone https://github.com/ReturnInfinity/BareMetal-OS.git
 	cd BareMetal-OS
-	./setup.sh
+	./baremetal.sh setup
 
-`setup.sh` automatically runs the build and install scripts. Once the setup is complete you can execute the run.sh script to verify that everything installed correctly.
+`baremetal.sh setup` automatically runs the build and install functions. Once the setup is complete you can execute `baremetal.sh run` to verify that everything installed correctly.
 
 
 ## Rebuilding the source code
@@ -61,7 +61,7 @@ This command installs the boot sector, loader (Pure64), kernel, and simple comma
 
 	./baremetal.sh demos
 
-This command installs the various test/example programs to the disk image.
+This command installs the demo programs to the disk image.
 
 
 ## Test the install with QEMU

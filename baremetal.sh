@@ -96,10 +96,10 @@ function baremetal_install {
 	cd "$OUTPUT_DIR"
 	echo "Building OS image..."
 
-	if [ "$#" -ne 2 ]; then
+	if [ "$#" -ne 1 ]; then
 		cat pure64.sys kernel.sys monitor.bin > software.sys
 	else
-		cat pure64.sys kernel.sys $2 > software.sys
+		cat pure64.sys kernel.sys $1 > software.sys
 	fi
 
 	dd if=mbr.sys of=disk.img conv=notrunc > /dev/null 2>&1
@@ -270,7 +270,9 @@ function baremetal_help {
 	echo "bnr      - Build 'n Run"
 }
 
-if [ "$#" -ne 1 ] || [ "$1" == "help" ]; then
+if [ "$#" -ne 2 ] || [ "$1" == "install" ]; then
+	baremetal_install $2
+elif [ "$#" -ne 1 ] || [ "$1" == "help" ]; then
 	baremetal_help
 elif [ "$1" == "setup" ]; then
 	baremetal_setup
