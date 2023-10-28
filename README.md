@@ -29,7 +29,7 @@ In macOS via Homebrew this can be completed with the following command:
 
 BareMetal OS consists of several different projects:
 
-- [Pure64](https://github.com/ReturnInfinity/Pure64) - The boot sector and software loader. Pure64 is responsible for getting the computer into a clean 64-bit state on boot up.
+- [Pure64](https://github.com/ReturnInfinity/Pure64) - The boot sector and software loader.
 - [BareMetal](https://github.com/ReturnInfinity/BareMetal) - The kernel.
 - [Monitor](https://github.com/ReturnInfinity/BareMetal-Monitor) - A simple command line interface.
 - [BMFS](https://github.com/ReturnInfinity/BMFS) - The BareMetal File System utility.
