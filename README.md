@@ -1,8 +1,14 @@
+<p align="center">
+	<img src="doc/BareMetal Model.svg"></img>
+</p>
+
 ## About
 
 BareMetal OS is an exokernel-based operating system crafted entirely in x86-64 assembly and is designed to provide unparalleled levels of flexibility and efficiency. By exposing hardware resources directly to applications, it empowers developers to finely tune and optimize their software for specific tasks. With the exokernel's minimalist design, it minimizes the overhead imposed by traditional operating systems, enabling applications to achieve peak performance. Its x86-64 assembly implementation speaks to its commitment to squeezing every ounce of performance from the hardware, making it a compelling choice for those who demand the utmost control and efficiency from their computing environments.
 
-<img src="https://raw.githubusercontent.com/ReturnInfinity/BareMetal-OS/master/doc/ScreenShot.png"></img>
+<p align="center">
+	<img src="doc/ScreenShot.png"></img>
+</p>
 
 ## Prerequisites
 
