@@ -52,6 +52,7 @@ function baremetal_setup {
 	cd sys
 	./bmfs disk.img format
 	cd ..
+
 	baremetal_install
 
 	echo Done!
