@@ -1,6 +1,6 @@
 <p align="center">
-	<img src="doc/BareMetal OS - Light.svg#gh-light-mode-only"></img>
-	<img src="doc/BareMetal OS - Dark.svg#gh-dark-mode-only"></img>
+	<img src="doc/BareMetal OS - Light.png#gh-light-mode-only"></img>
+	<img src="doc/BareMetal OS - Dark.png#gh-dark-mode-only"></img>
 </p>
 
 ## About
