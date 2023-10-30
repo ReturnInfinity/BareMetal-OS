@@ -205,7 +205,7 @@ function baremetal_run-uefi {
 	#	-net dump,file=net.pcap
 
 	# Disk configuration. Use one controller.
-		-drive id=disk0,file="sys/disk.img",if=none,format=raw
+		-drive id=disk0,file="sys/fat.img",if=none,format=raw
 	# NVMe
 	#	-device nvme,serial=12345678,drive=disk0
 	# AHCI
