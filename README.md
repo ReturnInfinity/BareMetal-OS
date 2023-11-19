@@ -95,5 +95,14 @@ This command relies on `mtools` to create a disk image formatted with FAT.
 The VDI script rewrites the disk ID of the VDI file to avoid the disk warning in VirtualBox.
 
 
+## Test the install with Bochs
+
+	bochs -f bochs.cfg
+
+Notes:
+- The bochs.cfg may need to be adjusted for your usage. It was created for a Linux-based system.
+- `display_libary` is set to use `x` for X Windows with the GUI Debugger by default. On macOS or Windows you will need to use `sdl2`.
+- The file paths for `romimage` and `vgaromimage` will need to be updated if the Bochs BIOS files are in a different location.
+
 
 // EOF
