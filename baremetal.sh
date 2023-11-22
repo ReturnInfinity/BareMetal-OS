@@ -155,8 +155,12 @@ function baremetal_run {
 	# IDE
 	#	-device ide-hd,drive=disk0,bus=ide.0
 
+	# Serial configuration
 	# Output serial to file
 		-serial file:"sys/serial.log"
+	# Output serial to console
+	#	-chardev stdio,id=char0,logfile="sys/serial.log",signal=off
+	#	-serial chardev:char0
 
 	# Debugging
 	# Enable monitor mode
