@@ -142,6 +142,7 @@ function baremetal_run {
 	# Use one device type.
 		-device e1000,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82540EM
 	#	-device e1000e,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82574L
+	#	-device virtio-net-pci,netdev=testnet,mac=10:11:12:13:14:15 # Virtio
 	# Output network traffic to file
 	#	-net dump,file=net.pcap
 
