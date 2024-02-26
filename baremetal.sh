@@ -121,6 +121,7 @@ function baremetal_demos {
 	./bmfs disk.img write ethtest.app
 	./bmfs disk.img write sysinfo.app
 	./bmfs disk.img write euler1.app
+	./bmfs disk.img write smptest.app
 	if [ "$(uname)" != "Darwin" ]; then
 		./bmfs disk.img write helloc.app
 		./bmfs disk.img write gavare.app
