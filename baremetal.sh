@@ -145,7 +145,7 @@ function baremetal_run {
 	#	-device e1000e,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82574L
 	#	-device virtio-net-pci,netdev=testnet,mac=10:11:12:13:14:15 # Virtio
 	# Output network traffic to file
-	#	-net dump,file=net.pcap
+	#	-object filter-dump,id=testnet,netdev=testnet,file=net.pcap
 
 	# Disk configuration. Use one controller.
 		-drive id=disk0,file="sys/disk.img",if=none,format=raw
@@ -171,6 +171,8 @@ function baremetal_run {
 	#	-s
 	# Wait for GDB before starting execution
 	#	-S
+	# Trace options
+	#	-trace "virt*"
 	)
 
 	#execute the cmd string
