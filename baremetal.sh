@@ -154,6 +154,8 @@ function baremetal_run {
 	# AHCI
 		-device ahci,id=ahci
 		-device ide-hd,drive=disk0,bus=ahci.0
+  	# VIRTIO
+	#	-device virtio-blk,drive=disk0
 	# IDE
 	#	-device ide-hd,drive=disk0,bus=ide.0
 
