@@ -155,7 +155,7 @@ function baremetal_run {
 		-device ahci,id=ahci
 		-device ide-hd,drive=disk0,bus=ahci.0
   	# VIRTIO
-	#	-device virtio-blk,drive=disk0
+	#	-device virtio-blk,drive=disk0 #,disable-legacy=on,disable-modern=false
 	# IDE
 	#	-device ide-hd,drive=disk0,bus=ide.0
 
@@ -175,6 +175,7 @@ function baremetal_run {
 	#	-S
 	# Trace options
 	#	-trace "virt*"
+ 	#	-d trace:memory_region_ops_* # Or read/write
 	)
 
 	#execute the cmd string
