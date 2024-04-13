@@ -143,7 +143,8 @@ function baremetal_run {
 	# Use one device type.
 		-device e1000,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82540EM
 	#	-device e1000e,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82574L
-	#	-device virtio-net-pci,netdev=testnet,mac=10:11:12:13:14:15 # Virtio
+	# VIRTIO
+	#	-device virtio-net-pci,netdev=testnet,mac=10:11:12:13:14:15 #,disable-legacy=on,disable-modern=false
 	# Output network traffic to file
 	#	-object filter-dump,id=testnet,netdev=testnet,file=net.pcap
 
@@ -154,7 +155,7 @@ function baremetal_run {
 	# AHCI
 		-device ahci,id=ahci
 		-device ide-hd,drive=disk0,bus=ahci.0
-  	# VIRTIO
+	# VIRTIO
 	#	-device virtio-blk,drive=disk0 #,disable-legacy=on,disable-modern=false
 	# IDE
 	#	-device ide-hd,drive=disk0,bus=ide.0
@@ -175,7 +176,11 @@ function baremetal_run {
 	#	-S
 	# Trace options
 	#	-trace "virt*"
- 	#	-d trace:memory_region_ops_* # Or read/write
+	#	-trace "apic*"
+	#	-trace "msi*"
+	#	-d trace:memory_region_ops_* # Or read/write
+	# Prevent QEMU for resetting (triple fault)
+	#	-no-shutdown -no-reboot
 	)
 
 	#execute the cmd string
@@ -231,6 +236,8 @@ function baremetal_run-uefi {
 	#	-s
 	# Wait for GDB before starting execution
 	#	-S
+	# Prevent QEMU for resetting (triple fault)
+	#	-no-shutdown -no-reboot
 	)
 
 	#execute the cmd string
@@ -263,6 +270,12 @@ function baremetal_bnr {
 	baremetal_run
 }
 
+function baremetal_bnr-uefi {
+	baremetal_build
+	baremetal_install
+	baremetal_run-uefi
+}
+
 function baremetal_help {
 	echo "BareMetal-OS Script"
 	echo "Available commands:"
@@ -276,6 +289,7 @@ function baremetal_help {
 	echo "vdi      - Generate VDI disk image for VirtualBox"
 	echo "vmdk     - Generate VMDK disk image for VMware"
 	echo "bnr      - Build 'n Run"
+	echo "bnr-uefi - Build 'n Run in UEFI mode"
 }
 
 if [ $# -eq 0 ]; then
@@ -301,6 +315,8 @@ elif [ $# -eq 1 ]; then
 		baremetal_vdi
 	elif [ "$1" == "bnr" ]; then
 		baremetal_bnr
+	elif [ "$1" == "bnr-uefi" ]; then
+		baremetal_bnr-uefi
 	else
 		echo "Invalid argument '$1'"
 	fi
