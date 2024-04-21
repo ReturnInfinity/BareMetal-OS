@@ -13,7 +13,6 @@ function baremetal_setup {
 	baremetal_clean
 
 	mkdir src
-	mkdir -p sys/drive/EFI/BOOT
 
 	echo "Pulling code from GitHub..."
 	cd src
@@ -33,10 +32,16 @@ function baremetal_setup {
 	fi
 	cd ..
 
-	echo "Creating disk image..."
+	echo "Creating disk images..."
 	cd sys
-	dd if=/dev/zero of=disk.img count=128 bs=1048576 > /dev/null 2>&1
+	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
 	dd if=/dev/zero of=null.bin count=8 bs=1 > /dev/null 2>&1
+	mformat -t 128 -h 2 -n 1024 -C -F -i fat32.img
+	mmd -i fat32.img ::/EFI
+	mmd -i fat32.img ::/EFI/BOOT
+	echo "\EFI\BOOT\BOOTX64.EFI" > startup.nsh
+	mcopy -i fat32.img startup.nsh ::/
+	rm startup.nsh
 	cd ..
 
 	echo "Preparing dependancies..."
@@ -50,7 +55,7 @@ function baremetal_setup {
 	baremetal_build
 
 	cd sys
-	./bmfs disk.img format
+	./bmfs bmfs.img format
 	cd ..
 
 	baremetal_install
@@ -78,15 +83,14 @@ function baremetal_build {
 	build_dir "src/BareMetal"
 	build_dir "src/BareMetal-Monitor"
 	build_dir "src/BMFS"
- 	build_dir "src/BareMetal-Demo"
+	build_dir "src/BareMetal-Demo"
 
-	mv "src/Pure64/bin/mbr.sys" "${OUTPUT_DIR}/mbr.sys"
-	mv "src/Pure64/bin/multiboot.sys" "${OUTPUT_DIR}/multiboot.sys"
-	mv "src/Pure64/bin/multiboot2.sys" "${OUTPUT_DIR}/multiboot2.sys"
 	mv "src/Pure64/bin/pure64.sys" "${OUTPUT_DIR}/pure64.sys"
 	mv "src/Pure64/bin/pure64-debug.txt" "${OUTPUT_DIR}/pure64-debug.txt"
-	mv "src/Pure64/bin/pxestart.sys" "${OUTPUT_DIR}/pxestart.sys"
 	mv "src/Pure64/bin/uefi.sys" "${OUTPUT_DIR}/uefi.sys"
+	mv "src/Pure64/bin/uefi-debug.txt" "${OUTPUT_DIR}/uefi-debug.txt"
+	mv "src/Pure64/bin/bios.sys" "${OUTPUT_DIR}/bios.sys"
+	mv "src/Pure64/bin/bios-debug.txt" "${OUTPUT_DIR}/bios-debug.txt"
 	mv "src/BareMetal/bin/kernel.sys" "${OUTPUT_DIR}/kernel.sys"
 	mv "src/BareMetal/bin/kernel-debug.txt" "${OUTPUT_DIR}/kernel-debug.txt"
 	mv "src/BareMetal-Monitor/bin/monitor.bin" "${OUTPUT_DIR}/monitor.bin"
@@ -104,11 +108,23 @@ function baremetal_install {
 		cat pure64.sys kernel.sys $1 > software.sys
 	fi
 
-	dd if=mbr.sys of=disk.img conv=notrunc > /dev/null 2>&1
-	dd if=software.sys of=disk.img bs=4096 seek=2 conv=notrunc > /dev/null 2>&1
+	# Copy software to BMFS for BIOS loading
+	dd if=software.sys of=bmfs.img bs=4096 seek=2 conv=notrunc > /dev/null 2>&1
+
+	# Prep UEFI loader
 	cp uefi.sys BOOTX64.EFI
 	dd if=software.sys of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
-	cp BOOTX64.EFI drive/EFI/BOOT/BOOTX64.EFI
+
+	# Copy UEFI boot to disk image
+	mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
+	# Copy first 3 bytes of MBR (jmp and nop)
+	dd if=bios.sys of=fat32.img bs=1 count=3 conv=notrunc > /dev/null 2>&1
+	# Copy MBR code starting at offset 90
+	dd if=bios.sys of=fat32.img bs=1 skip=90 seek=90 count=356 conv=notrunc > /dev/null 2>&1
+
+	# Create FAT32/BMFS hybrid disk
+	cat fat32.img bmfs.img > baremetal_os.img
+
 	cd ..
 }
 
@@ -117,14 +133,14 @@ function baremetal_demos {
 	cd src/BareMetal-Demo/bin
 	cp *.app ../../../sys/
 	cd ../../../sys/
-	./bmfs disk.img write hello.app
-	./bmfs disk.img write ethtest.app
-	./bmfs disk.img write sysinfo.app
-	./bmfs disk.img write euler1.app
-	./bmfs disk.img write smptest.app
+	./bmfs bmfs.img write hello.app
+	./bmfs bmfs.img write ethtest.app
+	./bmfs bmfs.img write sysinfo.app
+	./bmfs bmfs.img write euler1.app
+	./bmfs bmfs.img write smptest.app
 	if [ "$(uname)" != "Darwin" ]; then
-		./bmfs disk.img write helloc.app
-		./bmfs disk.img write gavare.app
+		./bmfs bmfs.img write helloc.app
+		./bmfs bmfs.img write gavare.app
 	fi
 }
 
@@ -149,7 +165,7 @@ function baremetal_run {
 	#	-object filter-dump,id=testnet,netdev=testnet,file=net.pcap
 
 	# Disk configuration. Use one controller.
-		-drive id=disk0,file="sys/disk.img",if=none,format=raw
+		-drive id=disk0,file="sys/baremetal_os.img",if=none,format=raw
 	# NVMe
 	#	-device nvme,serial=12345678,drive=disk0
 	# AHCI
@@ -188,16 +204,6 @@ function baremetal_run {
 }
 
 function baremetal_run-uefi {
-	echo "Prepping UEFI boot"
-	cd sys
-	mformat -t 128 -h 2 -n 1024 -C -F -i fat.img
-	mmd -i fat.img ::/EFI
-	mmd -i fat.img ::/EFI/BOOT
-	mcopy -oi fat.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
-	echo "\EFI\BOOT\BOOTX64.EFI" > startup.nsh
-	mcopy -i fat.img startup.nsh ::/
-	cd ..
-
 	echo "Starting QEMU..."
 	cmd=( qemu-system-x86_64
 		-machine q35
@@ -205,6 +211,7 @@ function baremetal_run-uefi {
 		-bios sys/OVMF.fd
 		-m 256
 		-smp sockets=1,cpus=4
+	#	-cpu qemu64,pdpe1gb # Support for 1GiB pages
 
 	# Network
 		-netdev socket,id=testnet,listen=:1234
@@ -217,7 +224,7 @@ function baremetal_run-uefi {
 	#	-net dump,file=net.pcap
 
 	# Disk configuration. Use one controller.
-		-drive id=disk0,file="sys/fat.img",if=none,format=raw
+		-drive id=disk0,file="sys/baremetal_os.img",if=none,format=raw
 	# NVMe
 	#	-device nvme,serial=12345678,drive=disk0
 	# AHCI
@@ -248,7 +255,7 @@ function baremetal_vdi {
 	echo "Creating VDI image..."
 	VDI="3c3c3c2051454d5520564d205669727475616c204469736b20496d616765203e3e3e0a00000000000000000000000000000000000000000000000000000000007f10dabe0100010080010000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000004000000000000000000000000000000020000000000000000000800000000000010000000000080000000020000000403020106050807090a0b0c0d0e0f10ab1caf6562222e4d9fd24b5083cb4c5d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 
-	qemu-img convert -O vdi "$OUTPUT_DIR/disk.img" "$OUTPUT_DIR/BareMetal_OS.vdi"
+	qemu-img convert -O vdi "$OUTPUT_DIR/baremetal_os.img" "$OUTPUT_DIR/BareMetal_OS.vdi"
 
 	echo $VDI > VDI_UUID.hex
 	xxd -r -p VDI_UUID.hex VDI_UUID.bin
@@ -261,7 +268,7 @@ function baremetal_vdi {
 
 function baremetal_vmdk {
 	echo "Creating VMDK image..."
-	qemu-img convert -O vmdk "$OUTPUT_DIR/disk.img" "$OUTPUT_DIR/BareMetal_OS.vmdk"
+	qemu-img convert -O vmdk "$OUTPUT_DIR/baremetal_os.img" "$OUTPUT_DIR/BareMetal_OS.vmdk"
 }
 
 function baremetal_bnr {
