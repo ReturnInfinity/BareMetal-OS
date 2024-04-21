@@ -118,9 +118,9 @@ function baremetal_install {
 	# Copy UEFI boot to disk image
 	mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
 	# Copy first 3 bytes of MBR (jmp and nop)
-	dd if=bios.sys of=fat32.img bs=1 count=3 conv=notrunc
+	dd if=bios.sys of=fat32.img bs=1 count=3 conv=notrunc > /dev/null 2>&1
 	# Copy MBR code starting at offset 90
-	dd if=bios.sys of=fat32.img bs=1 skip=90 seek=90 count=356 conv=notrunc
+	dd if=bios.sys of=fat32.img bs=1 skip=90 seek=90 count=356 conv=notrunc > /dev/null 2>&1
 
 	# Create FAT32/BMFS hybrid disk
 	cat fat32.img bmfs.img > baremetal_os.img
