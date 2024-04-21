@@ -13,6 +13,7 @@ function baremetal_setup {
 	baremetal_clean
 
 	mkdir src
+	mkdir sys
 
 	echo "Pulling code from GitHub..."
 	cd src
@@ -142,6 +143,9 @@ function baremetal_demos {
 		./bmfs bmfs.img write helloc.app
 		./bmfs bmfs.img write gavare.app
 	fi
+
+	# Create FAT32/BMFS hybrid disk
+	cat fat32.img bmfs.img > baremetal_os.img
 }
 
 function baremetal_run {
