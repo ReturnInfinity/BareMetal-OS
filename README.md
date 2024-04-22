@@ -13,30 +13,28 @@ BareMetal OS is an exokernel-based operating system crafted entirely in x86-64 a
 
 ## Prerequisites
 
-The script in this repo depends on a Debian-based Linux system like [Ubuntu](https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io). macOS is also supported to build and test the OS and Assembly applications if you are using [Homebrew](https://brew.sh).
+The script in this repo depends on a Debian-based Linux system like [Ubuntu](https://www.ubuntu.com/download/desktop) or [Elementary](https://elementary.io). macOS is also supported to build and test the OS, as well as the Assembly applications, if you are using [Homebrew](https://brew.sh).
 
 - [NASM](https://nasm.us) - Assembly compiler to build the loader and kernel, as well as the apps written in Assembly.
 - [QEMU](https://www.qemu.org) - Computer emulator if you plan on running the OS for quick testing.
 - [GCC](https://gcc.gnu.org) - C compiler for building C/C++ applications.
 - [Git](https://git-scm.com) - Version control software for pulling the source code from GitHub.
-
-Optional:
-- [mtools](https://www.gnu.org/software/mtools/) - Utilities to access DOS disks in Unix. This is only required if you plan on using UEFI.
+- [mtools](https://www.gnu.org/software/mtools/) - Utilities to access DOS (FAT32) disk images in Unix.
 
 In Linux this can be completed with the following command:
 
-	sudo apt install nasm qemu-system-x86 gcc git
+	sudo apt install nasm qemu-system-x86 gcc git mtools
 
 In macOS via Homebrew this can be completed with the following command:
 
-	brew install nasm qemu gcc git
+	brew install nasm qemu gcc git mtools
  
 
 ## Summary
 
 BareMetal OS consists of several different projects:
 
-- [Pure64](https://github.com/ReturnInfinity/Pure64) - The boot sector and software loader.
+- [Pure64](https://github.com/ReturnInfinity/Pure64) - The software loader.
 - [BareMetal](https://github.com/ReturnInfinity/BareMetal) - The kernel.
 - [Monitor](https://github.com/ReturnInfinity/BareMetal-Monitor) - A simple command line interface.
 - [BMFS](https://github.com/ReturnInfinity/BMFS) - The BareMetal File System utility.
@@ -76,11 +74,9 @@ This command installs the demo programs to the disk image.
 	./baremetal.sh run
 
 
-## Test the install with QEMU via UEFI (Experimental)
+## Test the install with QEMU via UEFI
 	
 	./baremetal.sh run-uefi
-
-This command relies on `mtools` to create a disk image formatted with FAT.
 
 
 ## Build a VMDK disk image for VMware
