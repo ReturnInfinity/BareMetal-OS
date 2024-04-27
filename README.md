@@ -136,11 +136,15 @@ Notes:
 
 # Running on a physical system
 
+> [!IMPORTANT]
+> Booting from a USB drive should work but BareMetal does not have a USB storage driver so you will not be able to load any programs after the command line interface comes up.
+
 > [!CAUTION]
 > Doublecheck that you are writing the disk image to the correct disk
 
 	dd if=baremetal_os.img of=/dev/sdc
 
 Once the disk image is written you can install the disk in the system and boot from it.
+
 
 // EOF
