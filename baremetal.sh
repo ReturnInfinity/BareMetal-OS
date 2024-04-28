@@ -64,6 +64,22 @@ function baremetal_setup {
 	echo Done!
 }
 
+function update_dir {
+	echo "Updating $1..."
+	cd "$1"
+	git pull -q
+	cd "$EXEC_DIR"
+}
+
+function baremetal_update {
+	git pull -q
+	update_dir "src/Pure64"
+	update_dir "src/BareMetal"
+	update_dir "src/BareMetal-Monitor"
+	update_dir "src/BMFS"
+	update_dir "src/BareMetal-Demo"
+}
+
 function build_dir {
 	echo "Building $1..."
 	cd "$1"
@@ -292,6 +308,7 @@ function baremetal_help {
 	echo "Available commands:"
 	echo "clean    - Clean the src and bin folders"
 	echo "setup    - Clean and setup"
+	echo "update   - Pull in the latest code"
 	echo "build    - Build source code"
 	echo "install  - Install binary to disk image"
 	echo "demos    - Install demos to disk image"
@@ -314,6 +331,8 @@ elif [ $# -eq 1 ]; then
 		baremetal_build
 	elif [ "$1" == "install" ]; then
 		baremetal_install
+	elif [ "$1" == "update" ]; then
+		baremetal_update
 	elif [ "$1" == "help" ]; then
 		baremetal_help
 	elif [ "$1" == "run" ]; then
