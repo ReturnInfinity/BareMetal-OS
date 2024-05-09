@@ -61,18 +61,18 @@ BareMetal OS consists of several different projects:
 
 # Supported Hardware
 
-1. CPU
-  - Multi-core on 64-bit x86 systems
-2. Bus
-  - PCIe
-  - PCI
-3. Network
-  - e1000 / e1000e
-4. Storage
-  - NVMe
-  - AHCI
-  - IDE
-  - Virtio-Blk
+* CPU
+  * Multi-core on 64-bit x86 systems (Intel/AMD)
+* Bus
+  * PCIe
+  * PCI
+* Network
+  * e1000 / e1000e
+* Storage
+  * NVMe
+  * AHCI (SATA)
+  * IDE
+  * Virtio-Blk
 
 
 # Initial configuration
