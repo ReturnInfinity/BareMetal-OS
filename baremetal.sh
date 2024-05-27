@@ -59,9 +59,11 @@ function baremetal_setup {
 	./bmfs bmfs.img format
 	cd ..
 
+	echo "Installing software to disk image..."
 	baremetal_install
+	baremetal_demos
 
-	echo Done!
+ 	echo Done!
 }
 
 function update_dir {
