@@ -59,7 +59,6 @@ function baremetal_setup {
 	./bmfs bmfs.img format
 	cd ..
 
-	echo "Installing software to disk image..."
 	baremetal_install
 	baremetal_demos
 
@@ -174,17 +173,14 @@ function baremetal_run {
 		-m 256
 		-smp sockets=1,cpus=4
 
-	# Network
+	# Network configuration. Use one controller.
 		-netdev socket,id=testnet,listen=:1234
-	# On a second machine uncomment the line below, comment the line above, and change the mac
-	#	-netdev socket,id=testnet,connect=127.0.0.1:1234
-	# Use one device type.
-		-device e1000,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82540EM
-	#	-device e1000e,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82574L
+	# Intel 82540EM
+		-device e1000,netdev=testnet,mac=10:11:12:13:14:15
+	# Intel 82574L
+	#	-device e1000e,netdev=testnet,mac=10:11:12:13:14:15
 	# VIRTIO
 	#	-device virtio-net-pci,netdev=testnet,mac=10:11:12:13:14:15 #,disable-legacy=on,disable-modern=false
-	# Output network traffic to file
-	#	-object filter-dump,id=testnet,netdev=testnet,file=net.pcap
 
 	# Disk configuration. Use one controller.
 		-drive id=disk0,file="sys/baremetal_os.img",if=none,format=raw
@@ -212,7 +208,10 @@ function baremetal_run {
 	#	-s
 	# Wait for GDB before starting execution
 	#	-S
+	# Output network traffic to file
+	#	-object filter-dump,id=testnet,netdev=testnet,file=net.pcap
 	# Trace options
+	#	-trace "e1000*"
 	#	-trace "virt*"
 	#	-trace "apic*"
 	#	-trace "msi*"
@@ -273,6 +272,25 @@ function baremetal_run-uefi {
 	"${cmd[@]}"
 }
 
+function baremetal_run_netclient {
+	# Make a copy of the latest disk image
+	cp sys/baremetal_os.img sys/baremetal_os2.img
+	# Start up a VM and connect to the first instance
+	echo "Starting QEMU..."
+	cmd=( qemu-system-x86_64
+		-machine q35
+		-name "BareMetal OS (Second Instance)"
+		-m 256
+		-smp sockets=1,cpus=4
+		-netdev socket,id=testnet,connect=127.0.0.1:1234
+		-device e1000,netdev=testnet,mac=10:11:12:13:CA:FE
+		-drive id=disk0,file="sys/baremetal_os2.img",if=none,format=raw
+		-device ahci,id=ahci
+		-device ide-hd,drive=disk0,bus=ahci.0
+	)
+	"${cmd[@]}"
+}
+
 function baremetal_vdi {
 	echo "Creating VDI image..."
 	VDI="3C3C3C2051454D5520564D205669727475616C204469736B20496D616765203E3E3E0A00000000000000000000000000000000000000000000000000000000007F10DABE010001008001000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000600000000000000000000000000000002000000000000000000100000000000001000000000000001000004000000AE8AA5DE02E79043BE0B20DA0E2863EC00D36EACC7B88D4AA988CF098BC1C90200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
@@ -316,6 +334,7 @@ function baremetal_help {
 	echo "demos    - Install demos to disk image"
 	echo "run      - Run the OS via QEMU"
 	echo "run-uefi - Run the OS via QEMU in UEFI mode"
+	echo "run-2    - Run a second instance of BareMetal for network testing"
 	echo "vdi      - Generate VDI disk image for VirtualBox"
 	echo "vmdk     - Generate VMDK disk image for VMware"
 	echo "bnr      - Build 'n Run"
@@ -341,6 +360,8 @@ elif [ $# -eq 1 ]; then
 		baremetal_run
 	elif [ "$1" == "run-uefi" ]; then
 		baremetal_run-uefi
+	elif [ "$1" == "run-2" ]; then
+		baremetal_run_netclient
 	elif [ "$1" == "demos" ]; then
 		baremetal_demos
 	elif [ "$1" == "vdi" ]; then

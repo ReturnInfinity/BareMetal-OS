@@ -23,6 +23,7 @@ BareMetal OS is an exokernel-based operating system crafted entirely in x86-64 a
 - [Running on a virtual system](#running-on-a-virtual-system)
   - [QEMU](#qemu)
   - [QEMU via UEFI](#qemu-via-uefi)
+  - [QEMU - Second Instance](#qemu-second-instance)
   - [VMware](#vmware)
   - [VirtualBox](#virtualbox)
   - [Bochs](#bochs)
@@ -113,6 +114,12 @@ This command installs the demo programs to the disk image.
 ## QEMU via UEFI
 	
 	./baremetal.sh run-uefi
+
+## QEMU - Second Instance
+
+	./baremetal.sh run-2
+
+Running a cloned second instance is useful for testing network connectivity between QEMU systems.
 
 ## VMware
 
