@@ -176,9 +176,9 @@ function baremetal_run {
 	# Network configuration. Use one controller.
 		-netdev socket,id=testnet,listen=:1234
 	# Intel 82540EM
-		-device e1000,netdev=testnet,mac=10:11:12:13:14:15
+		-device e1000,netdev=testnet,mac=10:11:12:08:25:40
 	# Intel 82574L
-	#	-device e1000e,netdev=testnet,mac=10:11:12:13:14:15
+	#	-device e1000e,netdev=testnet,mac=10:11:12:08:25:74
 	# VIRTIO
 	#	-device virtio-net-pci,netdev=testnet,mac=10:11:12:13:14:15 #,disable-legacy=on,disable-modern=false
 
@@ -211,7 +211,7 @@ function baremetal_run {
 	# Output network traffic to file
 	#	-object filter-dump,id=testnet,netdev=testnet,file=net.pcap
 	# Trace options
-	#	-trace "e1000*"
+	#	-trace "e1000e_core*"
 	#	-trace "virt*"
 	#	-trace "apic*"
 	#	-trace "msi*"
