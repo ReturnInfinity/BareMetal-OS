@@ -68,7 +68,10 @@ BareMetal OS consists of several different projects:
   * PCIe
   * PCI
 * Network
-  * e1000 / e1000e
+  * Intel 8254x Gigabit (e1000)
+  * Intel 8257x Gigabit (e1000e)
+  * Realtek 816x/811x Gigabit (rtl8169)
+  * Virtio-Net
 * Storage
   * NVMe
   * AHCI (SATA)
