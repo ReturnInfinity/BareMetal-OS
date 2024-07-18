@@ -15,7 +15,7 @@ function baremetal_setup {
 	mkdir src
 	mkdir sys
 
-	echo "Pulling code from GitHub..."
+	echo -n "Pulling code from GitHub... "
 	cd src
 	git clone https://github.com/ReturnInfinity/Pure64.git -q
 	git clone https://github.com/ReturnInfinity/BareMetal.git -q
@@ -23,8 +23,9 @@ function baremetal_setup {
 	git clone https://github.com/ReturnInfinity/BMFS.git -q
 	git clone https://github.com/ReturnInfinity/BareMetal-Demo.git -q
 	cd ..
+	echo "OK"
 
-	echo "Downloading UEFI firmware..."
+	echo -n "Downloading UEFI firmware... "
 	cd sys
 	if [ -x "$(command -v curl)" ]; then
 		curl -s -o OVMF.fd https://cdn.download.clearlinux.org/image/OVMF.fd
@@ -32,37 +33,43 @@ function baremetal_setup {
 		wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
 	fi
 	cd ..
+	echo "OK"
 
-	echo "Creating disk images..."
-	cd sys
-	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
-	dd if=/dev/zero of=null.bin count=8 bs=1 > /dev/null 2>&1
-	mformat -t 128 -h 2 -n 1024 -C -F -i fat32.img
-	mmd -i fat32.img ::/EFI
-	mmd -i fat32.img ::/EFI/BOOT
-	echo "\EFI\BOOT\BOOTX64.EFI" > startup.nsh
-	mcopy -i fat32.img startup.nsh ::/
-	rm startup.nsh
-	cd ..
-
-	echo "Preparing dependancies..."
+	echo -n "Preparing dependancies... "
 	cd src/BareMetal-Monitor
 	./setup.sh
 	cd ../..
 	cd src/BareMetal-Demo
 	./setup.sh
 	cd ../..
+	echo "OK"
 
+	echo -n "Assembling source code... "
 	baremetal_build
+	echo "OK"
 
+	echo -n "Creating disk images... "
+	cd sys
+	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
+	dd if=/dev/zero of=null.bin count=8 bs=1 > /dev/null 2>&1
+	mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
+	mmd -i fat32.img ::/EFI
+	mmd -i fat32.img ::/EFI/BOOT
+	echo "\EFI\BOOT\BOOTX64.EFI" > startup.nsh
+	mcopy -i fat32.img startup.nsh ::/
+	rm startup.nsh
+	cd ..
 	cd sys
 	./bmfs bmfs.img format
 	cd ..
+	echo "OK"
 
+	echo -n "Copying software to disk images... "
 	baremetal_install
 	baremetal_demos
+	echo "OK"
 
- 	echo Done!
+ 	echo -e "\nAll Done!"
 }
 
 function update_dir {
@@ -82,7 +89,6 @@ function baremetal_update {
 }
 
 function build_dir {
-	echo "Building $1..."
 	cd "$1"
 	if [ -e "build.sh" ]; then
 		./build.sh
@@ -114,24 +120,28 @@ function baremetal_build {
 	mv "src/BareMetal-Monitor/bin/monitor.bin" "${OUTPUT_DIR}/monitor.bin"
 	mv "src/BareMetal-Monitor/bin/monitor-debug.txt" "${OUTPUT_DIR}/monitor-debug.txt"
 	mv "src/BMFS/bin/bmfs" "${OUTPUT_DIR}/bmfs"
-}
 
-function baremetal_install {
 	cd "$OUTPUT_DIR"
-	echo "Building OS image..."
 
 	if [ "$#" -ne 1 ]; then
 		cat pure64.sys kernel.sys monitor.bin > software.sys
 	else
 		cat pure64.sys kernel.sys $1 > software.sys
 	fi
-
+	
 	# Copy software to BMFS for BIOS loading
 	dd if=software.sys of=bmfs.img bs=4096 seek=2 conv=notrunc > /dev/null 2>&1
-
+	
 	# Prep UEFI loader
 	cp uefi.sys BOOTX64.EFI
 	dd if=software.sys of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
+
+	cd ..
+}
+
+function baremetal_install {
+	cd "$OUTPUT_DIR"
+	echo "Writing software to disk image..."
 
 	# Copy UEFI boot to disk image
 	mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
