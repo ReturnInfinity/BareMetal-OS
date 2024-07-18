@@ -64,7 +64,7 @@ function baremetal_setup {
 	cd ..
 	echo "OK"
 
-	echo -n "Copying software to disk images... "
+	echo -n "Copying software to disk image... "
 	baremetal_install
 	baremetal_demos
 	echo "OK"
@@ -141,7 +141,6 @@ function baremetal_build {
 
 function baremetal_install {
 	cd "$OUTPUT_DIR"
-	echo "Writing software to disk image..."
 
 	# Copy UEFI boot to disk image
 	mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
@@ -157,7 +156,6 @@ function baremetal_install {
 }
 
 function baremetal_demos {
-	echo "Copying demos to disk image..."
 	cd src/BareMetal-Demo/bin
 	cp *.app ../../../sys/
 	cd ../../../sys/
