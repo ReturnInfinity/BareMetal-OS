@@ -76,7 +76,7 @@ function baremetal_setup {
 	baremetal_demos
 	echo "OK"
 
- 	echo -e "\nAll Done!"
+	echo -e "\nSetup Complete. Use './baremetal.sh run' to start."
 }
 
 function update_dir {
@@ -88,6 +88,7 @@ function update_dir {
 
 function baremetal_update {
 	git pull -q
+	baremetal_src_check
 	update_dir "src/Pure64"
 	update_dir "src/BareMetal"
 	update_dir "src/BareMetal-Monitor"
@@ -110,6 +111,7 @@ function build_dir {
 }
 
 function baremetal_build {
+	baremetal_src_check
 	build_dir "src/Pure64"
 	build_dir "src/BareMetal"
 	build_dir "src/BareMetal-Monitor"
@@ -147,6 +149,7 @@ function baremetal_build {
 }
 
 function baremetal_install {
+	baremetal_sys_check
 	cd "$OUTPUT_DIR"
 
 	# Copy UEFI boot to disk image
@@ -168,6 +171,7 @@ function baremetal_install {
 }
 
 function baremetal_demos {
+	baremetal_sys_check
 	cd src/BareMetal-Demo/bin
 	cp *.app ../../../sys/
 	cd ../../../sys/
@@ -186,6 +190,7 @@ function baremetal_demos {
 }
 
 function baremetal_run {
+	baremetal_sys_check
 	echo "Starting QEMU..."
 	cmd=( qemu-system-x86_64
 		-machine q35
@@ -245,6 +250,7 @@ function baremetal_run {
 }
 
 function baremetal_run-uefi {
+	baremetal_sys_check
 	echo "Starting QEMU..."
 	cmd=( qemu-system-x86_64
 		-machine q35
@@ -293,6 +299,7 @@ function baremetal_run-uefi {
 }
 
 function baremetal_run_netclient {
+	baremetal_sys_check
 	# Make a copy of the latest disk image
 	cp sys/baremetal_os.img sys/baremetal_os2.img
 	# Start up a VM and connect to the first instance
@@ -312,6 +319,7 @@ function baremetal_run_netclient {
 }
 
 function baremetal_vdi {
+	baremetal_sys_check
 	echo "Creating VDI image..."
 	VDI="3C3C3C2051454D5520564D205669727475616C204469736B20496D616765203E3E3E0A00000000000000000000000000000000000000000000000000000000007F10DABE010001008001000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000600000000000000000000000000000002000000000000000000100000000000001000000000000001000004000000AE8AA5DE02E79043BE0B20DA0E2863EC00D36EACC7B88D4AA988CF098BC1C90200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 
@@ -327,6 +335,7 @@ function baremetal_vdi {
 }
 
 function baremetal_vmdk {
+	baremetal_sys_check
 	echo "Creating VMDK image..."
 	qemu-img convert -O vmdk "$OUTPUT_DIR/baremetal_os.img" "$OUTPUT_DIR/BareMetal_OS.vmdk"
 }
@@ -359,6 +368,20 @@ function baremetal_help {
 	echo "vmdk     - Generate VMDK disk image for VMware"
 	echo "bnr      - Build 'n Run"
 	echo "bnr-uefi - Build 'n Run in UEFI mode"
+}
+
+function baremetal_src_check {
+	if [ ! -d src ]; then
+		echo "Files are missing. Please run './baremetal.sh setup' first."
+		exit 1
+	fi
+}
+
+function baremetal_sys_check {
+	if [ ! -d sys ]; then
+		echo "Files are missing. Please run './baremetal.sh setup' first."
+		exit 1
+	fi
 }
 
 if [ $# -eq 0 ]; then
