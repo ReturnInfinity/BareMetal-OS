@@ -135,10 +135,10 @@ function baremetal_build {
 	else
 		cat pure64.sys kernel.sys $1 > software.sys
 	fi
-	
+
 	# Copy software to BMFS for BIOS loading
 	dd if=software.sys of=bmfs.img bs=4096 seek=2 conv=notrunc > /dev/null 2>&1
-	
+
 	# Prep UEFI loader
 	cp uefi.sys BOOTX64.EFI
 	dd if=software.sys of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
