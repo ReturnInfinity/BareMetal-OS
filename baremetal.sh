@@ -10,6 +10,7 @@ function baremetal_clean {
 }
 
 function baremetal_setup {
+	echo -e "BareMetal OS Setup\n==================="
 	baremetal_clean
 
 	mkdir src
@@ -44,14 +45,9 @@ function baremetal_setup {
 	cd ../..
 	echo "OK"
 
-	echo -n "Assembling source code... "
-	baremetal_build
-	echo "OK"
-
 	echo -n "Creating disk image files... "
 	cd sys
 	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
-	dd if=/dev/zero of=null.bin count=8 bs=1 > /dev/null 2>&1
 	if [ -x "$(command -v mformat)" ]; then
 		mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
 		mmd -i fat32.img ::/EFI
@@ -63,6 +59,13 @@ function baremetal_setup {
 		dd if=/dev/zero of=fat32.img count=128 bs=1048576 > /dev/null 2>&1
 	fi
 	cd ..
+	echo "OK"
+
+	echo -n "Assembling source code... "
+	baremetal_build
+	echo "OK"
+
+	echo -n "Formatting BMFS disk... "
 	cd sys
 	./bmfs bmfs.img format
 	cd ..
