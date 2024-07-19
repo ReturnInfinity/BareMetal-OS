@@ -48,16 +48,20 @@ function baremetal_setup {
 	baremetal_build
 	echo "OK"
 
-	echo -n "Creating disk images... "
+	echo -n "Creating disk image files... "
 	cd sys
 	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
 	dd if=/dev/zero of=null.bin count=8 bs=1 > /dev/null 2>&1
-	mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
-	mmd -i fat32.img ::/EFI
-	mmd -i fat32.img ::/EFI/BOOT
-	echo "\EFI\BOOT\BOOTX64.EFI" > startup.nsh
-	mcopy -i fat32.img startup.nsh ::/
-	rm startup.nsh
+	if [ -x "$(command -v mformat)" ]; then
+		mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
+		mmd -i fat32.img ::/EFI
+		mmd -i fat32.img ::/EFI/BOOT
+		echo "\EFI\BOOT\BOOTX64.EFI" > startup.nsh
+		mcopy -i fat32.img startup.nsh ::/
+		rm startup.nsh
+	else
+		dd if=/dev/zero of=fat32.img count=128 bs=1048576 > /dev/null 2>&1
+	fi
 	cd ..
 	cd sys
 	./bmfs bmfs.img format
@@ -143,11 +147,16 @@ function baremetal_install {
 	cd "$OUTPUT_DIR"
 
 	# Copy UEFI boot to disk image
-	mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
+	if [ -x "$(command -v mcopy)" ]; then
+		mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
+	fi
+
 	# Copy first 3 bytes of MBR (jmp and nop)
 	dd if=bios.sys of=fat32.img bs=1 count=3 conv=notrunc > /dev/null 2>&1
 	# Copy MBR code starting at offset 90
 	dd if=bios.sys of=fat32.img bs=1 skip=90 seek=90 count=356 conv=notrunc > /dev/null 2>&1
+	# Copy Bootable flag (in case of no mtools)
+	dd if=bios.sys of=fat32.img bs=1 skip=510 seek=510 count=2 conv=notrunc > /dev/null 2>&1
 
 	# Create FAT32/BMFS hybrid disk
 	cat fat32.img bmfs.img > baremetal_os.img
