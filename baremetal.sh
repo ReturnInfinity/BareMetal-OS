@@ -10,12 +10,13 @@ function baremetal_clean {
 }
 
 function baremetal_setup {
+	echo -e "BareMetal OS Setup\n==================="
 	baremetal_clean
 
 	mkdir src
 	mkdir sys
 
-	echo "Pulling code from GitHub..."
+	echo -n "Pulling code from GitHub... "
 	cd src
 	git clone https://github.com/ReturnInfinity/Pure64.git -q
 	git clone https://github.com/ReturnInfinity/BareMetal.git -q
@@ -23,8 +24,9 @@ function baremetal_setup {
 	git clone https://github.com/ReturnInfinity/BMFS.git -q
 	git clone https://github.com/ReturnInfinity/BareMetal-Demo.git -q
 	cd ..
+	echo "OK"
 
-	echo "Downloading UEFI firmware..."
+	echo -n "Downloading UEFI firmware... "
 	cd sys
 	if [ -x "$(command -v curl)" ]; then
 		curl -s -o OVMF.fd https://cdn.download.clearlinux.org/image/OVMF.fd
@@ -32,37 +34,49 @@ function baremetal_setup {
 		wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
 	fi
 	cd ..
+	echo "OK"
 
-	echo "Creating disk images..."
-	cd sys
-	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
-	dd if=/dev/zero of=null.bin count=8 bs=1 > /dev/null 2>&1
-	mformat -t 128 -h 2 -n 1024 -C -F -i fat32.img
-	mmd -i fat32.img ::/EFI
-	mmd -i fat32.img ::/EFI/BOOT
-	echo "\EFI\BOOT\BOOTX64.EFI" > startup.nsh
-	mcopy -i fat32.img startup.nsh ::/
-	rm startup.nsh
-	cd ..
-
-	echo "Preparing dependancies..."
+	echo -n "Preparing dependancies... "
 	cd src/BareMetal-Monitor
 	./setup.sh
 	cd ../..
 	cd src/BareMetal-Demo
 	./setup.sh
 	cd ../..
+	echo "OK"
 
+	echo -n "Creating disk image files... "
+	cd sys
+	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
+	if [ -x "$(command -v mformat)" ]; then
+		mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
+		mmd -i fat32.img ::/EFI
+		mmd -i fat32.img ::/EFI/BOOT
+		echo "\EFI\BOOT\BOOTX64.EFI" > startup.nsh
+		mcopy -i fat32.img startup.nsh ::/
+		rm startup.nsh
+	else
+		dd if=/dev/zero of=fat32.img count=128 bs=1048576 > /dev/null 2>&1
+	fi
+	cd ..
+	echo "OK"
+
+	echo -n "Assembling source code... "
 	baremetal_build
+	echo "OK"
 
+	echo -n "Formatting BMFS disk... "
 	cd sys
 	./bmfs bmfs.img format
 	cd ..
+	echo "OK"
 
+	echo -n "Copying software to disk image... "
 	baremetal_install
 	baremetal_demos
+	echo "OK"
 
- 	echo Done!
+	echo -e "\nSetup Complete. Use './baremetal.sh run' to start."
 }
 
 function update_dir {
@@ -74,6 +88,7 @@ function update_dir {
 
 function baremetal_update {
 	git pull -q
+	baremetal_src_check
 	update_dir "src/Pure64"
 	update_dir "src/BareMetal"
 	update_dir "src/BareMetal-Monitor"
@@ -82,7 +97,6 @@ function baremetal_update {
 }
 
 function build_dir {
-	echo "Building $1..."
 	cd "$1"
 	if [ -e "build.sh" ]; then
 		./build.sh
@@ -97,6 +111,7 @@ function build_dir {
 }
 
 function baremetal_build {
+	baremetal_src_check
 	build_dir "src/Pure64"
 	build_dir "src/BareMetal"
 	build_dir "src/BareMetal-Monitor"
@@ -114,11 +129,8 @@ function baremetal_build {
 	mv "src/BareMetal-Monitor/bin/monitor.bin" "${OUTPUT_DIR}/monitor.bin"
 	mv "src/BareMetal-Monitor/bin/monitor-debug.txt" "${OUTPUT_DIR}/monitor-debug.txt"
 	mv "src/BMFS/bin/bmfs" "${OUTPUT_DIR}/bmfs"
-}
 
-function baremetal_install {
 	cd "$OUTPUT_DIR"
-	echo "Building OS image..."
 
 	if [ "$#" -ne 1 ]; then
 		cat pure64.sys kernel.sys monitor.bin > software.sys
@@ -133,12 +145,24 @@ function baremetal_install {
 	cp uefi.sys BOOTX64.EFI
 	dd if=software.sys of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
 
+	cd ..
+}
+
+function baremetal_install {
+	baremetal_sys_check
+	cd "$OUTPUT_DIR"
+
 	# Copy UEFI boot to disk image
-	mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
+	if [ -x "$(command -v mcopy)" ]; then
+		mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
+	fi
+
 	# Copy first 3 bytes of MBR (jmp and nop)
 	dd if=bios.sys of=fat32.img bs=1 count=3 conv=notrunc > /dev/null 2>&1
 	# Copy MBR code starting at offset 90
 	dd if=bios.sys of=fat32.img bs=1 skip=90 seek=90 count=356 conv=notrunc > /dev/null 2>&1
+	# Copy Bootable flag (in case of no mtools)
+	dd if=bios.sys of=fat32.img bs=1 skip=510 seek=510 count=2 conv=notrunc > /dev/null 2>&1
 
 	# Create FAT32/BMFS hybrid disk
 	cat fat32.img bmfs.img > baremetal_os.img
@@ -147,7 +171,7 @@ function baremetal_install {
 }
 
 function baremetal_demos {
-	echo "Copying demos to disk image..."
+	baremetal_sys_check
 	cd src/BareMetal-Demo/bin
 	cp *.app ../../../sys/
 	cd ../../../sys/
@@ -166,6 +190,7 @@ function baremetal_demos {
 }
 
 function baremetal_run {
+	baremetal_sys_check
 	echo "Starting QEMU..."
 	cmd=( qemu-system-x86_64
 		-machine q35
@@ -225,6 +250,7 @@ function baremetal_run {
 }
 
 function baremetal_run-uefi {
+	baremetal_sys_check
 	echo "Starting QEMU..."
 	cmd=( qemu-system-x86_64
 		-machine q35
@@ -273,6 +299,7 @@ function baremetal_run-uefi {
 }
 
 function baremetal_run_netclient {
+	baremetal_sys_check
 	# Make a copy of the latest disk image
 	cp sys/baremetal_os.img sys/baremetal_os2.img
 	# Start up a VM and connect to the first instance
@@ -292,6 +319,7 @@ function baremetal_run_netclient {
 }
 
 function baremetal_vdi {
+	baremetal_sys_check
 	echo "Creating VDI image..."
 	VDI="3C3C3C2051454D5520564D205669727475616C204469736B20496D616765203E3E3E0A00000000000000000000000000000000000000000000000000000000007F10DABE010001008001000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000600000000000000000000000000000002000000000000000000100000000000001000000000000001000004000000AE8AA5DE02E79043BE0B20DA0E2863EC00D36EACC7B88D4AA988CF098BC1C90200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 
@@ -307,6 +335,7 @@ function baremetal_vdi {
 }
 
 function baremetal_vmdk {
+	baremetal_sys_check
 	echo "Creating VMDK image..."
 	qemu-img convert -O vmdk "$OUTPUT_DIR/baremetal_os.img" "$OUTPUT_DIR/BareMetal_OS.vmdk"
 }
@@ -339,6 +368,20 @@ function baremetal_help {
 	echo "vmdk     - Generate VMDK disk image for VMware"
 	echo "bnr      - Build 'n Run"
 	echo "bnr-uefi - Build 'n Run in UEFI mode"
+}
+
+function baremetal_src_check {
+	if [ ! -d src ]; then
+		echo "Files are missing. Please run './baremetal.sh setup' first."
+		exit 1
+	fi
+}
+
+function baremetal_sys_check {
+	if [ ! -d sys ]; then
+		echo "Files are missing. Please run './baremetal.sh setup' first."
+		exit 1
+	fi
 }
 
 if [ $# -eq 0 ]; then
