@@ -94,6 +94,7 @@ BareMetal OS consists of several different projects:
 
 	./baremetal.sh build
 
+This command builds the boot sector, loader (Pure64), kernel, and simple command line interface (Monitor) to the disk image. If you want to attach your own binary to the end of the kernel you can use `./baremetal.sh build mybinary.bin`
 
 # Installing
 
@@ -101,7 +102,7 @@ BareMetal OS consists of several different projects:
 
 	./baremetal.sh install
 
-This command installs the boot sector, loader (Pure64), kernel, and simple command line interface (Monitor) to the disk image. If you want to attach your own binary to the end of the kernel you can use `./baremetal.sh install mybinary.bin`
+This command installs the software to the disk image.
 
 ## Installing the demos
 
