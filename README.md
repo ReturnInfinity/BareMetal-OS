@@ -149,6 +149,27 @@ Notes:
 
 # Running on a physical system
 
+Booting via BIOS and UEFI is supported. Secure boot in UEFI mode must be disabled since this software isn't signed.
+
+Debug logging is output via the serial port (115200 bps, 8 data bits, 1 stop bit, no parity, no flow control). The output should look similar to this:
+```
+[ Pure64 ]
+boot bios
+pml4 ok
+acpi ok
+bsp ok
+pic ok
+smp ok
+kernel start
+
+[ BareMetal ]
+64      
+bus     
+storage 
+network 
+system ready
+```
+
 > [!IMPORTANT]
 > Booting from a USB drive should work but BareMetal does not have a USB storage driver so you will not be able to load any programs after the command line interface comes up.
 
