@@ -135,7 +135,10 @@ Running a cloned second instance is useful for testing network connectivity betw
 
 	./baremetal.sh vdi
 
-The VDI script rewrites the disk ID of the VDI file to avoid the disk warning in VirtualBox.
+Notes:
+- The VDI script rewrites the disk ID of the VDI file to avoid the disk warning in VirtualBox.
+- The `Chipset Type` for the VirtualBox VM must be `ICH9`
+- The `Storage Controller` should be `ACHI (SATA)` or `NVMe (PCIe)`
 
 ## Bochs
 
@@ -149,7 +152,7 @@ Notes:
 
 # Running on a physical system
 
-Booting via BIOS and UEFI is supported. Secure boot in UEFI mode must be disabled since this software isn't signed. You may need to press <kbd>DEL</kbd> or <kbd>F12</kbd> on the keyboard on powerup to select the boot drive.
+Booting via BIOS and UEFI is supported. Secure boot in UEFI mode must be disabled since this software isn't signed. You may need to press <kbd>DEL</kbd> or <kbd>F12</kbd> on the keyboard on power-up to select the boot drive.
 
 Debug logging is output via the serial port (115200 bps, 8 data bits, 1 stop bit, no parity, no flow control). The output should look similar to this:
 ```
@@ -163,10 +166,10 @@ smp ok
 kernel start
 
 [ BareMetal ]
-64      
-bus     
-storage 
-network 
+64
+bus
+storage
+network
 system ready
 ```
 
