@@ -149,7 +149,7 @@ Notes:
 
 # Running on a physical system
 
-Booting via BIOS and UEFI is supported. Secure boot in UEFI mode must be disabled since this software isn't signed.
+Booting via BIOS and UEFI is supported. Secure boot in UEFI mode must be disabled since this software isn't signed. You may need to press <kbd>DEL</kbd> or <kbd>F12</kbd> on the keyboard on powerup to select the boot drive.
 
 Debug logging is output via the serial port (115200 bps, 8 data bits, 1 stop bit, no parity, no flow control). The output should look similar to this:
 ```
