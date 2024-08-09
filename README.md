@@ -1,7 +1,7 @@
 <p align="center">
 	<img src="images/BareMetal OS - Light.png#gh-light-mode-only"></img>
 	<img src="images/BareMetal OS - Dark.png#gh-dark-mode-only"></img>
-	<img src="images/ScreenShot.png"></img>
+	<img src="images/Screenshot.png"></img>
 </p>
 
 [Discuss this project here](https://github.com/ReturnInfinity/BareMetal-OS/discussions)
