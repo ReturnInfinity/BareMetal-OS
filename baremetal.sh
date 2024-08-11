@@ -183,6 +183,7 @@ function baremetal_demos {
 	if [ "$(uname)" != "Darwin" ]; then
 		./bmfs bmfs.img write helloc.app
 		./bmfs bmfs.img write gavare.app
+		./bmfs bmfs.img write minIP.app
 	fi
 
 	# Create FAT32/BMFS hybrid disk
