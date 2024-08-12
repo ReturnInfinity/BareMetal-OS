@@ -188,6 +188,8 @@ function baremetal_demos {
 
 	# Create FAT32/BMFS hybrid disk
 	cat fat32.img bmfs.img > baremetal_os.img
+
+	cd ..
 }
 
 function baremetal_run {
@@ -344,12 +346,14 @@ function baremetal_vmdk {
 function baremetal_bnr {
 	baremetal_build
 	baremetal_install
+	baremetal_demos
 	baremetal_run
 }
 
 function baremetal_bnr-uefi {
 	baremetal_build
 	baremetal_install
+	baremetal_demos
 	baremetal_run-uefi
 }
 
