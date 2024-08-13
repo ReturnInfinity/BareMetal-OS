@@ -184,6 +184,7 @@ function baremetal_demos {
 		./bmfs bmfs.img write helloc.app
 		./bmfs bmfs.img write gavare.app
 		./bmfs bmfs.img write minIP.app
+		./bmfs bmfs.img write cube3d.app
 	fi
 
 	# Create FAT32/BMFS hybrid disk
