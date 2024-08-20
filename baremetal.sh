@@ -176,9 +176,7 @@ function baremetal_demos {
 	cp *.app ../../../sys/
 	cd ../../../sys/
 	./bmfs bmfs.img write hello.app
-	./bmfs bmfs.img write ethtest.app
 	./bmfs bmfs.img write sysinfo.app
-	./bmfs bmfs.img write euler1.app
 	./bmfs bmfs.img write systest.app
 	if [ "$(uname)" != "Darwin" ]; then
 		./bmfs bmfs.img write helloc.app
