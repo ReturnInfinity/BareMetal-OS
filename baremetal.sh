@@ -180,7 +180,7 @@ function baremetal_demos {
 	./bmfs bmfs.img write systest.app
 	if [ "$(uname)" != "Darwin" ]; then
 		./bmfs bmfs.img write helloc.app
-		./bmfs bmfs.img write gavare.app
+		./bmfs bmfs.img write raytrace.app
 		./bmfs bmfs.img write minIP.app
 		./bmfs bmfs.img write cube3d.app
 		./bmfs bmfs.img write color-plasma.app
