@@ -178,6 +178,7 @@ function baremetal_demos {
 	./bmfs bmfs.img write hello.app
 	./bmfs bmfs.img write sysinfo.app
 	./bmfs bmfs.img write systest.app
+	./bmfs bmfs.img write uitest.app
 	if [ "$(uname)" != "Darwin" ]; then
 		./bmfs bmfs.img write helloc.app
 		./bmfs bmfs.img write raytrace.app
