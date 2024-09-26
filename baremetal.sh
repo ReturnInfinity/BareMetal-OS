@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set +e
 export EXEC_DIR="$PWD"
 export OUTPUT_DIR="$EXEC_DIR/sys"
 
@@ -50,8 +50,12 @@ function baremetal_setup {
 	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
 	if [ -x "$(command -v mformat)" ]; then
 		mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
-		mmd -i fat32.img ::/EFI
-		mmd -i fat32.img ::/EFI/BOOT
+		mmd -i fat32.img ::/EFI > /dev/null 2>&1
+		mmd -i fat32.img ::/EFI/BOOT > /dev/null 2>&1
+		retVal=$?
+		if [ $retVal -ne 0 ]; then
+			echo -n "no UEFI support (due to bad mtools), "
+		fi
 		echo "\EFI\BOOT\BOOTX64.EFI" > startup.nsh
 		mcopy -i fat32.img startup.nsh ::/
 		rm startup.nsh
@@ -154,7 +158,11 @@ function baremetal_install {
 
 	# Copy UEFI boot to disk image
 	if [ -x "$(command -v mcopy)" ]; then
-		mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI
+		mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI > /dev/null 2>&1
+		retVal=$?
+		if [ $retVal -ne 0 ]; then
+			echo -n "no UEFI support (due to bad mtools), "
+		fi
 	fi
 
 	# Copy first 3 bytes of MBR (jmp and nop)
