@@ -62,6 +62,7 @@ function baremetal_setup {
 	else
 		dd if=/dev/zero of=fat32.img count=128 bs=1048576 > /dev/null 2>&1
 	fi
+	dd if=/dev/zero of=floppy.img count=2880 bs=512 > /dev/null 2>&1
 	cd ..
 	echo "OK"
 
@@ -128,6 +129,8 @@ function baremetal_build {
 	mv "src/Pure64/bin/uefi-debug.txt" "${OUTPUT_DIR}/uefi-debug.txt"
 	mv "src/Pure64/bin/bios.sys" "${OUTPUT_DIR}/bios.sys"
 	mv "src/Pure64/bin/bios-debug.txt" "${OUTPUT_DIR}/bios-debug.txt"
+	mv "src/Pure64/bin/bios-floppy.sys" "${OUTPUT_DIR}/bios-floppy.sys"
+	mv "src/Pure64/bin/bios-floppy-debug.txt" "${OUTPUT_DIR}/bios-floppy-debug.txt"
 	mv "src/BareMetal/bin/kernel.sys" "${OUTPUT_DIR}/kernel.sys"
 	mv "src/BareMetal/bin/kernel-debug.txt" "${OUTPUT_DIR}/kernel-debug.txt"
 	mv "src/BareMetal-Monitor/bin/monitor.bin" "${OUTPUT_DIR}/monitor.bin"
@@ -174,6 +177,10 @@ function baremetal_install {
 
 	# Create FAT32/BMFS hybrid disk
 	cat fat32.img bmfs.img > baremetal_os.img
+
+	# Create Floppy bootable system disk
+	cat bios-floppy.sys pure64.sys kernel.sys monitor.bin > floppy.sys
+	dd if=floppy.sys of=floppy.img conv=notrunc > /dev/null 2>&1
 
 	cd ..
 }
