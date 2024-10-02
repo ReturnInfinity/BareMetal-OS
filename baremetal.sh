@@ -62,7 +62,6 @@ function baremetal_setup {
 	else
 		dd if=/dev/zero of=fat32.img count=128 bs=1048576 > /dev/null 2>&1
 	fi
-	dd if=/dev/zero of=floppy.img count=2880 bs=512 > /dev/null 2>&1
 	cd ..
 	echo "OK"
 
@@ -151,6 +150,8 @@ function baremetal_build {
 	# Prep UEFI loader
 	cp uefi.sys BOOTX64.EFI
 	dd if=software.sys of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
+
+ 	dd if=/dev/zero of=floppy.img count=2880 bs=512 > /dev/null 2>&1
 
 	cd ..
 }
