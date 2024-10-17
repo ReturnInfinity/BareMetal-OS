@@ -176,7 +176,7 @@ system ready
 ```
 
 > [!IMPORTANT]
-> Booting from a USB drive should work but BareMetal does not have a USB storage driver so you will not be able to load any programs after the command line interface comes up.
+> Booting from a floppy or USB drive should work but BareMetal doesn't have a device driver for the floppy disk controller, or USB, so you will not be able to load any programs after the command line interface comes up.
 
 > [!CAUTION]
 > Doublecheck that you are writing the disk image to the correct disk
