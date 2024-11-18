@@ -160,6 +160,15 @@ function baremetal_install {
 	baremetal_sys_check
 	cd "$OUTPUT_DIR"
 
+	# Inject a program binary into BOOTX64.EFI if there was an argument
+	if [ "$#" -eq 1 ]; then
+		if [ -f $1 ]; then
+			dd if=$1 of=BOOTX64.EFI bs=1024 seek=42 conv=notrunc > /dev/null 2>&1
+		else
+			echo "$1 does not exist. Skipping app injection"
+		fi
+	fi
+
 	# Copy UEFI boot to disk image
 	if [ -x "$(command -v mcopy)" ]; then
 		mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI > /dev/null 2>&1
