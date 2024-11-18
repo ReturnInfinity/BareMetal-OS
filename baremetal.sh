@@ -48,6 +48,7 @@ function baremetal_setup {
 	echo -n "Creating disk image files... "
 	cd sys
 	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
+ 	dd if=/dev/zero of=bmfs-lite.img count=1 bs=1048576 > /dev/null 2>&1
 	if [ -x "$(command -v mformat)" ]; then
 		mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
 		mmd -i fat32.img ::/EFI > /dev/null 2>&1
@@ -150,6 +151,7 @@ function baremetal_build {
 	# Prep UEFI loader
 	cp uefi.sys BOOTX64.EFI
 	dd if=software.sys of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
+ 	dd if=bmfs-lite.img of=BOOTX64.EFI bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
 
  	dd if=/dev/zero of=floppy.img count=2880 bs=512 > /dev/null 2>&1
 
