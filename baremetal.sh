@@ -163,7 +163,14 @@ function baremetal_install {
 	# Inject a program binary into BOOTX64.EFI if there was an argument
 	if [ "$#" -eq 1 ]; then
 		if [ -f $1 ]; then
-			dd if=$1 of=BOOTX64.EFI bs=1024 seek=42 conv=notrunc > /dev/null 2>&1
+			filesize=$(wc -c <"$1")
+			maxsize=22528
+			if [ $filesize -le $maxsize ]; then
+				dd if=$1 of=BOOTX64.EFI bs=1024 seek=42 conv=notrunc > /dev/null 2>&1
+			else
+				echo "$1 is over $maxsize bytes. Skipping app injection"
+			fi
+			
 		else
 			echo "$1 does not exist. Skipping app injection"
 		fi
