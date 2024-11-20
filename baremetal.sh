@@ -136,6 +136,7 @@ function baremetal_build {
 	mv "src/BareMetal-Monitor/bin/monitor.bin" "${OUTPUT_DIR}/monitor.bin"
 	mv "src/BareMetal-Monitor/bin/monitor-debug.txt" "${OUTPUT_DIR}/monitor-debug.txt"
 	mv "src/BMFS/bin/bmfs" "${OUTPUT_DIR}/bmfs"
+	mv "src/BMFS/bin/bmfslite" "${OUTPUT_DIR}/bmfslite"
 
 	cd "$OUTPUT_DIR"
 
