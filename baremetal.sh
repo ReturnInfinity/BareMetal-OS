@@ -48,6 +48,7 @@ function baremetal_setup {
 	echo -n "Creating disk image files... "
 	cd sys
 	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
+	dd if=/dev/zero of=bmfs-lite.img count=1 bs=1048576 > /dev/null 2>&1
 	if [ -x "$(command -v mformat)" ]; then
 		mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
 		mmd -i fat32.img ::/EFI > /dev/null 2>&1
@@ -62,7 +63,6 @@ function baremetal_setup {
 	else
 		dd if=/dev/zero of=fat32.img count=128 bs=1048576 > /dev/null 2>&1
 	fi
-	./bmfslite bmfs-lite.img initialize
 	cd ..
 	echo "OK"
 
@@ -230,12 +230,12 @@ function baremetal_demos {
 	./bmfslite bmfs-lite.img write sysinfo.app
 	./bmfslite bmfs-lite.img write systest.app
 	if [ "$(uname)" != "Darwin" ]; then
-		./bmfslite bmfs.img write helloc.app
-		./bmfslite bmfs.img write raytrace.app
-		./bmfslite bmfs.img write minIP.app
-		./bmfslite bmfs.img write cube3d.app
-		./bmfslite bmfs.img write color-plasma.app
-		./bmfslite bmfs.img write 3d-model-loader.app
+		./bmfslite bmfs-lite.img write helloc.app
+		./bmfslite bmfs-lite.img write raytrace.app
+		./bmfslite bmfs-lite.img write minIP.app
+		./bmfslite bmfs-lite.img write cube3d.app
+		./bmfslite bmfs-lite.img write color-plasma.app
+		./bmfslite bmfs-lite.img write 3d-model-loader.app
 	fi
 
 	# Create FAT32/BMFS hybrid disk
