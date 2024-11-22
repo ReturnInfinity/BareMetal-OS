@@ -273,7 +273,9 @@ function baremetal_run {
 	#	-device virtio-blk,drive=disk0 #,disable-legacy=on,disable-modern=false
 	# IDE
 	#	-device ide-hd,drive=disk0,bus=ide.0
-
+	# Floppy
+	#	-drive format=raw,file="sys/floppy.img",index=0,if=floppy
+  
 	# Serial configuration
 	# Output serial to file
 		-serial file:"sys/serial.log"
