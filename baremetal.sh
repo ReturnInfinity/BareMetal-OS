@@ -78,7 +78,7 @@ function baremetal_setup {
 
 	echo -n "Copying software to disk image... "
 	baremetal_install
-	baremetal_demos
+	baremetal_install_demos
 	echo "OK"
 
 	echo -e "\nSetup Complete. Use './baremetal.sh run' to start."
@@ -112,6 +112,7 @@ function build_dir {
 	if [ -e "Makefile" ]; then
 		make --quiet
 	fi
+	mv bin/* "${OUTPUT_DIR}"
 	cd "$EXEC_DIR"
 }
 
@@ -123,28 +124,17 @@ function baremetal_build {
 	build_dir "src/BMFS"
 	build_dir "src/BareMetal-Demo"
 
-	mv "src/Pure64/bin/pure64.sys" "${OUTPUT_DIR}/pure64.sys"
-	mv "src/Pure64/bin/pure64-debug.txt" "${OUTPUT_DIR}/pure64-debug.txt"
-	mv "src/Pure64/bin/uefi.sys" "${OUTPUT_DIR}/uefi.sys"
-	mv "src/Pure64/bin/uefi-debug.txt" "${OUTPUT_DIR}/uefi-debug.txt"
-	mv "src/Pure64/bin/bios.sys" "${OUTPUT_DIR}/bios.sys"
-	mv "src/Pure64/bin/bios-debug.txt" "${OUTPUT_DIR}/bios-debug.txt"
-	mv "src/Pure64/bin/bios-floppy.sys" "${OUTPUT_DIR}/bios-floppy.sys"
-	mv "src/Pure64/bin/bios-floppy-debug.txt" "${OUTPUT_DIR}/bios-floppy-debug.txt"
-	mv "src/BareMetal/bin/kernel.sys" "${OUTPUT_DIR}/kernel.sys"
-	mv "src/BareMetal/bin/kernel-debug.txt" "${OUTPUT_DIR}/kernel-debug.txt"
-	mv "src/BareMetal-Monitor/bin/monitor.bin" "${OUTPUT_DIR}/monitor.bin"
-	mv "src/BareMetal-Monitor/bin/monitor-debug.txt" "${OUTPUT_DIR}/monitor-debug.txt"
-	mv "src/BMFS/bin/bmfs" "${OUTPUT_DIR}/bmfs"
-	mv "src/BMFS/bin/bmfslite" "${OUTPUT_DIR}/bmfslite"
-
 	cd "$OUTPUT_DIR"
 
-	# Inject a program binary to the kernel (ORG 0x001E0000)
+	# Inject a program binary into to the kernel (ORG 0x001E0000)
 	if [ "$#" -ne 1 ]; then
 		cat pure64.sys kernel.sys monitor.bin > software.sys
 	else
-		cat pure64.sys kernel.sys $1 > software.sys
+		if [ -f $1 ]; then
+			cat pure64.sys kernel.sys $1 > software.sys
+		else
+			echo "$1 does not exist. Skipping binary injection"
+		fi
 	fi
 
 	# Copy software to BMFS for BIOS loading
@@ -208,11 +198,9 @@ function baremetal_install {
 	cd ..
 }
 
-function baremetal_demos {
+function baremetal_install_demos {
 	baremetal_sys_check
-	cd src/BareMetal-Demo/bin
-	cp *.app ../../../sys/
-	cd ../../../sys/
+	cd "$OUTPUT_DIR"
 	./bmfs bmfs.img write hello.app
 	./bmfs bmfs.img write sysinfo.app
 	./bmfs bmfs.img write systest.app
@@ -400,14 +388,14 @@ function baremetal_vmdk {
 function baremetal_bnr {
 	baremetal_build
 	baremetal_install
-	baremetal_demos
+	baremetal_install_demos
 	baremetal_run
 }
 
 function baremetal_bnr-uefi {
 	baremetal_build
 	baremetal_install
-	baremetal_demos
+	baremetal_install_demos
 	baremetal_run-uefi
 }
 
@@ -465,7 +453,7 @@ elif [ $# -eq 1 ]; then
 	elif [ "$1" == "run-2" ]; then
 		baremetal_run_netclient
 	elif [ "$1" == "demos" ]; then
-		baremetal_demos
+		baremetal_install_demos
 	elif [ "$1" == "vdi" ]; then
 		baremetal_vdi
 	elif [ "$1" == "bnr" ]; then
@@ -476,7 +464,9 @@ elif [ $# -eq 1 ]; then
 		echo "Invalid argument '$1'"
 	fi
 elif [ $# -eq 2 ]; then
-	if [ "$1" == "install" ]; then
+	if [ "$1" == "build" ]; then
+		baremetal_build $2
+	elif [ "$1" == "install" ]; then
 		baremetal_install $2
 	fi
 fi
