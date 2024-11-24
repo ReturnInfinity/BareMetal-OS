@@ -140,6 +140,7 @@ function baremetal_build {
 
 	cd "$OUTPUT_DIR"
 
+	# Inject a program binary to the kernel (ORG 0x001E0000)
 	if [ "$#" -ne 1 ]; then
 		cat pure64.sys kernel.sys monitor.bin > software.sys
 	else
@@ -173,7 +174,6 @@ function baremetal_install {
 			else
 				echo "$1 is over $maxsize bytes. Skipping app injection"
 			fi
-			
 		else
 			echo "$1 does not exist. Skipping app injection"
 		fi
@@ -226,7 +226,7 @@ function baremetal_demos {
 		./bmfs bmfs.img write 3d-model-loader.app
 	fi
 	./bmfslite bmfs-lite.img initialize
-	./bmfslite bmfs-lite.img write hello.app  
+	./bmfslite bmfs-lite.img write hello.app
 	./bmfslite bmfs-lite.img write sysinfo.app
 	./bmfslite bmfs-lite.img write systest.app
 	if [ "$(uname)" != "Darwin" ]; then
@@ -275,7 +275,7 @@ function baremetal_run {
 	#	-device ide-hd,drive=disk0,bus=ide.0
 	# Floppy
 	#	-drive format=raw,file="sys/floppy.img",index=0,if=floppy
-  
+
 	# Serial configuration
 	# Output serial to file
 		-serial file:"sys/serial.log"
