@@ -4,6 +4,19 @@ set +e
 export EXEC_DIR="$PWD"
 export OUTPUT_DIR="$EXEC_DIR/sys"
 
+# see if APPS was defined
+# eg APPS="hello.app systest.app" ./baremetal.sh setup
+# if APPS is empty then supply the default apps
+# this allows the user to build their own apps and have
+# them installed in the BMFS
+if [ "x$APPS" = x ]; then
+	APPS="hello.app sysinfo.app systest.app uitest.app"
+	if [ "$(uname)" != "Darwin" ]; then
+		APPS="$APPS helloc.app raytrace.app minIP.app cube3d.app
+		       color-plasma.app 3d-model-loader.app"
+	fi
+fi
+
 function baremetal_clean {
 	rm -rf src
 	rm -rf sys
@@ -187,32 +200,16 @@ function baremetal_install_demos {
 	cd "$OUTPUT_DIR"
 
 	# Build disk image
-	./bmfs bmfs.img write hello.app
-	./bmfs bmfs.img write sysinfo.app
-	./bmfs bmfs.img write systest.app
-	./bmfs bmfs.img write uitest.app
-	if [ "$(uname)" != "Darwin" ]; then
-		./bmfs bmfs.img write helloc.app
-		./bmfs bmfs.img write raytrace.app
-		./bmfs bmfs.img write minIP.app
-		./bmfs bmfs.img write cube3d.app
-		./bmfs bmfs.img write color-plasma.app
-		./bmfs bmfs.img write 3d-model-loader.app
-	fi
+	for app in $APPS; do
+		echo "write $app"
+		./bmfs bmfs.img write $app
+	done
 
 	# Build RAM drive image
 	./bmfslite bmfs-lite.img initialize
-	./bmfslite bmfs-lite.img write hello.app
-	./bmfslite bmfs-lite.img write sysinfo.app
-	./bmfslite bmfs-lite.img write systest.app
-	if [ "$(uname)" != "Darwin" ]; then
-		./bmfslite bmfs-lite.img write helloc.app
-		./bmfslite bmfs-lite.img write raytrace.app
-		./bmfslite bmfs-lite.img write minIP.app
-		./bmfslite bmfs-lite.img write cube3d.app
-		./bmfslite bmfs-lite.img write color-plasma.app
-		./bmfslite bmfs-lite.img write 3d-model-loader.app
-	fi
+	for app in $APPS; do
+		./bmfslite bmfs-lite.img write $app
+	done
 
 	# Create FAT32/BMFS hybrid disk
 	cat fat32.img bmfs.img > baremetal_os.img
