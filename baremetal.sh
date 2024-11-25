@@ -201,7 +201,6 @@ function baremetal_install_demos {
 
 	# Build disk image
 	for app in $APPS; do
-		echo "write $app"
 		./bmfs bmfs.img write $app
 	done
 
