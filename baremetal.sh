@@ -150,26 +150,10 @@ function baremetal_build {
 	cd ..
 }
 
+# Install boot sector, Pure64, kernel
 function baremetal_install {
 	baremetal_sys_check
 	cd "$OUTPUT_DIR"
-
-	# Inject a program binary into BOOTX64.EFI if there was an argument
-	if [ "$#" -eq 1 ]; then
-		if [ -f $1 ]; then
-			filesize=$(wc -c <"$1")
-			maxsize=22528
-			if [ $filesize -le $maxsize ]; then
-				dd if=$1 of=BOOTX64.EFI bs=1024 seek=42 conv=notrunc > /dev/null 2>&1
-			else
-				echo "$1 is over $maxsize bytes. Skipping app injection"
-			fi
-		else
-			echo "$1 does not exist. Skipping app injection"
-		fi
-	fi
-
-	dd if=bmfs-lite.img of=BOOTX64.EFI bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
 
 	# Copy UEFI boot to disk image
 	if [ -x "$(command -v mcopy)" ]; then
@@ -193,14 +177,16 @@ function baremetal_install {
 	# Create Floppy bootable system disk
 	cat bios-floppy.sys pure64.sys kernel.sys monitor.bin > floppy.sys
 	dd if=floppy.sys of=floppy.img conv=notrunc > /dev/null 2>&1
-	dd if=bmfs-lite.img of=floppy.img bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
 
 	cd ..
 }
 
+# Copy demos to disk and RAM drive images, update file disk images
 function baremetal_install_demos {
 	baremetal_sys_check
 	cd "$OUTPUT_DIR"
+
+	# Build disk image
 	./bmfs bmfs.img write hello.app
 	./bmfs bmfs.img write sysinfo.app
 	./bmfs bmfs.img write systest.app
@@ -213,6 +199,8 @@ function baremetal_install_demos {
 		./bmfs bmfs.img write color-plasma.app
 		./bmfs bmfs.img write 3d-model-loader.app
 	fi
+
+	# Build RAM drive image
 	./bmfslite bmfs-lite.img initialize
 	./bmfslite bmfs-lite.img write hello.app
 	./bmfslite bmfs-lite.img write sysinfo.app
@@ -224,6 +212,22 @@ function baremetal_install_demos {
 		./bmfslite bmfs-lite.img write cube3d.app
 		./bmfslite bmfs-lite.img write color-plasma.app
 		./bmfslite bmfs-lite.img write 3d-model-loader.app
+	fi
+
+	# Create FAT32/BMFS hybrid disk
+	cat fat32.img bmfs.img > baremetal_os.img
+
+	# Copy RAM drive image
+	dd if=bmfs-lite.img of=BOOTX64.EFI bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
+	dd if=bmfs-lite.img of=floppy.img bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
+
+	# Copy UEFI boot + RAM Drive to disk image
+	if [ -x "$(command -v mcopy)" ]; then
+		mcopy -oi fat32.img BOOTX64.EFI ::/EFI/BOOT/BOOTX64.EFI > /dev/null 2>&1
+		retVal=$?
+		if [ $retVal -ne 0 ]; then
+			echo -n "no UEFI support (due to bad mtools), "
+		fi
 	fi
 
 	# Create FAT32/BMFS hybrid disk
