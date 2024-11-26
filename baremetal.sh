@@ -141,24 +141,26 @@ function baremetal_build {
 
 	# Inject a program binary into to the kernel (ORG 0x001E0000)
 	if [ "$#" -ne 1 ]; then
-		cat pure64.sys kernel.sys monitor.bin > software.sys
+		cat pure64-bios.sys kernel.sys monitor.bin > software-bios.sys
+		cat pure64-uefi.sys kernel.sys monitor.bin > software-uefi.sys
 	else
 		if [ -f $1 ]; then
-			cat pure64.sys kernel.sys $1 > software.sys
+			cat pure64-bios.sys kernel.sys $1 > software-bios.sys
+			cat pure64-uefi.sys kernel.sys $1 > software-uefi.sys
 		else
 			echo "$1 does not exist. Skipping binary injection"
 		fi
 	fi
 
 	# Copy software to BMFS for BIOS loading
-	dd if=software.sys of=bmfs.img bs=4096 seek=2 conv=notrunc > /dev/null 2>&1
+	dd if=software-bios.sys of=bmfs.img bs=4096 seek=2 conv=notrunc > /dev/null 2>&1
 
 	# Prep UEFI loader
 	cp uefi.sys BOOTX64.EFI
-	dd if=software.sys of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
- 	dd if=bmfs-lite.img of=BOOTX64.EFI bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
+	dd if=software-uefi.sys of=BOOTX64.EFI bs=4096 seek=1 conv=notrunc > /dev/null 2>&1
+	dd if=bmfs-lite.img of=BOOTX64.EFI bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
 
- 	dd if=/dev/zero of=floppy.img count=2880 bs=512 > /dev/null 2>&1
+	dd if=/dev/zero of=floppy.img count=2880 bs=512 > /dev/null 2>&1
 
 	cd ..
 }
@@ -188,7 +190,7 @@ function baremetal_install {
 	cat fat32.img bmfs.img > baremetal_os.img
 
 	# Create Floppy bootable system disk
-	cat bios-floppy.sys pure64.sys kernel.sys monitor.bin > floppy.sys
+	cat bios-floppy.sys pure64-bios.sys kernel.sys monitor.bin > floppy.sys
 	dd if=floppy.sys of=floppy.img conv=notrunc > /dev/null 2>&1
 
 	cd ..
