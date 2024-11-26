@@ -211,9 +211,6 @@ function baremetal_install_demos {
 		./bmfslite bmfs-lite.img write $app
 	done
 
-	# Create FAT32/BMFS hybrid disk
-	cat fat32.img bmfs.img > baremetal_os.img
-
 	# Copy RAM drive image
 	dd if=bmfs-lite.img of=BOOTX64.EFI bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
 	dd if=bmfs-lite.img of=floppy.img bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
