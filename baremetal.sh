@@ -13,9 +13,10 @@ if [ "x$APPS" = x ]; then
 	APPS="hello.app sysinfo.app systest.app uitest.app"
 	if [ "$(uname)" != "Darwin" ]; then
 		APPS="$APPS helloc.app raytrace.app minIP.app cube3d.app
-		       color-plasma.app 3d-model-loader.app"
+			color-plasma.app 3d-model-loader.app"
 	fi
 fi
+# see if BMFS_SIZE was defined for custom disk sizes
 if [ "x$BMFS_SIZE" = x ]; then
 	BMFS_SIZE=128
 fi
@@ -71,11 +72,11 @@ function baremetal_setup {
 	echo -e "\nSetup Complete. Use './baremetal.sh run' to start."
 }
 
-
-function init_imgs { # arg 1 is bmfs size in MiB
+# Initialize disk images
+function init_imgs { # arg 1 is BMFS size in MiB
 	echo -n "Creating disk image files... "
 	cd sys
-	dd if=/dev/zero of=bmfs.img count=$1  bs=1048576 > /dev/null 2>&1
+	dd if=/dev/zero of=bmfs.img count=$1 bs=1048576 > /dev/null 2>&1
 	dd if=/dev/zero of=bmfs-lite.img count=1 bs=1048576 > /dev/null 2>&1
 	if [ -x "$(command -v mformat)" ]; then
 		mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
@@ -128,6 +129,7 @@ function build_dir {
 	cd "$EXEC_DIR"
 }
 
+# Build the source code and create the software files
 function baremetal_build {
 	baremetal_src_check
 	echo -n "Assembling source code... "
@@ -172,7 +174,7 @@ function baremetal_build {
 	cd ..
 }
 
-# Install boot sector, Pure64, kernel
+# Install system software (boot sector, Pure64, kernel) to various storage images
 function baremetal_install {
 	baremetal_sys_check
 	cd "$OUTPUT_DIR"
