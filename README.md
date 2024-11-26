@@ -176,7 +176,7 @@ system ready
 ```
 
 > [!IMPORTANT]
-> Booting from a floppy or USB drive should work but BareMetal doesn't have a device driver for the floppy disk controller, or USB, so you will not be able to load any programs after the command line interface comes up.
+> Booting from a floppy or USB drive works. For BIOS-based floppy boot and UEFI-based USB drive booting there is a RAM drive image loaded that contains the demo programs.
 
 > [!CAUTION]
 > Doublecheck that you are writing the disk image to the correct disk
