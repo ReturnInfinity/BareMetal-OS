@@ -16,6 +16,9 @@ if [ "x$APPS" = x ]; then
 		       color-plasma.app 3d-model-loader.app"
 	fi
 fi
+if [ "x$BMFS_SIZE" = x ]; then
+	BMFS_SIZE=128
+fi
 
 function baremetal_clean {
 	rm -rf src
@@ -58,9 +61,21 @@ function baremetal_setup {
 	cd ../..
 	echo "OK"
 
+	baremetal_build
+
+	echo -n "Copying software to disk image... "
+	baremetal_install
+	baremetal_install_demos
+	echo "OK"
+
+	echo -e "\nSetup Complete. Use './baremetal.sh run' to start."
+}
+
+
+function init_imgs { # arg 1 is bmfs size in MiB
 	echo -n "Creating disk image files... "
 	cd sys
-	dd if=/dev/zero of=bmfs.img count=128 bs=1048576 > /dev/null 2>&1
+	dd if=/dev/zero of=bmfs.img count=$1  bs=1048576 > /dev/null 2>&1
 	dd if=/dev/zero of=bmfs-lite.img count=1 bs=1048576 > /dev/null 2>&1
 	if [ -x "$(command -v mformat)" ]; then
 		mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
@@ -76,25 +91,9 @@ function baremetal_setup {
 	else
 		dd if=/dev/zero of=fat32.img count=128 bs=1048576 > /dev/null 2>&1
 	fi
+	echo "OK"
+
 	cd ..
-	echo "OK"
-
-	echo -n "Assembling source code... "
-	baremetal_build
-	echo "OK"
-
-	echo -n "Formatting BMFS disk... "
-	cd sys
-	./bmfs bmfs.img format
-	cd ..
-	echo "OK"
-
-	echo -n "Copying software to disk image... "
-	baremetal_install
-	baremetal_install_demos
-	echo "OK"
-
-	echo -e "\nSetup Complete. Use './baremetal.sh run' to start."
 }
 
 function update_dir {
@@ -131,11 +130,15 @@ function build_dir {
 
 function baremetal_build {
 	baremetal_src_check
+	echo -n "Assembling source code... "
 	build_dir "src/Pure64"
 	build_dir "src/BareMetal"
 	build_dir "src/BareMetal-Monitor"
 	build_dir "src/BMFS"
 	build_dir "src/BareMetal-Demo"
+	echo "OK"
+
+	init_imgs $BMFS_SIZE
 
 	cd "$OUTPUT_DIR"
 
@@ -161,6 +164,10 @@ function baremetal_build {
 	dd if=bmfs-lite.img of=BOOTX64.EFI bs=1024 seek=64 conv=notrunc > /dev/null 2>&1
 
 	dd if=/dev/zero of=floppy.img count=2880 bs=512 > /dev/null 2>&1
+
+	echo -n "Formatting BMFS disk... "
+	./bmfs bmfs.img format
+	echo "OK"
 
 	cd ..
 }
