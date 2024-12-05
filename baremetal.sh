@@ -199,7 +199,7 @@ function baremetal_install {
 	cat fat32.img bmfs.img > baremetal_os.img
 
 	# Create Floppy bootable system disk
-	cat bios-floppy.sys pure64-bios.sys kernel.sys monitor.bin > floppy.sys
+	cat bios-floppy.sys software-bios.sys > floppy.sys
 	dd if=floppy.sys of=floppy.img conv=notrunc > /dev/null 2>&1
 
 	cd ..
