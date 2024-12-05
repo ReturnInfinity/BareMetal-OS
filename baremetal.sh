@@ -410,6 +410,21 @@ function baremetal_bnr-uefi {
 	baremetal_run-uefi
 }
 
+function baremetal_app {
+	baremetal_sys_check
+	cd sys
+	if [ -f $1 ]; then
+		./bmfs bmfs.img format /force
+		./bmfs bmfs.img write $1
+		cat fat32.img bmfs.img > baremetal_os.img
+		cd ..
+		baremetal_run
+	else
+		echo "$1 does not exist."
+		cd ..
+	fi
+}
+
 function baremetal_help {
 	echo "BareMetal-OS Script"
 	echo "Available commands:"
@@ -426,6 +441,7 @@ function baremetal_help {
 	echo "vmdk     - Generate VMDK disk image for VMware"
 	echo "bnr      - Build 'n Run"
 	echo "bnr-uefi - Build 'n Run in UEFI mode"
+	echo "*.app    - Install and run an app"
 }
 
 function baremetal_src_check {
@@ -471,6 +487,8 @@ elif [ $# -eq 1 ]; then
 		baremetal_bnr
 	elif [ "$1" == "bnr-uefi" ]; then
 		baremetal_bnr-uefi
+	elif [[ "$*" == *".app"* ]]; then
+		baremetal_app $1
 	else
 		echo "Invalid argument '$1'"
 	fi
