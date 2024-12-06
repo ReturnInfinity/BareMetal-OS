@@ -418,7 +418,6 @@ function baremetal_app {
 		./bmfs bmfs.img write $1
 		cat fat32.img bmfs.img > baremetal_os.img
 		cd ..
-		baremetal_run
 	else
 		echo "$1 does not exist."
 		cd ..
