@@ -81,6 +81,9 @@ BareMetal OS consists of several different projects:
   * AHCI (SATA)
   * IDE
   * Virtio-Blk
+* HID (Human Interface Devices)
+  * PS/2 Keyboard
+  * PS/2 Mouse
 
 
 # Initial configuration
