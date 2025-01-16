@@ -275,6 +275,11 @@ function baremetal_run {
 	# Floppy
 	#	-drive format=raw,file="sys/floppy.img",index=0,if=floppy
 
+	# USB
+	#	-device qemu-xhci
+	#	-device usb-mouse
+	#	-device usb-kbd
+
 	# Serial configuration
 	# Output serial to file
 		-serial file:"sys/serial.log"
