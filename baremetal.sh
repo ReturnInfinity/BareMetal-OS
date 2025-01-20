@@ -301,6 +301,7 @@ function baremetal_run {
 	#	-trace "virt*"
 	#	-trace "apic*"
 	#	-trace "msi*"
+	#	-trace "usb*"
 	#	-d trace:memory_region_ops_* # Or read/write
 	# Prevent QEMU for resetting (triple fault)
 	#	-no-shutdown -no-reboot
