@@ -276,7 +276,8 @@ function baremetal_run {
 	#	-drive format=raw,file="sys/floppy.img",index=0,if=floppy
 
 	# USB
-	#	-device qemu-xhci
+	#	-device qemu-xhci # Supports MSI-X
+	#	-device nec-usb-xhci # Supports MSI-X and MSI
 	#	-device usb-mouse
 	#	-device usb-kbd
 
