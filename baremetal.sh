@@ -266,12 +266,9 @@ function baremetal_run {
 	# NVMe
 	#	-device nvme,serial=12345678,drive=disk0
 	# AHCI
-		-device ahci,id=ahci
-		-device ide-hd,drive=disk0,bus=ahci.0
+		-device ide-hd,drive=disk0
 	# VIRTIO
 	#	-device virtio-blk,drive=disk0 #,disable-legacy=on,disable-modern=false
-	# IDE
-	#	-device ide-hd,drive=disk0,bus=ide.0
 	# Floppy
 	#	-drive format=raw,file="sys/floppy.img",index=0,if=floppy
 
@@ -338,10 +335,7 @@ function baremetal_run-uefi {
 	# NVMe
 	#	-device nvme,serial=12345678,drive=disk0
 	# AHCI
-		-device ahci,id=ahci
-		-device ide-hd,drive=disk0,bus=ahci.0
-	# IDE
-	#	-device ide-hd,drive=disk0,bus=ide.0
+		-device ide-hd,drive=disk0
 
 	# Output serial to file
 		-serial file:"sys/serial.log"
