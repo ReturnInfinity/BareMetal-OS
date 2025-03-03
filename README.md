@@ -176,8 +176,8 @@ kernel start
 [ BareMetal ]
 64
 bus
-storage
-network
+nvs
+net
 system ready
 ```
 
