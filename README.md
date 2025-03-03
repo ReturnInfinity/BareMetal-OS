@@ -69,10 +69,12 @@ BareMetal OS consists of several different projects:
 * Bus
   * PCIe
   * PCI
+  * xHCI (USB 3)
 * Network
   * Gigabit
     * Intel 8254x Gigabit (e1000)
     * Intel 8257x Gigabit (e1000e)
+    * Intel 8259x 10 Gigabit (ixbge)
     * Realtek 816x/811x Gigabit (rtl8169)
   * Virtual
     * Virtio-Net
@@ -84,6 +86,7 @@ BareMetal OS consists of several different projects:
 * HID (Human Interface Devices)
   * PS/2 Keyboard
   * PS/2 Mouse
+  * USB Keyboard
 
 
 # Initial configuration
