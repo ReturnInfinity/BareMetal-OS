@@ -43,15 +43,19 @@ function baremetal_setup {
 	cd ..
 	echo "OK"
 
-	echo -n "Downloading UEFI firmware... "
-	cd sys
-	if [ -x "$(command -v curl)" ]; then
-		curl -s -o OVMF.fd https://cdn.download.clearlinux.org/image/OVMF.fd
+	if [ -x "$(command -v mformat)" ]; then
+		echo -n "Downloading UEFI firmware... "
+		cd sys
+		if [ -x "$(command -v curl)" ]; then
+			curl -s -o OVMF.fd https://cdn.download.clearlinux.org/image/OVMF.fd
+		else
+			wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
+		fi
+		cd ..
+		echo "OK"
 	else
-		wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
+		echo -n "Skipping UEFI firmware download due to missing mtools..."
 	fi
-	cd ..
-	echo "OK"
 
 	echo -n "Preparing dependancies... "
 	cd src/BareMetal-Monitor
@@ -354,7 +358,11 @@ function baremetal_run-uefi {
 	)
 
 	#execute the cmd string
-	"${cmd[@]}"
+	if [ -x "$(command -v mformat)" ]; then
+		"${cmd[@]}"
+	else
+		echo -n "Unable to run UEFI image due to missing mtools"
+	fi
 }
 
 function baremetal_run_netclient {
