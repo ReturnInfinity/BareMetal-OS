@@ -35,11 +35,11 @@ function baremetal_setup {
 
 	echo -n "Pulling code from GitHub... "
 	cd src
-	git clone https://github.com/ReturnInfinity/Pure64.git -q
-	git clone https://github.com/ReturnInfinity/BareMetal.git -q
-	git clone https://github.com/ReturnInfinity/BareMetal-Monitor.git -q
-	git clone https://github.com/ReturnInfinity/BMFS.git -q
-	git clone https://github.com/ReturnInfinity/BareMetal-Demo.git -q
+	git clone https://github.com/ReturnInfinity/Pure64.git -q --depth 1
+	git clone https://github.com/ReturnInfinity/BareMetal.git -q --depth 1
+	git clone https://github.com/ReturnInfinity/BareMetal-Monitor.git -q --depth 1
+	git clone https://github.com/ReturnInfinity/BMFS.git -q --depth 1
+	git clone https://github.com/ReturnInfinity/BareMetal-Demo.git -q --depth 1
 	cd ..
 	echo "OK"
 
@@ -253,13 +253,15 @@ function baremetal_run {
 		-smp sockets=1,cpus=4
 
 	# Network configuration. Use one controller.
-		-netdev socket,id=testnet,listen=:1234
+		-netdev socket,id=testnet1,listen=:1234
+	#	-netdev socket,id=testnet2,listen=:1235
 	# Intel 82540EM
-		-device e1000,netdev=testnet,mac=10:11:12:08:25:40
+		-device e1000,netdev=testnet1,mac=10:11:12:08:25:40
+	#	-device e1000,netdev=testnet2,mac=11:12:13:08:25:40
 	# Intel 82574L
-	#	-device e1000e,netdev=testnet,mac=10:11:12:08:25:74
+	#	-device e1000e,netdev=testnet1,mac=10:11:12:08:25:74
 	# VIRTIO
-	#	-device virtio-net-pci,netdev=testnet,mac=10:11:12:13:14:15 #,disable-legacy=on,disable-modern=false
+	#	-device virtio-net-pci,netdev=testnet1,mac=10:11:12:13:14:15 #,disable-legacy=on,disable-modern=false
 
 	# Disk configuration. Use one controller.
 		-drive id=disk0,file="sys/baremetal_os.img",if=none,format=raw
