@@ -160,6 +160,14 @@ function baremetal_build {
 			echo "$1 does not exist. Skipping binary injection"
 		fi
 	fi
+	softwaresize=$(wc -c <software-bios.sys)
+	if [ $softwaresize -gt 32768 ]; then
+		echo "Warning - BIOS binary is larger than 32768 bytes!"
+	fi
+	softwaresize=$(wc -c <software-uefi.sys)
+	if [ $softwaresize -gt 32768 ]; then
+		echo "Warning - UEFI binary is larger than 32768 bytes!"
+	fi
 
 	# Copy software to BMFS for BIOS loading
 	dd if=software-bios.sys of=bmfs.img bs=4096 seek=2 conv=notrunc > /dev/null 2>&1
