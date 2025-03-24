@@ -54,7 +54,7 @@ function baremetal_setup {
 		cd ..
 		echo "OK"
 	else
-		echo -n "Skipping UEFI firmware download due to missing mtools..."
+		echo "Skipping UEFI firmware download due to missing mtools..."
 	fi
 
 	echo -n "Preparing dependancies... "
@@ -264,6 +264,8 @@ function baremetal_run {
 		-m 256
 		-smp sockets=1,cpus=4
 
+	# Video
+		-device VGA,edid=on,xres=1024,yres=768
 	# Network configuration. Use one controller.
 		-netdev socket,id=testnet1,listen=:1234
 	#	-netdev socket,id=testnet2,listen=:1235
@@ -334,6 +336,8 @@ function baremetal_run-uefi {
 		-smp sockets=1,cpus=4
 	#	-cpu qemu64,pdpe1gb # Support for 1GiB pages
 
+	# Video
+		-device VGA,edid=on,xres=1024,yres=768
 	# Network
 		-netdev socket,id=testnet,listen=:1234
 	# On a second machine uncomment the line below, comment the line above, and change the mac
