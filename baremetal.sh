@@ -33,13 +33,22 @@ function baremetal_setup {
 	mkdir src
 	mkdir sys
 
-	echo -n "Pulling code from GitHub... "
+	echo -n "Pulling code from GitHub"
+
+	if [ "$1" = "dev" ]; then
+		echo -n " (Dev Env)... "
+		setup_args=" -q"
+	else
+		echo -n "... "
+		setup_args=" -q --depth 1"
+	fi
+
 	cd src
-	git clone https://github.com/ReturnInfinity/Pure64.git -q --depth 1
-	git clone https://github.com/ReturnInfinity/BareMetal.git -q --depth 1
-	git clone https://github.com/ReturnInfinity/BareMetal-Monitor.git -q --depth 1
-	git clone https://github.com/ReturnInfinity/BMFS.git -q --depth 1
-	git clone https://github.com/ReturnInfinity/BareMetal-Demo.git -q --depth 1
+	git clone https://github.com/ReturnInfinity/Pure64.git $setup_args
+	git clone https://github.com/ReturnInfinity/BareMetal.git $setup_args
+	git clone https://github.com/ReturnInfinity/BareMetal-Monitor.git $setup_args
+	git clone https://github.com/ReturnInfinity/BMFS.git $setup_args
+	git clone https://github.com/ReturnInfinity/BareMetal-Demo.git $setup_args
 	cd ..
 	echo "OK"
 
@@ -54,7 +63,7 @@ function baremetal_setup {
 		cd ..
 		echo "OK"
 	else
-		echo "Skipping UEFI firmware download due to missing mtools..."
+		echo -n "Skipping UEFI firmware download due to missing mtools..."
 	fi
 
 	echo -n "Preparing dependancies... "
@@ -266,6 +275,7 @@ function baremetal_run {
 
 	# Video
 		-device VGA,edid=on,xres=1024,yres=768
+
 	# Network configuration. Use one controller.
 		-netdev socket,id=testnet1,listen=:1234
 	#	-netdev socket,id=testnet2,listen=:1235
@@ -338,6 +348,7 @@ function baremetal_run-uefi {
 
 	# Video
 		-device VGA,edid=on,xres=1024,yres=768
+
 	# Network
 		-netdev socket,id=testnet,listen=:1234
 	# On a second machine uncomment the line below, comment the line above, and change the mac
@@ -519,5 +530,7 @@ elif [ $# -eq 2 ]; then
 		baremetal_build $2
 	elif [ "$1" == "install" ]; then
 		baremetal_install $2
+	elif [ "$1" == "setup" ]; then
+		baremetal_setup $2
 	fi
 fi
