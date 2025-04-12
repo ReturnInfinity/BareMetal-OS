@@ -20,6 +20,25 @@ jobs:
     - name: Build
       run: ./baremetal.sh setup
 
+    - name: install qemu-utils
+      run: brew install qemu-utils
+
+    # this is here just as a QA check to ensure it works on OS X
+    - name: Build img
+      run: ./baremetal.sh setup
+
+    # this is here just as a QA check to ensure it works on OS X
+    - name: Build vdi
+      run: ./baremetal.sh vdi
+
+    # this is here just as a QA check to ensure it works on OS X
+    - name: Build vmdk
+      run: ./baremetal.sh vmdk
+
+    # this is here just as a QA check to ensure it works on OS X
+    - name: Build vpc
+      run: ./baremetal.sh vpc
+
   build-ubuntu:
     runs-on: ubuntu-latest
     strategy:
@@ -34,7 +53,7 @@ jobs:
     - name: install qemu-utils
       run: sudo apt install qemu-utils
 
-    - name: Build floppy
+    - name: Build img
       run: ./baremetal.sh setup
 
     - name: Build vdi
@@ -65,4 +84,3 @@ jobs:
       with:
         name: BareMetal_OS.vpc
         path: sys/BareMetal_OS.vpc
-        
