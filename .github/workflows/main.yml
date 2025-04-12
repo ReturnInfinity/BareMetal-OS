@@ -62,8 +62,8 @@ jobs:
     - name: install mtools
       run: sudo apt install mtools
 
-    - name: install cdrtools
-      run: sudo apt install cdrtools
+    - name: install mkisofs
+      run: sudo apt install mkisofs
 
     - name: Build img
       run: ./baremetal.sh setup
