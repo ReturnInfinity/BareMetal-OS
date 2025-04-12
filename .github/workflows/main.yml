@@ -34,7 +34,19 @@ jobs:
     - name: Build
       run: ./baremetal.sh setup
 
+    - name: Build
+      run: ./baremetal.sh vdi
+
+    - name: Build
+      run: ./baremetal.sh vmdk
+
     - uses: actions/upload-artifact@v4
       with:
-        name: floppy.img
+        name: BareMetal_OS.img
         path: sys/floppy.img
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: BareMetal_OS.vdi
+        path: sys/BareMetal_OS.vdi
+    
