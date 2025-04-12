@@ -17,11 +17,14 @@ jobs:
     - name: nasm
       run: brew install nasm
 
+    - name: install qemu
+      run: brew install qemu
+
+    - name: install mtools
+      run: brew install mtools
+
     - name: Build
       run: ./baremetal.sh setup
-
-    - name: install qemu-utils
-      run: brew install qemu-utils
 
     # this is here just as a QA check to ensure it works on OS X
     - name: Build img
@@ -52,6 +55,9 @@ jobs:
 
     - name: install qemu-utils
       run: sudo apt install qemu-utils
+
+    - name: install mtools
+      run: sudo apt install mtools
 
     - name: Build img
       run: ./baremetal.sh setup
