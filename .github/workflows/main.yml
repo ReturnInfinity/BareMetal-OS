@@ -28,8 +28,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: nasm
+    - name: install nasm
       run: sudo apt install nasm
+
+    - name: install qemu
+      run: sudo apt install qemu
 
     - name: Build floppy
       run: ./baremetal.sh setup
