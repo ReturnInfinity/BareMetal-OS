@@ -31,14 +31,11 @@ jobs:
     - name: nasm
       run: sudo apt install nasm
 
-    - name: Build
+    - name: Build floppy
       run: ./baremetal.sh setup
 
-    - name: Build
+    - name: Build vdi
       run: ./baremetal.sh vdi
-
-    - name: Build
-      run: ./baremetal.sh vmdk
 
     - uses: actions/upload-artifact@v4
       with:
