@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ master ]
 jobs:
-  build:
+  build-macos:
     runs-on: macos-latest]
     strategy:
       fail-fast: false
@@ -20,4 +20,17 @@ jobs:
     - name: Build
       run: ./baremetal.sh setup
 
+  build-ubuntu:
+    runs-on: ubuntu-latest]
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: nasm
+      run: apt install nasm
+
+    - name: Build
+      run: ./baremetal.sh setup
 
