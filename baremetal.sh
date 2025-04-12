@@ -430,6 +430,12 @@ function baremetal_vmdk {
 	qemu-img convert -O vmdk "$OUTPUT_DIR/baremetal_os.img" "$OUTPUT_DIR/BareMetal_OS.vmdk"
 }
 
+function baremetal_vpc {
+	baremetal_sys_check
+	echo "Creating VPC image..."
+	qemu-img convert -O vpc "$OUTPUT_DIR/baremetal_os.img" "$OUTPUT_DIR/BareMetal_OS.vpc"
+}
+
 function baremetal_bnr {
 	baremetal_build
 	baremetal_install
@@ -472,6 +478,7 @@ function baremetal_help {
 	echo "run-2    - Run a second instance of BareMetal for network testing"
 	echo "vdi      - Generate VDI disk image for VirtualBox"
 	echo "vmdk     - Generate VMDK disk image for VMware"
+	echo "vpc      - Generate VPC disk image for HyperV"
 	echo "bnr      - Build 'n Run"
 	echo "bnr-uefi - Build 'n Run in UEFI mode"
 	echo "*.app    - Install and run an app"
@@ -518,6 +525,8 @@ elif [ $# -eq 1 ]; then
 		baremetal_vdi
 	elif [ "$1" == "vmdk" ]; then
 		baremetal_vmdk
+	elif [ "$1" == "vpc" ]; then
+		baremetal_vpc
 	elif [ "$1" == "bnr" ]; then
 		baremetal_bnr
 	elif [ "$1" == "bnr-uefi" ]; then

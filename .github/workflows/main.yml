@@ -43,6 +43,9 @@ jobs:
     - name: Build vmdk
       run: ./baremetal.sh vmdk
 
+    - name: Build vpc
+      run: ./baremetal.sh vpc
+
     - uses: actions/upload-artifact@v4
       with:
         name: BareMetal_OS.img
@@ -57,3 +60,9 @@ jobs:
       with:
         name: BareMetal_OS.vmdk
         path: sys/BareMetal_OS.vmdk
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: BareMetal_OS.vpc
+        path: sys/BareMetal_OS.vpc
+        
