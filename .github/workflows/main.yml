@@ -31,8 +31,8 @@ jobs:
     - name: install nasm
       run: sudo apt install nasm
 
-    - name: install qemu
-      run: sudo apt install qemu
+    - name: install qemu-utils
+      run: sudo apt install qemu-utils
 
     - name: Build floppy
       run: ./baremetal.sh setup
