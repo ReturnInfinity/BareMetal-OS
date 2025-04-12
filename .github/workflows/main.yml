@@ -34,3 +34,6 @@ jobs:
     - name: Build
       run: ./baremetal.sh setup
 
+    - uses: actions/upload-artifact@v4
+      name: floppy.img
+      path: sys/floppy.img
