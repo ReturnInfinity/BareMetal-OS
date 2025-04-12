@@ -40,6 +40,9 @@ jobs:
     - name: Build vdi
       run: ./baremetal.sh vdi
 
+    - name: Build vmdk
+      run: ./baremetal.sh vmdk
+
     - uses: actions/upload-artifact@v4
       with:
         name: BareMetal_OS.img
@@ -50,3 +53,7 @@ jobs:
         name: BareMetal_OS.vdi
         path: sys/BareMetal_OS.vdi
     
+    - uses: actions/upload-artifact@v4
+      with:
+        name: BareMetal_OS.vmdk
+        path: sys/BareMetal_OS.vmdk

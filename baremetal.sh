@@ -516,6 +516,8 @@ elif [ $# -eq 1 ]; then
 		baremetal_install_demos
 	elif [ "$1" == "vdi" ]; then
 		baremetal_vdi
+	elif [ "$1" == "vmdk" ]; then
+		baremetal_vmdk
 	elif [ "$1" == "bnr" ]; then
 		baremetal_bnr
 	elif [ "$1" == "bnr-uefi" ]; then
