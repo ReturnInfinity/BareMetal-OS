@@ -10,10 +10,9 @@ export OUTPUT_DIR="$EXEC_DIR/sys"
 # this allows the user to build their own apps and have
 # them installed in the BMFS
 if [ "x$APPS" = x ]; then
-	APPS="hello.app sysinfo.app systest.app uitest.app mouse.app"
+	APPS="hello.app sysinfo.app systest.app"
 	if [ "$(uname)" != "Darwin" ]; then
-		APPS="$APPS helloc.app raytrace.app minIP.app cube3d.app
-			color-plasma.app 3d-model-loader.app"
+		APPS="$APPS helloc.app raytrace.app minIP.app cube3d.app"
 	fi
 fi
 # see if BMFS_SIZE was defined for custom disk sizes
