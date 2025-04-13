@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: nasm
+      run: brew install nasm
+
+    - name: install qemu
+      run: brew install qemu
+
+    - name: install mtools
+      run: brew install mtools
+
+    - name: install cdrtools
+      run: brew install cdrtools
+
+    - name: Build
+      run: ./baremetal.sh setup
+
+    # this is here just as a QA check to ensure it works on OS X
+    - name: Build img
+      run: ./baremetal.sh setup
+
+    # this is here just as a QA check to ensure it works on OS X
+    - name: Build vdi
+      run: ./baremetal.sh vdi
+
+    # this is here just as a QA check to ensure it works on OS X
+    - name: Build vmdk
+      run: ./baremetal.sh vmdk
+
+    # this is here just as a QA check to ensure it works on OS X
+    - name: Build vpc
+      run: ./baremetal.sh vpc
+
+  build-ubuntu:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: install nasm
+      run: sudo apt install nasm
+
+    - name: install qemu-utils
+      run: sudo apt install qemu-utils
+
+    - name: install mtools
+      run: sudo apt install mtools
+
+    - name: install mkisofs
+      run: sudo apt install mkisofs
+
+    - name: Build img
+      run: ./baremetal.sh setup
+
+    - name: Build vdi
+      run: ./baremetal.sh vdi
+
+    - name: Build vmdk
+      run: ./baremetal.sh vmdk
+
+    - name: Build vpc
+      run: ./baremetal.sh vpc
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: BareMetal_OS.img
+        path: sys/floppy.img
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: BareMetal_OS.vdi
+        path: sys/BareMetal_OS.vdi
+    
+    - uses: actions/upload-artifact@v4
+      with:
+        name: BareMetal_OS.vmdk
+        path: sys/BareMetal_OS.vmdk
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: BareMetal_OS.vpc
+        path: sys/BareMetal_OS.vpc
