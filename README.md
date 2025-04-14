@@ -1,3 +1,6 @@
+
+[![CI](https://github.com/ReturnInfinity/BareMetal-OS/actions/workflows/main.yml/badge.svg)](https://github.com/ReturnInfinity/BareMetal-OS/actions/workflows/main.yml)
+
 <p align="center">
 	<img src="images/BareMetal OS - Light.png#gh-light-mode-only"></img>
 	<img src="images/BareMetal OS - Dark.png#gh-dark-mode-only"></img>
