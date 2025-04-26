@@ -269,8 +269,15 @@ function baremetal_run {
 	cmd=( qemu-system-x86_64
 		-machine q35
 		-name "BareMetal OS"
-		-m 256
+
+	# CPU (only 1 cpu type should be uncommented)
 		-smp sockets=1,cpus=4
+		-cpu Westmere
+	#	-cpu Westmere,x2apic
+	#	-cpu host -enable-kvm
+
+	# RAM
+		-m 256 # Value is in Megabytes
 
 	# Video
 		-device VGA,edid=on,xres=1024,yres=768
