@@ -4,6 +4,77 @@ set +e
 export EXEC_DIR="$PWD"
 export OUTPUT_DIR="$EXEC_DIR/sys"
 
+cmd=( qemu-system-x86_64
+	-machine q35
+
+# CPU (only 1 cpu type should be uncommented)
+	-smp sockets=1,cpus=4
+	-cpu Westmere
+#	-cpu Westmere,x2apic
+#	-cpu host -enable-kvm
+
+# RAM
+	-m 256 # Value is in Megabytes
+
+# Video
+	-device VGA,edid=on,xres=1024,yres=768
+
+# Network configuration. Use one controller.
+	-netdev socket,id=testnet1,listen=:1234
+#	-netdev socket,id=testnet2,listen=:1235
+# Intel 82540EM
+	-device e1000,netdev=testnet1,mac=10:11:12:08:25:40
+#	-device e1000,netdev=testnet2,mac=11:12:13:08:25:40
+# Intel 82574L
+#	-device e1000e,netdev=testnet1,mac=10:11:12:08:25:74
+# VIRTIO
+#	-device virtio-net-pci,netdev=testnet1,mac=10:11:12:13:14:15 #,disable-legacy=on,disable-modern=false
+
+# Disk configuration. Use one controller.
+	-drive id=disk0,file="sys/baremetal_os.img",if=none,format=raw
+# NVMe
+#	-device nvme,serial=12345678,drive=disk0
+# AHCI
+	-device ide-hd,drive=disk0
+# VIRTIO
+#	-device virtio-blk,drive=disk0 #,disable-legacy=on,disable-modern=false
+# Floppy
+#	-drive format=raw,file="sys/floppy.img",index=0,if=floppy
+
+# USB
+#	-device qemu-xhci # Supports MSI-X
+#	-device nec-usb-xhci # Supports MSI-X and MSI
+#	-device usb-mouse
+#	-device usb-kbd
+
+# Serial configuration
+# Output serial to file
+	-serial file:"sys/serial.log"
+# Output serial to console
+#	-chardev stdio,id=char0,logfile="sys/serial.log",signal=off
+#	-serial chardev:char0
+
+# Debugging
+# Enable monitor mode
+	-monitor telnet:localhost:8086,server,nowait
+# Enable GDB debugging
+#	-s
+# Wait for GDB before starting execution
+#	-S
+# Output network traffic to file
+#	-object filter-dump,id=testnet,netdev=testnet,file=net.pcap
+# Trace options
+#	-trace "e1000e_core*"
+#	-trace "virt*"
+#	-trace "apic*"
+#	-trace "msi*"
+#	-trace "usb*"
+#	-d trace:memory_region_ops_* # Or read/write
+#	-d int # Display interrupts
+# Prevent QEMU for resetting (triple fault)
+#	-no-shutdown -no-reboot
+)
+
 # see if APPS was defined
 # eg APPS="hello.app systest.app" ./baremetal.sh setup
 # if APPS is empty then supply the default apps
@@ -266,125 +337,18 @@ function baremetal_install_demos {
 function baremetal_run {
 	baremetal_sys_check
 	echo "Starting QEMU..."
-	cmd=( qemu-system-x86_64
-		-machine q35
-		-name "BareMetal OS"
 
-	# CPU (only 1 cpu type should be uncommented)
-		-smp sockets=1,cpus=4
-		-cpu Westmere
-	#	-cpu Westmere,x2apic
-	#	-cpu host -enable-kvm
+	cmd+=( -name "BareMetal OS" )
 
-	# RAM
-		-m 256 # Value is in Megabytes
-
-	# Video
-		-device VGA,edid=on,xres=1024,yres=768
-
-	# Network configuration. Use one controller.
-		-netdev socket,id=testnet1,listen=:1234
-	#	-netdev socket,id=testnet2,listen=:1235
-	# Intel 82540EM
-		-device e1000,netdev=testnet1,mac=10:11:12:08:25:40
-	#	-device e1000,netdev=testnet2,mac=11:12:13:08:25:40
-	# Intel 82574L
-	#	-device e1000e,netdev=testnet1,mac=10:11:12:08:25:74
-	# VIRTIO
-	#	-device virtio-net-pci,netdev=testnet1,mac=10:11:12:13:14:15 #,disable-legacy=on,disable-modern=false
-
-	# Disk configuration. Use one controller.
-		-drive id=disk0,file="sys/baremetal_os.img",if=none,format=raw
-	# NVMe
-	#	-device nvme,serial=12345678,drive=disk0
-	# AHCI
-		-device ide-hd,drive=disk0
-	# VIRTIO
-	#	-device virtio-blk,drive=disk0 #,disable-legacy=on,disable-modern=false
-	# Floppy
-	#	-drive format=raw,file="sys/floppy.img",index=0,if=floppy
-
-	# USB
-	#	-device qemu-xhci # Supports MSI-X
-	#	-device nec-usb-xhci # Supports MSI-X and MSI
-	#	-device usb-mouse
-	#	-device usb-kbd
-
-	# Serial configuration
-	# Output serial to file
-		-serial file:"sys/serial.log"
-	# Output serial to console
-	#	-chardev stdio,id=char0,logfile="sys/serial.log",signal=off
-	#	-serial chardev:char0
-
-	# Debugging
-	# Enable monitor mode
-		-monitor telnet:localhost:8086,server,nowait
-	# Enable GDB debugging
-	#	-s
-	# Wait for GDB before starting execution
-	#	-S
-	# Output network traffic to file
-	#	-object filter-dump,id=testnet,netdev=testnet,file=net.pcap
-	# Trace options
-	#	-trace "e1000e_core*"
-	#	-trace "virt*"
-	#	-trace "apic*"
-	#	-trace "msi*"
-	#	-trace "usb*"
-	#	-d trace:memory_region_ops_* # Or read/write
-	# Prevent QEMU for resetting (triple fault)
-	#	-no-shutdown -no-reboot
-	)
-
-	#execute the cmd string
-	"${cmd[@]}"
+	"${cmd[@]}" #execute the cmd string
 }
 
 function baremetal_run-uefi {
 	baremetal_sys_check
-	echo "Starting QEMU..."
-	cmd=( qemu-system-x86_64
-		-machine q35
-		-name "BareMetal OS (UEFI)"
-		-bios sys/OVMF.fd
-		-m 256
-		-smp sockets=1,cpus=4
-	#	-cpu qemu64,pdpe1gb # Support for 1GiB pages
+	echo "Starting QEMU (UEFI)..."
 
-	# Video
-		-device VGA,edid=on,xres=1024,yres=768
-
-	# Network
-		-netdev socket,id=testnet,listen=:1234
-	# On a second machine uncomment the line below, comment the line above, and change the mac
-	#	-netdev socket,id=testnet,connect=127.0.0.1:1234
-	# Use one device type.
-		-device e1000,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82540EM
-	#	-device e1000e,netdev=testnet,mac=10:11:12:13:14:15 # Intel 82574L
-	# Output network traffic to file
-	#	-net dump,file=net.pcap
-
-	# Disk configuration. Use one controller.
-		-drive id=disk0,file="sys/baremetal_os.img",if=none,format=raw
-	# NVMe
-	#	-device nvme,serial=12345678,drive=disk0
-	# AHCI
-		-device ide-hd,drive=disk0
-
-	# Output serial to file
-		-serial file:"sys/serial.log"
-
-	# Debugging
-	# Enable monitor mode
-		-monitor telnet:localhost:8086,server,nowait
-	# Enable GDB debugging
-	#	-s
-	# Wait for GDB before starting execution
-	#	-S
-	# Prevent QEMU for resetting (triple fault)
-	#	-no-shutdown -no-reboot
-	)
+	cmd+=( -bios sys/OVMF.fd )
+	cmd+=( -name "BareMetal OS UEFI" )
 
 	#execute the cmd string
 	if [ -x "$(command -v mformat)" ]; then
