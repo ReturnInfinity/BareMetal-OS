@@ -10,7 +10,7 @@ cmd=( qemu-system-x86_64
 # CPU (only 1 cpu type should be uncommented)
 	-smp sockets=1,cpus=4
 	-cpu Westmere
-#	-cpu Westmere,x2apic
+#	-cpu Westmere,x2apic,pdpe1gb
 #	-cpu host -enable-kvm
 
 # RAM
