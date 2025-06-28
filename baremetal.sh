@@ -44,8 +44,11 @@ cmd=( qemu-system-x86_64
 # USB
 #	-device qemu-xhci # Supports MSI-X
 #	-device nec-usb-xhci # Supports MSI-X and MSI
+
+# HID
 #	-device usb-mouse
 #	-device usb-kbd
+#	-device virtio-keyboard
 
 # Serial configuration
 # Output serial to file
