@@ -136,7 +136,7 @@ function baremetal_setup {
 		cd ..
 		echo "OK"
 	else
-		echo -n "Skipping UEFI firmware download due to missing mtools..."
+		echo "Skipping UEFI firmware download due to missing mtools..."
 	fi
 
 	echo -n "Preparing dependancies... "
