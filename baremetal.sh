@@ -129,7 +129,7 @@ function baremetal_setup {
 		echo -n "Downloading UEFI firmware... "
 		cd sys
 		if [ -x "$(command -v curl)" ]; then
-			curl -s -o OVMF.fd https://cdn.download.clearlinux.org/image/OVMF.fd
+			curl -s -O https://cdn.download.clearlinux.org/image/OVMF.fd
 		else
 			wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
 		fi
