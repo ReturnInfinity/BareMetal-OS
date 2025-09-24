@@ -19,7 +19,7 @@ cmd=( qemu-system-x86_64
 # Video
 	-device VGA,edid=on,xres=1024,yres=768
 
-# Network configuration. Use one controller.
+# Network configuration. Use one controller on testnet1 and, optionally, one on testnet2
 	-netdev socket,id=testnet1,listen=:1234
 #	-netdev socket,id=testnet2,listen=:1235
 # Intel 82540EM
@@ -27,8 +27,10 @@ cmd=( qemu-system-x86_64
 #	-device e1000,netdev=testnet2,mac=11:12:13:08:25:40
 # Intel 82574L
 #	-device e1000e,netdev=testnet1,mac=10:11:12:08:25:74
+#	-device e1000e,netdev=testnet2,mac=11:12:13:08:25:74
 # VIRTIO
-#	-device virtio-net-pci,netdev=testnet1,mac=10:11:12:13:14:15 #,disable-legacy=on,disable-modern=false
+#	-device virtio-net-pci,netdev=testnet1,mac=10:11:12:00:1A:F4 #,disable-legacy=on,disable-modern=false
+#	-device virtio-net-pci,netdev=testnet2,mac=11:12:13:00:1A:F4 #,disable-legacy=on,disable-modern=false
 
 # Disk configuration. Use one controller.
 	-drive id=disk0,file="sys/baremetal_os.img",if=none,format=raw
@@ -372,8 +374,10 @@ function baremetal_run_netclient {
 		-name "BareMetal OS (Second Instance)"
 		-m 256
 		-smp sockets=1,cpus=4
-		-netdev socket,id=testnet,connect=127.0.0.1:1234
-		-device e1000,netdev=testnet,mac=10:11:12:13:CA:FE
+		-netdev socket,id=testnet1,connect=127.0.0.1:1234
+		-device e1000,netdev=testnet1,mac=10:11:12:13:CA:FE
+#		-netdev socket,id=testnet2,connect=127.0.0.1:1235
+#		-device e1000,netdev=testnet2,mac=10:11:12:13:CA:FF
 		-drive id=disk0,file="sys/baremetal_os2.img",if=none,format=raw
 		-device ahci,id=ahci
 		-device ide-hd,drive=disk0,bus=ahci.0
