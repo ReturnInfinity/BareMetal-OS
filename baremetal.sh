@@ -38,8 +38,11 @@ cmd=( qemu-system-x86_64
 #	-device nvme,serial=12345678,drive=disk0
 # AHCI
 	-device ide-hd,drive=disk0
-# VIRTIO
+# VIRTIO-Block
 #	-device virtio-blk,drive=disk0 #,disable-legacy=on,disable-modern=false
+# VIRTIO-SCSI
+#	-device virtio-scsi-pci #,disable-legacy=on,disable-modern=false
+#	-device scsi-hd,drive=disk0
 # Floppy
 #	-drive format=raw,file="sys/floppy.img",index=0,if=floppy
 
