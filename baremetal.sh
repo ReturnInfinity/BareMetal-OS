@@ -91,7 +91,7 @@ cmd=( qemu-system-x86_64
 if [ "x$APPS" = x ]; then
 	APPS="hello.app sysinfo.app systest.app"
 	if [ "$(uname)" != "Darwin" ]; then
-		APPS="$APPS helloc.app raytrace.app minIP.app cube3d.app"
+		APPS="$APPS helloc.app raytrace.app cube3d.app"
 	fi
 fi
 # see if BMFS_SIZE was defined for custom disk sizes
