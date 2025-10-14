@@ -56,6 +56,8 @@ cmd=( qemu-system-x86_64
 #	-device virtio-keyboard
 
 # Serial configuration
+# Expose serial port to telnet
+	-serial telnet:localhost:8023,server,nowait
 # Output serial to file
 	-serial file:"sys/serial.log"
 # Output serial to console
