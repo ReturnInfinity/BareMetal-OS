@@ -164,27 +164,16 @@ Notes:
 
 Booting via BIOS and UEFI is supported. Secure boot in UEFI mode must be disabled since this software isn't signed. You may need to press <kbd>DEL</kbd> or <kbd>F12</kbd> on the keyboard on power-up to select the boot drive.
 
-Debug logging is output via the serial port (115200 bps, 8 data bits, 1 stop bit, no parity, no flow control). The output should look similar to this:
-```
-[ Pure64 ]
-boot bios
-pml4 ok
-acpi ok
-bsp ok
-pic ok
-smp ok
-kernel start
-
-[ BareMetal ]
-64
-bus
-nvs
-net
-system ready
-```
-
 > [!IMPORTANT]
 > Booting from a floppy or USB drive works. For BIOS-based floppy boot and UEFI-based USB drive booting there is a RAM drive image loaded that contains the demo programs.
+
+## BIOS Floppy
+
+Write the `floppy.sys` image to your diskette and boot your system with it.
+
+## BIOS/UEFI Hard drive or SSD 
+
+The `baremetal_os.img` file is a hybrid disk image and supports both BIOS and UEFI systems. Write the `baremetal_os.img` image to your disk:
 
 > [!CAUTION]
 > Doublecheck that you are writing the disk image to the correct disk
@@ -192,6 +181,10 @@ system ready
 	dd if=baremetal_os.img of=/dev/sdc
 
 Once the disk image is written you can install the disk in the system and boot from it.
+
+## UEFI USB
+
+Copy the `BOOTX64.EFI` file to `/EFI/BOOT` on your USB drive and boot your system from it.
 
 
 // EOF
