@@ -5,7 +5,7 @@ export EXEC_DIR="$PWD"
 export OUTPUT_DIR="$EXEC_DIR/sys"
 
 cmd=( qemu-system-x86_64
-	-machine q35
+	-machine q35 #,hpet=off
 
 # CPU (only 1 cpu type should be uncommented)
 	-smp sockets=1,cpus=4
@@ -302,6 +302,17 @@ function baremetal_install {
 	# Create Floppy bootable system disk
 	cat bios-floppy.sys software-bios.sys > floppy.sys
 	dd if=floppy.sys of=floppy.img conv=notrunc > /dev/null 2>&1
+
+	# Create BMFS BIOS disk for hypervisors
+	cp bmfs.img baremetal_os_bios.img
+	# Copy first 3 bytes of MBR (jmp and nop)
+	dd if=bios-novideo.sys of=baremetal_os_bios.img bs=1 count=3 conv=notrunc > /dev/null 2>&1
+	# Copy MBR code starting at offset 90
+	dd if=bios-novideo.sys of=baremetal_os_bios.img bs=1 skip=90 seek=90 count=356 conv=notrunc > /dev/null 2>&1
+	# Copy Bootable flag (in case of no mtools)
+	dd if=bios-novideo.sys of=baremetal_os_bios.img bs=1 skip=510 seek=510 count=2 conv=notrunc > /dev/null 2>&1
+	# Copy software (Pure64, kernel, etc) to disk
+	dd if=software-bios.sys of=baremetal_os_bios.img bs=4096 seek=2 conv=notrunc > /dev/null 2>&1
 
 	cd ..
 }
