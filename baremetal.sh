@@ -23,13 +23,13 @@ cmd=( qemu-system-x86_64
 	-netdev socket,id=testnet1,listen=:1234
 #	-netdev socket,id=testnet2,listen=:1235
 # Intel 82540EM
-	-device e1000,netdev=testnet1,mac=10:11:12:08:25:40
+#	-device e1000,netdev=testnet1,mac=10:11:12:08:25:40
 #	-device e1000,netdev=testnet2,mac=11:12:13:08:25:40
 # Intel 82574L
 #	-device e1000e,netdev=testnet1,mac=10:11:12:08:25:74
 #	-device e1000e,netdev=testnet2,mac=11:12:13:08:25:74
 # VIRTIO
-#	-device virtio-net-pci,netdev=testnet1,mac=10:11:12:00:1A:F4 #,disable-legacy=on,disable-modern=false
+	-device virtio-net-pci,netdev=testnet1,mac=10:11:12:00:1A:F4 #,disable-legacy=on,disable-modern=false
 #	-device virtio-net-pci,netdev=testnet2,mac=11:12:13:00:1A:F4 #,disable-legacy=on,disable-modern=false
 
 # Disk configuration. Use one controller.
@@ -37,9 +37,9 @@ cmd=( qemu-system-x86_64
 # NVMe
 #	-device nvme,serial=12345678,drive=disk0
 # AHCI
-	-device ide-hd,drive=disk0
+#	-device ide-hd,drive=disk0
 # VIRTIO-Block
-#	-device virtio-blk,drive=disk0 #,disable-legacy=on,disable-modern=false
+	-device virtio-blk,drive=disk0 #,disable-legacy=on,disable-modern=false
 # VIRTIO-SCSI
 #	-device virtio-scsi-pci #,disable-legacy=on,disable-modern=false
 #	-device scsi-hd,drive=disk0
