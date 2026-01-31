@@ -71,24 +71,12 @@ BareMetal OS consists of several different projects:
 * Bus
   * PCIe
   * PCI
-  * xHCI (USB 3)
 * Network
-  * Gigabit
-    * Intel 8254x Gigabit (e1000)
-    * Intel 8257x Gigabit (e1000e)
-    * Intel 8259x 10 Gigabit (ixbge)
-    * Realtek 816x/811x Gigabit (rtl8169)
-  * Virtual
-    * Virtio-Net
+  * Virtio-Net
 * Storage
-  * NVMe
-  * AHCI (SATA)
-  * IDE
   * Virtio-Blk
 * HID (Human Interface Devices)
   * PS/2 Keyboard
-  * PS/2 Mouse
-  * USB Keyboard
 
 
 # Initial configuration
@@ -148,7 +136,6 @@ Running a cloned second instance is useful for testing network connectivity betw
 Notes:
 - The VDI script rewrites the disk ID of the VDI file to avoid the disk warning in VirtualBox.
 - The `Chipset Type` for the VirtualBox VM must be `ICH9`
-- The `Storage Controller` should be `ACHI (SATA)` or `NVMe (PCIe)`
 
 ## Bochs
 
