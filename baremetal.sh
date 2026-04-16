@@ -105,6 +105,54 @@ if [ "x$UEFI" = x ]; then
 	UEFI=no
 fi
 
+WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/parallel-blocks.XXXXXX")"
+PIDS=()
+NAMES=()
+SCRIPTS=()
+
+cleanup() {
+	rm -rf "$WORK_DIR"
+}
+
+trap cleanup EXIT
+
+add_block() {
+	local name="$1"
+	local script_path="$WORK_DIR/${#NAMES[@]}-${name}.sh"
+
+	cat > "$script_path"
+	chmod +x "$script_path"
+
+	NAMES+=( "$name" )
+	SCRIPTS+=( "$script_path" )
+}
+
+run_blocks() {
+	local index
+
+	for index in "${!SCRIPTS[@]}"; do
+#		echo "[start] ${NAMES[$index]}"
+		bash "${SCRIPTS[$index]}" &
+		PIDS+=( "$!" )
+	done
+}
+
+wait_for_blocks() {
+	local index
+	local failed=0
+
+	for index in "${!PIDS[@]}"; do
+		if wait "${PIDS[$index]}"; then
+			echo -n "." #[ok] ${NAMES[$index]}"
+		else
+			echo "[failed] ${NAMES[$index]}"
+			failed=1
+		fi
+	done
+
+	return "$failed"
+}
+
 function baremetal_clean {
 	rm -rf src
 	rm -rf sys
@@ -117,24 +165,72 @@ function baremetal_setup {
 	mkdir src
 	mkdir sys
 
-	echo -n "Pulling code from GitHub"
+	echo -n "Pulling code and building"
 
 	if [ "$1" = "dev" ]; then
-		echo -n " (Dev Env)... "
-		setup_args=" -q"
+		echo -n " (Dev Env)"
+		export setup_args=" -q"
 	else
-		echo -n "... "
-		setup_args=" -q --depth 1"
+#		echo -n "... "
+		export setup_args=" -q --depth 1"
 	fi
 
 	cd src
+
+	add_block Pure64 <<-'EOF'
 	git clone https://github.com/ReturnInfinity/Pure64.git $setup_args
-	git clone https://github.com/ReturnInfinity/BareMetal.git $setup_args
-	git clone https://github.com/ReturnInfinity/BareMetal-Monitor.git $setup_args
-	git clone https://github.com/ReturnInfinity/BMFS.git $setup_args
-	git clone https://github.com/ReturnInfinity/BareMetal-Demo.git $setup_args
+	cd Pure64
+	./build.sh
+	mv bin/* "${OUTPUT_DIR}"
 	cd ..
-	echo "OK"
+	EOF
+
+	add_block BareMetal <<-'EOF'
+	git clone https://github.com/ReturnInfinity/BareMetal.git $setup_args
+	cd BareMetal
+	./build.sh
+	mv bin/* "${OUTPUT_DIR}"
+	cd ..
+	EOF
+
+	add_block BareMetal-Monitor <<-'EOF'
+	git clone https://github.com/ReturnInfinity/BareMetal-Monitor.git $setup_args
+	cd BareMetal-Monitor
+	./setup.sh
+	./build.sh
+	mv bin/* "${OUTPUT_DIR}"
+	cd ..
+	EOF
+
+	add_block BMFS <<-'EOF'
+	git clone https://github.com/ReturnInfinity/BMFS.git $setup_args
+	cd BMFS
+	./build.sh
+	mv bin/* "${OUTPUT_DIR}"
+	cd ..
+	EOF
+
+	add_block BareMetal-Demo <<-'EOF'
+	git clone https://github.com/ReturnInfinity/BareMetal-Demo.git $setup_args
+	cd BareMetal-Demo
+	./setup.sh
+	./build.sh
+	mv bin/* "${OUTPUT_DIR}"
+	cd ..
+	EOF
+
+	add_block DiskImages <<-'EOF'
+	cd ../sys
+	dd if=/dev/zero of=bmfs.img count=$BMFS_SIZE bs=1048576 > /dev/null 2>&1
+	dd if=/dev/zero of=bmfs-lite.img count=1 bs=1048576 > /dev/null 2>&1
+	cd ../src
+	EOF
+
+	run_blocks
+	wait_for_blocks
+
+	cd ..
+	echo " OK"
 
 	if [ "$UEFI" = "yes" ]; then
 		if [ -x "$(command -v mformat)" ]; then
@@ -152,15 +248,6 @@ function baremetal_setup {
 		fi
 	fi
 
-	echo -n "Preparing dependancies... "
-	cd src/BareMetal-Monitor
-	./setup.sh
-	cd ../..
-	cd src/BareMetal-Demo
-	./setup.sh
-	cd ../..
-	echo "OK"
-
 	baremetal_build
 
 	echo -n "Copying software to disk image... "
@@ -175,8 +262,6 @@ function baremetal_setup {
 function init_imgs { # arg 1 is BMFS size in MiB
 	echo -n "Creating disk image files... "
 	cd sys
-	dd if=/dev/zero of=bmfs.img count=$1 bs=1048576 > /dev/null 2>&1
-	dd if=/dev/zero of=bmfs-lite.img count=1 bs=1048576 > /dev/null 2>&1
 	if [ -x "$(command -v mformat)" ]; then
 		mformat -t 128 -h 2 -s 1024 -C -F -i fat32.img
 		mmd -i fat32.img ::/EFI > /dev/null 2>&1
@@ -231,13 +316,6 @@ function build_dir {
 # Build the source code and create the software files
 function baremetal_build {
 	baremetal_src_check
-	echo -n "Assembling source code... "
-	build_dir "src/Pure64"
-	build_dir "src/BareMetal"
-	build_dir "src/BareMetal-Monitor"
-	build_dir "src/BMFS"
-	build_dir "src/BareMetal-Demo"
-	echo "OK"
 
 	init_imgs $BMFS_SIZE
 
