@@ -100,6 +100,10 @@ fi
 if [ "x$BMFS_SIZE" = x ]; then
 	BMFS_SIZE=128
 fi
+# see if UEFI was defined
+if [ "x$UEFI" = x ]; then
+	UEFI=no
+fi
 
 function baremetal_clean {
 	rm -rf src
@@ -132,18 +136,20 @@ function baremetal_setup {
 	cd ..
 	echo "OK"
 
-	if [ -x "$(command -v mformat)" ]; then
-		echo -n "Downloading UEFI firmware... "
-		cd sys
-		if [ -x "$(command -v curl)" ]; then
-			curl -s -O https://cdn.download.clearlinux.org/image/OVMF.fd
+	if [ "$UEFI" = "yes" ]; then
+		if [ -x "$(command -v mformat)" ]; then
+			echo -n "Downloading UEFI firmware... "
+			cd sys
+			if [ -x "$(command -v curl)" ]; then
+				curl -s -O https://cdn.download.clearlinux.org/image/OVMF.fd
+			else
+				wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
+			fi
+			cd ..
+			echo "OK"
 		else
-			wget -q https://cdn.download.clearlinux.org/image/OVMF.fd
+			echo "Skipping UEFI firmware download due to missing mtools..."
 		fi
-		cd ..
-		echo "OK"
-	else
-		echo "Skipping UEFI firmware download due to missing mtools..."
 	fi
 
 	echo -n "Preparing dependancies... "
